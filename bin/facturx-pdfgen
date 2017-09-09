@@ -1,0 +1,137 @@
+#! /usr/bin/python
+# -*- coding: utf-8 -*-
+# © 2017 Alexis de Lattre <alexis.delattre@akretion.com>
+
+from optparse import OptionParser
+import sys
+from facturx import generate_facturx
+from facturx.facturx import logger
+import logging
+from os.path import isfile, isdir
+
+__author__ = "Alexis de Lattre <alexis.delattre@akretion.com>"
+__date__ = "August 2017"
+__version__ = "0.1"
+
+options = [
+    {'names': ('-l', '--log-level'), 'dest': 'log_level',
+        'action': 'store', 'default': 'info',
+        'help': "Set log level. Possible values: debug, info, warn, error. "
+        "Default value: info."},
+    {'names': ('-d', '--disable-xsd-check'), 'dest': 'disable_xsd_check',
+        'action': 'store_true', 'default': False,
+        'help': "De-activate XML Schema Definition check on Factur-X XML file "
+        "(the check is enabled by default)"},
+    {'names': ('-n', '--facturx-level'), 'dest': 'facturx_level',
+        'action': 'store', 'default': 'autodetect',
+        'help': "Specify the Factur-X level of the XML file. "
+        "Default: autodetect. If you specify a particular level instead of "
+        "using autodetection, you will win a very small amount of time "
+        "(less than 1 millisecond). "
+        "Possible values: minimum, basicwl, basic, en16931."},
+    {'names': ('-a', '--meta-author'), 'dest': 'meta_author',
+        'action': 'store', 'default': False,
+        'help': "Specify the author for PDF metadata. Default: use the vendor "
+        "name extracted from the Factur-X XML file."},
+    {'names': ('-k', '--meta-keywords'), 'dest': 'meta_keywords',
+        'action': 'store', 'default': False,
+        'help': "Specify the keywords for PDF metadata. "
+        "Default: 'Invoice, Factur-X'."},
+    {'names': ('-t', '--meta-title'), 'dest': 'meta_title',
+        'action': 'store', 'default': False,
+        'help': "Specify the title of PDF metadata. "
+        "Default: generic English title with information extracted from "
+        "the Factur-X XML file such as: 'Akretion: Invoice I1242'"},
+    {'names': ('-s', '--meta-subject'), 'dest': 'meta_subject',
+        'action': 'store', 'default': False,
+        'help': "Specify the subject of PDF metadata. "
+        "Default: generic English subject with information extracted from the "
+        "Factur-X XML file such as: "
+        "'Factur-X invoice I1242 dated 2017-08-17 issued by Akretion'"},
+    ]
+
+
+def main(options, arguments):
+    if options.log_level:
+        log_level = options.log_level.lower()
+        log_map = {
+            'debug': logging.DEBUG,
+            'info': logging.INFO,
+            'warn': logging.WARN,
+            'error': logging.ERROR,
+        }
+        if log_level in log_map:
+            logger.setLevel(log_map[log_level])
+        else:
+            logger.error(
+                'Wrong value for log level (%s). Possible values: %s',
+                log_level, ', '.join(log_map.keys()))
+            sys.exit(1)
+
+    if len(arguments) != 3:
+        logger.error(
+            'This command requires 3 arguments (%d used). '
+            'Use --help to get the details.', len(arguments))
+        sys.exit(1)
+    pdf_filename = arguments[0]
+    xml_filename = arguments[1]
+    facturx_pdf_filename = arguments[2]
+    for filename in [pdf_filename, xml_filename]:
+        if not isfile(filename):
+            logger.error('Argument %s is not a filename', filename)
+            sys.exit(1)
+    if isdir(facturx_pdf_filename):
+        logger.error(
+            '3rd argument %s is a directory name (should be a the '
+            'Factur-X PDF filename)', facturx_pdf_filename)
+        sys.exit(1)
+    pdf_file = open(pdf_filename)
+    xml_file = open(xml_filename)
+    check_xsd = True
+    if options.disable_xsd_check:
+        check_xsd = False
+    pdf_metadata = None
+    if (
+            options.meta_author or
+            options.meta_keywords or
+            options.meta_title or
+            options.meta_subject):
+        pdf_metadata = {
+            'author': options.meta_author,
+            'keywords': options.meta_keywords,
+            'title': options.meta_title,
+            'subject': options.meta_subject,
+            }
+    # The important line of code is below !
+    try:
+        pdf_content = generate_facturx(
+            pdf_file, xml_file, check_xsd=check_xsd,
+            facturx_level=options.facturx_level, pdf_metadata=pdf_metadata)
+    except Exception, e:
+        logger.error(e)
+        sys.exit(1)
+    if isfile(facturx_pdf_filename):
+        logger.warn(
+            'File %s already exists. Overwriting it!', facturx_pdf_filename)
+    facturx_pdf_file = open(facturx_pdf_filename, 'w')
+    facturx_pdf_file.write(pdf_content)
+    facturx_pdf_file.close()
+
+
+if __name__ == '__main__':
+    usage = "Usage: facturx-pdfgen <regular_invoice.pdf> <factur-x_xml.xml> "\
+            "<facturx_invoice.pdf>\n"\
+            "\nIf you use one of the --meta-* arguments, you should specify "\
+            "all the meta-* arguments because the default values for "\
+            "metadata only apply if none of the meta-* arguments are used."
+    epilog = "Author: %s\n\nVersion: %s" % (__author__, __version__)
+    description = "This script generate a Factur-X PDF invoice from a "\
+                  "regular PDF invoice and a Factur-X XML file."
+    parser = OptionParser(usage=usage, epilog=epilog, description=description)
+    for option in options:
+        param = option['names']
+        del option['names']
+        parser.add_option(*param, **option)
+    options, arguments = parser.parse_args()
+    sys.argv[:] = arguments
+    main(options, arguments)

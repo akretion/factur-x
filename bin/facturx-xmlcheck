@@ -1,0 +1,85 @@
+#! /usr/bin/python
+# -*- coding: utf-8 -*-
+# © 2017 Alexis de Lattre <alexis.delattre@akretion.com>
+
+from optparse import OptionParser
+import sys
+from facturx import check_facturx_xsd
+from facturx.facturx import logger
+import logging
+from os.path import isfile
+
+__author__ = "Alexis de Lattre <alexis.delattre@akretion.com>"
+__date__ = "August 2017"
+__version__ = "0.1"
+
+options = [
+    {'names': ('-l', '--log-level'), 'dest': 'log_level',
+        'action': 'store', 'default': 'info',
+        'help': "Set log level. Possible values: debug, info, warn, error. "
+        "Default value: info."},
+    {'names': ('-f', '--flavor'), 'dest': 'flavor',
+        'action': 'store', 'default': 'autodetect',
+        'help': "Set XML flavor. "
+                "Possible values: factur-x, zugferd or autodetect. "
+        "Default value: autodetect."},
+    {'names': ('-n', '--facturx-level'), 'dest': 'facturx_level',
+        'action': 'store', 'default': 'autodetect',
+        'help': "Specify the Factur-X level of the XML file. "
+        "Default: autodetect. If you specify a particular level instead of "
+        "using autodetection, you will win a very small amount of time "
+        "(less than 1 millisecond). "
+        "Possible values: minimum, basicwl, basic, en16931."},
+    ]
+
+
+def main(options, arguments):
+    if options.log_level:
+        log_level = options.log_level.lower()
+        log_map = {
+            'debug': logging.DEBUG,
+            'info': logging.INFO,
+            'warn': logging.WARN,
+            'error': logging.ERROR,
+        }
+        if log_level in log_map:
+            logger.setLevel(log_map[log_level])
+        else:
+            logger.error(
+                'Wrong value for log level (%s). Possible values: %s',
+                log_level, ', '.join(log_map.keys()))
+            sys.exit(1)
+
+    if len(arguments) != 1:
+        logger.error(
+            'This command requires 1 argument (%d used). '
+            'Use --help to get the details.', len(arguments))
+        sys.exit(1)
+    xml_filename = arguments[0]
+    if not isfile(xml_filename):
+        logger.error('%s is not a filename', xml_filename)
+        sys.exit(1)
+    xml_file = open(xml_filename)
+    # The important line of code is below !
+    try:
+        check_facturx_xsd(
+            xml_file, flavor=options.flavor,
+            facturx_level=options.facturx_level)
+    except Exception, e:
+        logger.error(e)
+        sys.exit(1)
+
+
+if __name__ == '__main__':
+    usage = "Usage: facturx-xmlcheck <factur-x_xml.xml>\n"
+    epilog = "Author: %s\n\nVersion: %s" % (__author__, __version__)
+    description = "This script checks the Factur-X XML against the XML "\
+                  "Schema Definition."
+    parser = OptionParser(usage=usage, epilog=epilog, description=description)
+    for option in options:
+        param = option['names']
+        del option['names']
+        parser.add_option(*param, **option)
+    options, arguments = parser.parse_args()
+    sys.argv[:] = arguments
+    main(options, arguments)
