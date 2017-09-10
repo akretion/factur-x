@@ -15,18 +15,19 @@ Some of the features provided by this lib also work for the ZUGFeRD e-invoicing 
 Installation
 ============
 
-```
-sudo pip install --upgrade factur-x
-```
+.. code::
+
+  sudo pip install --upgrade factur-x
+
 
 Usage
 =====
 
-```
-from facturx import generate_facturx
+.. code::
+  from facturx import generate_facturx
 
-facturx_pdf_invoice = generate_facturx(regular_pdf_invoice, facturx_xml_file)
-```
+  facturx_pdf_invoice = generate_facturx(regular_pdf_invoice, facturx_xml_file)
+
 
 To have more examples, look at the source code of the command line tools located in the *bin* subdirectory.
 
@@ -35,11 +36,16 @@ Command line tools
 
 Several command line tools are provided with this lib:
 
-* facturx-pdfgen: generate a Factur-X PDF invoice from a regular PDF invoice and an XML file
-* facturx-pdfextractxml: extract the Factur-X XML file from a Factur-X PDF invoice
-* facturx-xmlcheck: check a Factur-X XML file against the official Factur-X XML Schema Definition
+* **facturx-pdfgen**: generate a Factur-X PDF invoice from a regular PDF invoice and an XML file
+* **facturx-pdfextractxml**: extract the Factur-X XML file from a Factur-X PDF invoice
+* **facturx-xmlcheck**: check a Factur-X XML file against the official Factur-X XML Schema Definition
 
 All these commande line tools have a **-h** option that explains how to use them and shows all the available options.
+
+Licence
+=======
+
+This library is published under the BSD licence (same licence as `PyPDF2 <http://mstamy2.github.io/PyPDF2/>`_ on which this lib depends).
 
 Contributors
 ============
