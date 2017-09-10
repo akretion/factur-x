@@ -24,6 +24,7 @@ Usage
 =====
 
 .. code::
+
   from facturx import generate_facturx
 
   facturx_pdf_invoice = generate_facturx(regular_pdf_invoice, facturx_xml_file)
