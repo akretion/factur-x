@@ -65,7 +65,7 @@ def main(options, arguments):
     try:
         (xml_filename, xml_string) = get_facturx_xml_from_pdf(
             pdf_file, check_xsd=check_xsd)
-    except Exception, e:
+    except Exception as e:
         logger.error(e)
         sys.exit(1)
     if xml_filename and xml_string:

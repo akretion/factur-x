@@ -107,7 +107,7 @@ def main(options, arguments):
         pdf_content = generate_facturx(
             pdf_file, xml_file, check_xsd=check_xsd,
             facturx_level=options.facturx_level, pdf_metadata=pdf_metadata)
-    except Exception, e:
+    except Exception as e:
         logger.error(e)
         sys.exit(1)
     if isfile(facturx_pdf_filename):
