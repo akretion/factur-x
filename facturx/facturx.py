@@ -467,6 +467,8 @@ def generate_facturx(
     generation based on the extraction of the Factur-X XML file, which will
     bring a very small perf improvement.
     :type pdf_metadata: dict
+    :param output_pdf_file: Path+Filename of the generated Factur-X PDF file
+    :type output_pdf_file: str or unicode
     """
     start_chrono = datetime.now()
     logger.debug('1st arg pdf_invoice type=%s', type(pdf_invoice))
@@ -484,7 +486,7 @@ def generate_facturx(
         raise ValueError('check_xsd argument must be a boolean')
     if not isinstance(pdf_metadata, (type(None), dict)):
         raise ValueError('pdf_metadata argument must be a dict or None')
-    if not isinstance(output_pdf_file, (type(None), str)):
+    if not isinstance(output_pdf_file, (type(None), str, unicode)):
         raise ValueError('output_pdf_file argument must be a string or None')
     if not isinstance(pdf_metadata, (dict, type(None))):
         raise ValueError('pdf_metadata argument must be a dict or None')
