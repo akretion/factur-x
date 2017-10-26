@@ -4,14 +4,14 @@
 
 from optparse import OptionParser
 import sys
-from facturx import generate_facturx
+from facturx import generate_facturx_from_file
 from facturx.facturx import logger
 import logging
 from os.path import isfile, isdir
 
 __author__ = "Alexis de Lattre <alexis.delattre@akretion.com>"
 __date__ = "August 2017"
-__version__ = "0.1"
+__version__ = "0.2"
 
 options = [
     {'names': ('-l', '--log-level'), 'dest': 'log_level',
@@ -85,7 +85,6 @@ def main(options, arguments):
             '3rd argument %s is a directory name (should be a the '
             'Factur-X PDF filename)', facturx_pdf_filename)
         sys.exit(1)
-    pdf_file = open(pdf_filename)
     xml_file = open(xml_filename)
     check_xsd = True
     if options.disable_xsd_check:
@@ -103,20 +102,17 @@ def main(options, arguments):
             'subject': options.meta_subject,
             }
     # The important line of code is below !
-    try:
-        pdf_content = generate_facturx(
-            pdf_file, xml_file, check_xsd=check_xsd,
-            facturx_level=options.facturx_level, pdf_metadata=pdf_metadata)
-    except Exception as e:
-        logger.error(e)
-        sys.exit(1)
     if isfile(facturx_pdf_filename):
         logger.warn(
             'File %s already exists. Overwriting it!', facturx_pdf_filename)
-    facturx_pdf_file = open(facturx_pdf_filename, 'w')
-    facturx_pdf_file.write(pdf_content)
-    facturx_pdf_file.close()
-
+    try:
+        generate_facturx_from_file(
+            pdf_filename, xml_file, check_xsd=check_xsd,
+            facturx_level=options.facturx_level, pdf_metadata=pdf_metadata,
+            output_pdf_file=facturx_pdf_filename)
+    except Exception as e:
+        logger.error(e)
+        sys.exit(1)
 
 if __name__ == '__main__':
     usage = "Usage: facturx-pdfgen <regular_invoice.pdf> <factur-x_xml.xml> "\

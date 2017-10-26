@@ -35,7 +35,6 @@ from datetime import datetime
 from PyPDF2 import PdfFileWriter, PdfFileReader
 from PyPDF2.generic import DictionaryObject, DecodedStreamObject,\
     NameObject, createStringObject, ArrayObject
-import os.path
 from pkg_resources import resource_filename
 import logging
 
@@ -432,14 +431,15 @@ def get_facturx_flavor(facturx_xml_etree):
     return flavor
 
 
-def generate_facturx(
+def generate_facturx_from_binary(
         pdf_invoice, facturx_xml, facturx_level='autodetect',
-        check_xsd=True, pdf_metadata=None, output_pdf_file=None):
+        check_xsd=True, pdf_metadata=None):
     """
     Generate a Factur-X invoice from a regular PDF invoice and a factur-X XML
-    file. This is the main method of this lib.
-    :param pdf_invoice: the regular PDF invoice
-    :type pdf_invoice: binary or file
+    file. The method uses a binary as input (the regular PDF invoice) and
+    returns a binary as output (the Factur-X PDF invoice).
+    :param pdf_invoice: the regular PDF invoice as binary string
+    :type pdf_invoice: string
     :param facturx_xml: the Factur-X XML
     :type facturx_xml: string, file or etree object
     :param facturx_level: the level of the Factur-X XML file. Default value
@@ -467,8 +467,66 @@ def generate_facturx(
     generation based on the extraction of the Factur-X XML file, which will
     bring a very small perf improvement.
     :type pdf_metadata: dict
-    :param output_pdf_file: Path+Filename of the generated Factur-X PDF file
-    :type output_pdf_file: str or unicode
+    :return: The Factur-X PDF file as binary string.
+    :rtype: string
+    """
+
+    if not isinstance(pdf_invoice, str):
+        raise ValueError('pdf_invoice argument must be a string')
+    facturx_pdf_invoice = False
+    with NamedTemporaryFile(prefix='invoice-facturx-', suffix='.pdf') as f:
+        f.write(pdf_invoice)
+        generate_facturx_from_file(
+            f, facturx_xml, facturx_level=facturx_level,
+            check_xsd=check_xsd, pdf_metadata=pdf_metadata)
+        f.seek(0)
+        facturx_pdf_invoice = f.read()
+        f.close()
+    return facturx_pdf_invoice
+
+
+def generate_facturx_from_file(
+        pdf_invoice, facturx_xml, facturx_level='autodetect',
+        check_xsd=True, pdf_metadata=None, output_pdf_file=None):
+    """
+    Generate a Factur-X invoice from a regular PDF invoice and a factur-X XML
+    file. The method uses a file as input (regular PDF invoice) and re-writes
+    the file (Factur-X PDF invoice).
+    :param pdf_invoice: the regular PDF invoice as file path
+    (type string) or as file object
+    :type pdf_invoice: string or file
+    :param facturx_xml: the Factur-X XML
+    :type facturx_xml: string, file or etree object
+    :param facturx_level: the level of the Factur-X XML file. Default value
+    is 'autodetect'. The only advantage to specifiy a particular value instead
+    of using the autodetection is for a very very small perf improvement.
+    Possible values: minimum, basicwl, basic, en16931.
+    :type facturx_level: string
+    :param check_xsd: if enable, checks the Factur-X XML file against the XSD
+    (XML Schema Definition). If this step has already been performed
+    beforehand, you should disable this feature to avoid a double check
+    and get a small performance improvement.
+    :type check_xsd: boolean
+    :param pdf_metadata: Specify the metadata of the generated Factur-X PDF.
+    If pdf_metadata is None (default value), this lib will generate some
+    metadata in English by extracting relevant info from the Factur-X XML.
+    Here is an example for the pdf_metadata argument:
+    pdf_metadata = {
+        'author': 'Akretion',
+        'keywords': 'Factur-X, Invoice',
+        'title': 'Akretion: Invoice I1242',
+        'subject':
+          'Factur-X invoice I1242 dated 2017-08-17 issued by Akretion',
+        }
+    If you pass the pdf_metadata argument, you will not use the automatic
+    generation based on the extraction of the Factur-X XML file, which will
+    bring a very small perf improvement.
+    :param output_pdf_file: File Path to the output Factur-X PDF file
+    :type output_pdf_file: string or unicode
+    :type pdf_metadata: dict
+    :return: Returns True. This method re-writes the input PDF invoice file,
+    unless if the output_pdf_file is provided.
+    :rtype: bool
     """
     start_chrono = datetime.now()
     logger.debug('1st arg pdf_invoice type=%s', type(pdf_invoice))
@@ -486,18 +544,14 @@ def generate_facturx(
         raise ValueError('check_xsd argument must be a boolean')
     if not isinstance(pdf_metadata, (type(None), dict)):
         raise ValueError('pdf_metadata argument must be a dict or None')
-    if not isinstance(output_pdf_file, (type(None), str, unicode)):
-        raise ValueError('output_pdf_file argument must be a string or None')
     if not isinstance(pdf_metadata, (dict, type(None))):
         raise ValueError('pdf_metadata argument must be a dict or None')
-    if isinstance(pdf_invoice, str):
-        original_pdf_file = BytesIO(pdf_invoice)
-    elif isinstance(pdf_invoice, file):
-        original_pdf_file = pdf_invoice
+    if not isinstance(output_pdf_file, (type(None), str, unicode)):
+        raise ValueError('output_pdf_file argument must be a string or None')
+    if isinstance(pdf_invoice, (str, unicode)):
+        file_type = 'path'
     else:
-        raise TypeError(
-            "The first argument of the method generate_facturx must be "
-            "either a string or a file (it is a %s)." % type(pdf_invoice))
+        file_type = 'file'
     xml_root = None
     if isinstance(facturx_xml, str):
         xml_string = facturx_xml
@@ -536,29 +590,25 @@ def generate_facturx(
     if check_xsd:
         check_facturx_xsd(
             xml_string, flavor='factur-x', facturx_level=facturx_level)
-    original_pdf = PdfFileReader(original_pdf_file)
+    original_pdf = PdfFileReader(pdf_invoice)
     new_pdf_filestream = PdfFileWriter()
     new_pdf_filestream.appendPagesFromReader(original_pdf)
     _facturx_update_metadata_add_attachment(
         new_pdf_filestream, xml_string, pdf_metadata, facturx_level)
-    pdf_content = True
     if output_pdf_file:
-        if os.path.isdir(output_pdf_file):
-            raise ValueError(
-                "The argument output_pdf_file (%s) is a directory. "
-                "It must be a file." % output_pdf_file)
-        with open(output_pdf_file, 'w') as f:
-            new_pdf_filestream.write(f)
-            f.close()
+        with open(output_pdf_file, 'wb') as output_f:
+            new_pdf_filestream.write(output_f)
+            output_f.close()
     else:
-        with NamedTemporaryFile(prefix='invoice-facturx-', suffix='.pdf') as f:
-            new_pdf_filestream.write(f)
-            f.seek(0)
-            pdf_content = f.read()
-            f.close()
+        if file_type == 'path':
+            with open(pdf_invoice, 'wb') as f:
+                new_pdf_filestream.write(f)
+                f.close()
+        elif file_type == 'file':
+            new_pdf_filestream.write(pdf_invoice)
     logger.info('%s file added to PDF invoice', FACTURX_FILENAME)
     end_chrono = datetime.now()
     logger.info(
         'Factur-X invoice generated in %s seconds',
         (end_chrono - start_chrono).total_seconds())
-    return pdf_content
+    return True
