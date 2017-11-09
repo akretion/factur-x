@@ -50,6 +50,12 @@ FACTURX_LEVEL2xsd = {
     'basic': 'Factur-X_EN16931.xsd',
     'en16931': 'Factur-X_EN16931.xsd',  # comfort
 }
+FACTURX_LEVEL2xmp = {
+    'minimum': 'MINIMUM',
+    'basicwl': 'BASIC WL',
+    'basic': 'BASIC',
+    'en16931': 'EN 16931',
+    }
 
 
 def check_facturx_xsd(
@@ -277,7 +283,8 @@ def _prepare_pdf_metadata_xml(facturx_level, pdf_metadata):
     facturx_desc = etree.SubElement(
         root, ns_rdf + 'Description', nsmap=nsmap_fx)
     facturx_desc.set(ns_rdf + 'about', '')
-    facturx_desc.set(ns_fx + 'ConformanceLevel', facturx_level.upper())
+    facturx_desc.set(
+        ns_fx + 'ConformanceLevel', FACTURX_LEVEL2xmp[facturx_level])
     facturx_desc.set(ns_fx + 'DocumentFileName', FACTURX_FILENAME)
     facturx_desc.set(ns_fx + 'DocumentType', 'INVOICE')
     facturx_desc.set(ns_fx + 'Version', '1.0')

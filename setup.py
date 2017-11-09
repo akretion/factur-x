@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='factur-x',
-    version='0.2',
+    version='0.3',
     author='Alexis de Lattre',
     author_email='alexis.delattre@akretion.com',
     url='https://github.com/akretion/factur-x',
