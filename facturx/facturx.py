@@ -419,6 +419,11 @@ def get_facturx_level(facturx_xml_etree):
             "GuidelineSpecifiedDocumentContextParameter/ID.")
     doc_id = doc_id_xpath[0].text
     level = doc_id.split(':')[-1]
+    if level not in FACTURX_LEVEL2xmp:
+        level = doc_id.split(':')[-2]
+    if level not in FACTURX_LEVEL2xmp:
+        raise ValueError(
+            "Invalid Factur-X URN: '%s'" % doc_id)
     logger.info('Factur-X level is %s (autodetected)', level)
     return level
 
