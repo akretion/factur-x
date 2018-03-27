@@ -6,8 +6,8 @@
     targetNamespace="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100"
     elementFormDefault="qualified"
     version="100.D16B">
-  <xs:import namespace="urn:un:unece:uncefact:data:standard:QualifiedDataType:100" schemaLocation="Factur-X_EN16931_urn_un_unece_uncefact_data_standard_QualifiedDataType_100.xsd"/>
-  <xs:import namespace="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100" schemaLocation="Factur-X_EN16931_urn_un_unece_uncefact_data_standard_UnqualifiedDataType_100.xsd"/>
+  <xs:import namespace="urn:un:unece:uncefact:data:standard:QualifiedDataType:100" schemaLocation="FACTUR-X_EN16931_urn_un_unece_uncefact_data_standard_QualifiedDataType_100.xsd"/>
+  <xs:import namespace="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100" schemaLocation="FACTUR-X_EN16931_urn_un_unece_uncefact_data_standard_UnqualifiedDataType_100.xsd"/>
   <xs:complexType name="CreditorFinancialAccountType">
     <xs:sequence>
       <xs:element name="IBANID" type="udt:IDType" minOccurs="0"/>
@@ -187,6 +187,7 @@
   <xs:complexType name="TradeAccountingAccountType">
     <xs:sequence>
       <xs:element name="ID" type="udt:IDType"/>
+      <xs:element name="TypeCode" type="qdt:AccountingAccountTypeCodeType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="TradeAddressType">
@@ -216,7 +217,6 @@
       <xs:element name="PersonName" type="udt:TextType" minOccurs="0"/>
       <xs:element name="DepartmentName" type="udt:TextType" minOccurs="0"/>
       <xs:element name="TelephoneUniversalCommunication" type="ram:UniversalCommunicationType" minOccurs="0"/>
-      <xs:element name="FaxUniversalCommunication" type="ram:UniversalCommunicationType" minOccurs="0"/>
       <xs:element name="EmailURIUniversalCommunication" type="ram:UniversalCommunicationType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>

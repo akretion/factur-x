@@ -5,7 +5,7 @@
     targetNamespace="urn:un:unece:uncefact:data:standard:QualifiedDataType:100"
     elementFormDefault="qualified"
     version="100.D16B">
-  <xs:import namespace="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100" schemaLocation="Factur-X_BASIC_WL_urn_un_unece_uncefact_data_standard_UnqualifiedDataType_100.xsd"/>
+  <xs:import namespace="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100" schemaLocation="FACTUR-X_BASIC-WL_urn_un_unece_uncefact_data_standard_UnqualifiedDataType_100.xsd"/>
   <xs:simpleType name="AllowanceChargeReasonCodeContentType">
     <xs:restriction base="xs:token"/>
   </xs:simpleType>

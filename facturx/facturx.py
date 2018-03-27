@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# © 2016-2017, Alexis de Lattre <alexis.delattre@akretion.com>
+# Copyright 2016-2018, Alexis de Lattre <alexis.delattre@akretion.com>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,6 +28,7 @@
 # - have both python2 and python3 support
 # - add automated tests (currently, we only have tests at odoo module level)
 
+from ._version import __version__
 from io import BytesIO
 from lxml import etree
 from tempfile import NamedTemporaryFile
@@ -36,6 +37,9 @@ from PyPDF2 import PdfFileWriter, PdfFileReader
 from PyPDF2.generic import DictionaryObject, DecodedStreamObject,\
     NameObject, createStringObject, ArrayObject
 from pkg_resources import resource_filename
+import os.path
+import mimetypes
+import hashlib
 import logging
 
 FORMAT = '%(asctime)s [%(levelname)s] %(message)s'
@@ -45,10 +49,10 @@ logger.setLevel(logging.INFO)
 
 FACTURX_FILENAME = 'factur-x.xml'
 FACTURX_LEVEL2xsd = {
-    'minimum': 'Factur-X_BASIC_WL.xsd',
-    'basicwl': 'Factur-X_BASIC_WL.xsd',
-    'basic': 'Factur-X_EN16931.xsd',
-    'en16931': 'Factur-X_EN16931.xsd',  # comfort
+    'minimum': 'FACTUR-X_BASIC-WL.xsd',
+    'basicwl': 'FACTUR-X_BASIC-WL.xsd',
+    'basic': 'FACTUR-X_EN16931.xsd',
+    'en16931': 'FACTUR-X_EN16931.xsd',  # comfort
 }
 FACTURX_LEVEL2xmp = {
     'minimum': 'MINIMUM',
@@ -185,10 +189,11 @@ def get_facturx_xml_from_pdf(pdf_invoice, check_xsd=True):
     return (xml_filename, xml_string)
 
 
-def _get_pdf_timestamp():
-    now_dt = datetime.now()
+def _get_pdf_timestamp(date=None):
+    if date is None:
+        date = datetime.now()
     # example date format: "D:20141006161354+02'00'"
-    pdf_date = now_dt.strftime("D:%Y%m%d%H%M%S+00'00'")
+    pdf_date = date.strftime("D:%Y%m%d%H%M%S+00'00'")
     return pdf_date
 
 
@@ -204,7 +209,8 @@ def _prepare_pdf_metadata_txt(pdf_metadata):
     info_dict = {
         '/Author': pdf_metadata.get('author', ''),
         '/CreationDate': pdf_date,
-        '/Creator': u'factur-x Python lib by Alexis de Lattre',
+        '/Creator':
+        u'factur-x Python lib v%s by Alexis de Lattre' % __version__,
         '/Keywords': pdf_metadata.get('keywords', ''),
         '/ModDate': pdf_date,
         '/Subject': pdf_metadata.get('subject', ''),
@@ -296,62 +302,126 @@ def _prepare_pdf_metadata_xml(facturx_level, pdf_metadata):
     return xml_str
 
 
+# def createByteObject(string):
+#    string_to_encode = u'\ufeff' + string
+#    x = string_to_encode.encode('utf-16be')
+#    return ByteStringObject(x)
+
+
+def _filespec_additional_attachments(pdf_filestream, file_dict, file_bin):
+    filename = file_dict['filename']
+    logger.debug('_filespec_additional_attachments filename=%s', filename)
+    mod_date_pdf = _get_pdf_timestamp(file_dict['mod_date'])
+    md5sum = hashlib.md5(file_bin).hexdigest()
+    md5sum_obj = createStringObject(md5sum)
+    params_dict = DictionaryObject({
+        NameObject('/CheckSum'): md5sum_obj,
+        NameObject('/ModDate'): createStringObject(mod_date_pdf),
+        NameObject('/Size'): NameObject(str(len(file_bin))),
+        })
+    file_entry = DecodedStreamObject()
+    file_entry.setData(file_bin)
+    file_mimetype = mimetypes.guess_type(filename)[0]
+    if not file_mimetype:
+        file_mimetype = 'application/octet-stream'
+    file_mimetype_insert = '/' + file_mimetype.replace('/', '#2f')
+    file_entry.update({
+        NameObject("/Type"): NameObject("/EmbeddedFile"),
+        NameObject("/Params"): params_dict,
+        NameObject("/Subtype"): NameObject(file_mimetype_insert),
+        })
+    file_entry_obj = pdf_filestream._addObject(file_entry)
+    ef_dict = DictionaryObject({
+        NameObject("/F"): file_entry_obj,
+        })
+    fname_obj = createStringObject(filename)
+    filespec_dict = DictionaryObject({
+        NameObject("/AFRelationship"): NameObject("/Unspecified"),
+        NameObject("/Desc"): createStringObject(file_dict.get('desc', '')),
+        NameObject("/Type"): NameObject("/Filespec"),
+        NameObject("/F"): fname_obj,
+        NameObject("/EF"): ef_dict,
+        NameObject("/UF"): fname_obj,
+        })
+    filespec_obj = pdf_filestream._addObject(filespec_dict)
+    return (filespec_obj, fname_obj)
+
+
 def _facturx_update_metadata_add_attachment(
-        pdf_filestream, facturx_xml_str, pdf_metadata, facturx_level):
+        pdf_filestream, facturx_xml_str, pdf_metadata, facturx_level,
+        additional_attachments={}):
     '''This method is inspired from the code of the addAttachment()
     method of the PyPDF2 lib'''
     # The entry for the file
-    moddate = DictionaryObject()
-    moddate.update({
-        NameObject('/ModDate'): createStringObject(_get_pdf_timestamp())})
+    md5sum = hashlib.md5(facturx_xml_str).hexdigest()
+    md5sum_obj = createStringObject(md5sum)
+    params_dict = DictionaryObject({
+        NameObject('/CheckSum'): md5sum_obj,
+        NameObject('/ModDate'): createStringObject(_get_pdf_timestamp()),
+        NameObject('/Size'): NameObject(str(len(facturx_xml_str))),
+        })
     file_entry = DecodedStreamObject()
-    file_entry.setData(facturx_xml_str)
+    file_entry.setData(facturx_xml_str)  # here we integrate the file itself
     file_entry.update({
         NameObject("/Type"): NameObject("/EmbeddedFile"),
-        NameObject("/Params"): moddate,
+        NameObject("/Params"): params_dict,
         # 2F is '/' in hexadecimal
         NameObject("/Subtype"): NameObject("/text#2Fxml"),
         })
     file_entry_obj = pdf_filestream._addObject(file_entry)
     # The Filespec entry
-    efEntry = DictionaryObject()
-    efEntry.update({
+    ef_dict = DictionaryObject({
         NameObject("/F"): file_entry_obj,
         NameObject('/UF'): file_entry_obj,
         })
 
     fname_obj = createStringObject(FACTURX_FILENAME)
-    filespec = DictionaryObject()
-    filespec.update({
-        NameObject("/AFRelationship"): NameObject("/Alternative"),
+    filespec_dict = DictionaryObject({
+        NameObject("/AFRelationship"): NameObject("/Data"),
         NameObject("/Desc"): createStringObject("Factur-X Invoice"),
         NameObject("/Type"): NameObject("/Filespec"),
         NameObject("/F"): fname_obj,
-        NameObject("/EF"): efEntry,
+        NameObject("/EF"): ef_dict,
         NameObject("/UF"): fname_obj,
         })
-    embeddedFilesNamesDictionary = DictionaryObject()
-    embeddedFilesNamesDictionary.update({
-        NameObject("/Names"): ArrayObject(
-            [fname_obj, pdf_filestream._addObject(filespec)])
+    filespec_obj = pdf_filestream._addObject(filespec_dict)
+    name_arrayobj_content = [fname_obj, filespec_obj]
+    for attach_bin, attach_dict in additional_attachments.items():
+        additional_filespec_obj, additional_fname_obj =\
+            _filespec_additional_attachments(
+                pdf_filestream, attach_dict, attach_bin)
+        name_arrayobj_content += [
+            additional_fname_obj,
+            additional_filespec_obj,
+            ]
+    embedded_files_names_dict = DictionaryObject({
+        NameObject("/Names"): ArrayObject(name_arrayobj_content),
         })
+    embedded_files_names_obj = pdf_filestream._addObject(
+        embedded_files_names_dict)
     # Then create the entry for the root, as it needs a
     # reference to the Filespec
-    embeddedFilesDictionary = DictionaryObject()
-    embeddedFilesDictionary.update({
-        NameObject("/EmbeddedFiles"): embeddedFilesNamesDictionary
+    embedded_files_dict = DictionaryObject({
+        NameObject("/EmbeddedFiles"): embedded_files_names_obj,
         })
+    embedded_files_obj = pdf_filestream._addObject(embedded_files_dict)
     # Update the root
     metadata_xml_str = _prepare_pdf_metadata_xml(facturx_level, pdf_metadata)
     metadata_file_entry = DecodedStreamObject()
     metadata_file_entry.setData(metadata_xml_str)
-    metadata_value = pdf_filestream._addObject(metadata_file_entry)
-    af_value = pdf_filestream._addObject(
-        ArrayObject([pdf_filestream._addObject(filespec)]))
+    metadata_file_entry.update({
+        NameObject('/Subtype'): NameObject('/XML'),
+        NameObject('/Type'): NameObject('/Metadata'),
+        })
+    metadata_obj = pdf_filestream._addObject(metadata_file_entry)
+    af_value_obj = pdf_filestream._addObject(
+        ArrayObject([filespec_obj]))
     pdf_filestream._root_object.update({
-        NameObject("/AF"): af_value,
-        NameObject("/Metadata"): metadata_value,
-        NameObject("/Names"): embeddedFilesDictionary,
+        NameObject("/AF"): af_value_obj,
+        NameObject("/Metadata"): metadata_obj,
+        NameObject("/Names"): embedded_files_obj,
+        # show attachments when opening PDF
+        NameObject("/PageMode"): NameObject("/UseAttachments"),
         })
     metadata_txt_dict = _prepare_pdf_metadata_txt(pdf_metadata)
     pdf_filestream.addMetadata(metadata_txt_dict)
@@ -499,7 +569,8 @@ def generate_facturx_from_binary(
 
 def generate_facturx_from_file(
         pdf_invoice, facturx_xml, facturx_level='autodetect',
-        check_xsd=True, pdf_metadata=None, output_pdf_file=None):
+        check_xsd=True, pdf_metadata=None, output_pdf_file=None,
+        additional_attachments=None):
     """
     Generate a Factur-X invoice from a regular PDF invoice and a factur-X XML
     file. The method uses a file as input (regular PDF invoice) and re-writes
@@ -533,9 +604,13 @@ def generate_facturx_from_file(
     If you pass the pdf_metadata argument, you will not use the automatic
     generation based on the extraction of the Factur-X XML file, which will
     bring a very small perf improvement.
+    :type pdf_metadata: dict
     :param output_pdf_file: File Path to the output Factur-X PDF file
     :type output_pdf_file: string or unicode
-    :type pdf_metadata: dict
+    :param additional_attachments: Specify the other files that you want to
+    embed in the PDF file. It is a dict where keys are filepath and value
+    is the description of the file (as unicode or string).
+    :type additional_attachments: dict
     :return: Returns True. This method re-writes the input PDF invoice file,
     unless if the output_pdf_file is provided.
     :rtype: bool
@@ -546,6 +621,8 @@ def generate_facturx_from_file(
     logger.debug('optional arg facturx_level=%s', facturx_level)
     logger.debug('optional arg check_xsd=%s', check_xsd)
     logger.debug('optional arg pdf_metadata=%s', pdf_metadata)
+    logger.debug(
+        'optional arg additional_attachments=%s', additional_attachments)
     if not pdf_invoice:
         raise ValueError('Missing pdf_invoice argument')
     if not facturx_xml:
@@ -558,6 +635,9 @@ def generate_facturx_from_file(
         raise ValueError('pdf_metadata argument must be a dict or None')
     if not isinstance(pdf_metadata, (dict, type(None))):
         raise ValueError('pdf_metadata argument must be a dict or None')
+    if not isinstance(additional_attachments, (dict, type(None))):
+        raise ValueError(
+            'additional_attachments argument must be a dict or None')
     if not isinstance(output_pdf_file, (type(None), str, unicode)):
         raise ValueError('output_pdf_file argument must be a string or None')
     if isinstance(pdf_invoice, (str, unicode)):
@@ -583,6 +663,20 @@ def generate_facturx_from_file(
             "The second argument of the method generate_facturx must be "
             "either a string, an etree.Element() object or a file "
             "(it is a %s)." % type(facturx_xml))
+    additional_attachments_read = {}
+    if additional_attachments:
+        for attach_filepath, attach_desc in additional_attachments.items():
+            filename = os.path.basename(attach_filepath)
+            mod_timestamp = os.path.getmtime(attach_filepath)
+            mod_dt = datetime.fromtimestamp(mod_timestamp)
+            with open(attach_filepath, 'r') as fa:
+                fa.seek(0)
+                additional_attachments_read[fa.read()] = {
+                    'filename': filename,
+                    'desc': attach_desc,
+                    'mod_date': mod_dt,
+                    }
+                fa.close()
     if pdf_metadata is None:
         if xml_root is None:
             xml_root = etree.fromstring(xml_string)
@@ -606,7 +700,8 @@ def generate_facturx_from_file(
     new_pdf_filestream = PdfFileWriter()
     new_pdf_filestream.appendPagesFromReader(original_pdf)
     _facturx_update_metadata_add_attachment(
-        new_pdf_filestream, xml_string, pdf_metadata, facturx_level)
+        new_pdf_filestream, xml_string, pdf_metadata, facturx_level,
+        additional_attachments=additional_attachments_read)
     if output_pdf_file:
         with open(output_pdf_file, 'wb') as output_f:
             new_pdf_filestream.write(output_f)

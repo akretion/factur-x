@@ -6,8 +6,8 @@
     targetNamespace="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100"
     elementFormDefault="qualified"
     version="100.D16B">
-  <xs:import namespace="urn:un:unece:uncefact:data:standard:QualifiedDataType:100" schemaLocation="Factur-X_BASIC_WL_urn_un_unece_uncefact_data_standard_QualifiedDataType_100.xsd"/>
-  <xs:import namespace="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100" schemaLocation="Factur-X_BASIC_WL_urn_un_unece_uncefact_data_standard_UnqualifiedDataType_100.xsd"/>
+  <xs:import namespace="urn:un:unece:uncefact:data:standard:QualifiedDataType:100" schemaLocation="FACTUR-X_BASIC-WL_urn_un_unece_uncefact_data_standard_QualifiedDataType_100.xsd"/>
+  <xs:import namespace="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100" schemaLocation="FACTUR-X_BASIC-WL_urn_un_unece_uncefact_data_standard_UnqualifiedDataType_100.xsd"/>
   <xs:complexType name="CreditorFinancialAccountType">
     <xs:sequence>
       <xs:element name="IBANID" type="udt:IDType" minOccurs="0"/>
@@ -35,6 +35,13 @@
       <xs:element name="ID" type="udt:IDType"/>
       <xs:element name="TypeCode" type="qdt:DocumentCodeType" minOccurs="0"/>
       <xs:element name="IssueDateTime" type="udt:DateTimeType"/>
+      <xs:element name="IncludedNote" type="ram:NoteType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="NoteType">
+    <xs:sequence>
+      <xs:element name="Content" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="SubjectCode" type="udt:CodeType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="HeaderTradeAgreementType">
@@ -123,22 +130,12 @@
       <xs:element name="CategoryTradeTax" type="ram:TradeTaxType" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
   </xs:complexType>
-  <xs:complexType name="TradeContactType">
-    <xs:sequence>
-      <xs:element name="PersonName" type="udt:TextType" minOccurs="0"/>
-      <xs:element name="DepartmentName" type="udt:TextType" minOccurs="0"/>
-      <xs:element name="TelephoneUniversalCommunication" type="ram:UniversalCommunicationType" minOccurs="0"/>
-      <xs:element name="FaxUniversalCommunication" type="ram:UniversalCommunicationType" minOccurs="0"/>
-      <xs:element name="EmailURIUniversalCommunication" type="ram:UniversalCommunicationType" minOccurs="0"/>
-    </xs:sequence>
-  </xs:complexType>
   <xs:complexType name="TradePartyType">
     <xs:sequence>
       <xs:element name="ID" type="udt:IDType" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="GlobalID" type="udt:IDType" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="Name" type="udt:TextType" minOccurs="0"/>
       <xs:element name="SpecifiedLegalOrganization" type="ram:LegalOrganizationType" minOccurs="0"/>
-      <xs:element name="DefinedTradeContact" type="ram:TradeContactType" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="PostalTradeAddress" type="ram:TradeAddressType" minOccurs="0"/>
       <xs:element name="URIUniversalCommunication" type="ram:UniversalCommunicationType" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="SpecifiedTaxRegistration" type="ram:TaxRegistrationType" minOccurs="0" maxOccurs="unbounded"/>
@@ -184,7 +181,6 @@
   <xs:complexType name="UniversalCommunicationType">
     <xs:sequence>
       <xs:element name="URIID" type="udt:IDType" minOccurs="0"/>
-      <xs:element name="CompleteNumber" type="udt:TextType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 </xs:schema>
