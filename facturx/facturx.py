@@ -27,6 +27,7 @@
 # TODO list:
 # - have both python2 and python3 support
 # - add automated tests (currently, we only have tests at odoo module level)
+# - keep original metadata by copy of pdf_tailer[/Info] ?
 
 from ._version import __version__
 from io import BytesIO
@@ -163,23 +164,29 @@ def get_facturx_xml_from_pdf(pdf_invoice, check_xsd=True):
         pdf_root = pdf.trailer['/Root']
         logger.debug('pdf_root=%s', pdf_root)
         embeddedfiles = pdf_root['/Names']['/EmbeddedFiles']['/Names']
-        i = 0
-        for embeddedfile in embeddedfiles[:-1]:
-            if embeddedfile in (FACTURX_FILENAME, 'ZUGFeRD-invoice.xml'):
-                xml_file_dict = embeddedfiles[i+1].getObject()
+        logger.debug('embeddedfiles=%s', embeddedfiles)
+        # embeddedfiles must contain an even number of elements
+        if len(embeddedfiles) % 2 != 0:
+            raise
+        embeddedfiles_by_two = zip(embeddedfiles, embeddedfiles[1:])[::2]
+        logger.debug('embeddedfiles_by_two=%s', embeddedfiles_by_two)
+        for (filename, file_obj) in embeddedfiles_by_two:
+            logger.debug('found filename=%s', filename)
+            if filename in (FACTURX_FILENAME, 'ZUGFeRD-invoice.xml'):
+                xml_file_dict = file_obj.getObject()
                 logger.debug('xml_file_dict=%s', xml_file_dict)
                 tmp_xml_string = xml_file_dict['/EF']['/F'].getData()
                 xml_root = etree.fromstring(tmp_xml_string)
                 logger.info(
                     'A valid XML file %s has been found in the PDF file',
-                    embeddedfile)
+                    filename)
                 if check_xsd:
                     check_facturx_xsd(xml_root)
                     xml_string = tmp_xml_string
-                    xml_filename = embeddedfile
+                    xml_filename = filename
                 else:
                     xml_string = tmp_xml_string
-                    xml_filename = embeddedfile
+                    xml_filename = filename
                 break
     except:
         logger.error('No valid XML file found in the PDF')
@@ -220,6 +227,7 @@ def _prepare_pdf_metadata_txt(pdf_metadata):
 
 
 def _prepare_pdf_metadata_xml(facturx_level, pdf_metadata):
+    nsmap_x = {'x': 'adobe:ns:meta/'}
     nsmap_rdf = {'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'}
     nsmap_dc = {'dc': 'http://purl.org/dc/elements/1.1/'}
     nsmap_pdf = {'pdf': 'http://ns.adobe.com/pdf/1.3/'}
@@ -227,6 +235,7 @@ def _prepare_pdf_metadata_xml(facturx_level, pdf_metadata):
     nsmap_pdfaid = {'pdfaid': 'http://www.aiim.org/pdfa/ns/id/'}
     nsmap_fx = {
         'fx': 'urn:factur-x:pdfa:CrossIndustryDocument:invoice:1p0#'}
+    ns_x = '{%s}' % nsmap_x['x']
     ns_dc = '{%s}' % nsmap_dc['dc']
     ns_rdf = '{%s}' % nsmap_rdf['rdf']
     ns_pdf = '{%s}' % nsmap_pdf['pdf']
@@ -235,16 +244,18 @@ def _prepare_pdf_metadata_xml(facturx_level, pdf_metadata):
     ns_fx = '{%s}' % nsmap_fx['fx']
     ns_xml = '{http://www.w3.org/XML/1998/namespace}'
 
-    root = etree.Element(ns_rdf + 'RDF', nsmap=nsmap_rdf)
+    root = etree.Element(ns_x + 'xmpmeta', nsmap=nsmap_x)
+    rdf = etree.SubElement(
+        root, ns_rdf + 'RDF', nsmap=nsmap_rdf)
     desc_pdfaid = etree.SubElement(
-        root, ns_rdf + 'Description', nsmap=nsmap_pdfaid)
+        rdf, ns_rdf + 'Description', nsmap=nsmap_pdfaid)
     desc_pdfaid.set(ns_rdf + 'about', '')
     etree.SubElement(
         desc_pdfaid, ns_pdfaid + 'part').text = '3'
     etree.SubElement(
         desc_pdfaid, ns_pdfaid + 'conformance').text = 'B'
     desc_dc = etree.SubElement(
-        root, ns_rdf + 'Description', nsmap=nsmap_dc)
+        rdf, ns_rdf + 'Description', nsmap=nsmap_dc)
     desc_dc.set(ns_rdf + 'about', '')
     dc_title = etree.SubElement(desc_dc, ns_dc + 'title')
     dc_title_alt = etree.SubElement(dc_title, ns_rdf + 'Alt')
@@ -263,13 +274,13 @@ def _prepare_pdf_metadata_xml(facturx_level, pdf_metadata):
     dc_desc_alt_li.text = pdf_metadata.get('subject', '')
     dc_desc_alt_li.set(ns_xml + 'lang', 'x-default')
     desc_adobe = etree.SubElement(
-        root, ns_rdf + 'Description', nsmap=nsmap_pdf)
+        rdf, ns_rdf + 'Description', nsmap=nsmap_pdf)
     desc_adobe.set(ns_rdf + 'about', '')
     producer = etree.SubElement(
         desc_adobe, ns_pdf + 'Producer')
     producer.text = 'PyPDF2'
     desc_xmp = etree.SubElement(
-        root, ns_rdf + 'Description', nsmap=nsmap_xmp)
+        rdf, ns_rdf + 'Description', nsmap=nsmap_xmp)
     desc_xmp.set(ns_rdf + 'about', '')
     creator = etree.SubElement(
         desc_xmp, ns_xmp + 'CreatorTool')
@@ -284,10 +295,10 @@ def _prepare_pdf_metadata_xml(facturx_level, pdf_metadata):
     # The Factur-X extension schema must be embedded into each PDF document
     facturx_ext_schema_desc_xpath = facturx_ext_schema_root.xpath(
         '//rdf:Description', namespaces=nsmap_rdf)
-    root.append(facturx_ext_schema_desc_xpath[1])
+    rdf.append(facturx_ext_schema_desc_xpath[1])
     # Now is the Factur-X description tag
     facturx_desc = etree.SubElement(
-        root, ns_rdf + 'Description', nsmap=nsmap_fx)
+        rdf, ns_rdf + 'Description', nsmap=nsmap_fx)
     facturx_desc.set(ns_rdf + 'about', '')
     facturx_desc.set(
         ns_fx + 'ConformanceLevel', FACTURX_LEVEL2xmp[facturx_level])
@@ -295,11 +306,16 @@ def _prepare_pdf_metadata_xml(facturx_level, pdf_metadata):
     facturx_desc.set(ns_fx + 'DocumentType', 'INVOICE')
     facturx_desc.set(ns_fx + 'Version', '1.0')
 
+    # TODO: should be UTF-16be ??
     xml_str = etree.tostring(
         root, pretty_print=True, encoding="UTF-8", xml_declaration=False)
+    head = u'<?xpacket begin="\ufeff" id="W5M0MpCehiHzreSzNTczkc9d"?>'.encode(
+        'utf-8')
+    tail = u'<?xpacket end="w"?>'.encode('utf-8')
+    xml_final_str = head + xml_str + tail
     logger.debug('metadata XML:')
-    logger.debug(xml_str)
-    return xml_str
+    logger.debug(xml_final_str)
+    return xml_final_str
 
 
 # def createByteObject(string):
@@ -308,7 +324,8 @@ def _prepare_pdf_metadata_xml(facturx_level, pdf_metadata):
 #    return ByteStringObject(x)
 
 
-def _filespec_additional_attachments(pdf_filestream, file_dict, file_bin):
+def _filespec_additional_attachments(
+        pdf_filestream, name_arrayobj_cdict, file_dict, file_bin):
     filename = file_dict['filename']
     logger.debug('_filespec_additional_attachments filename=%s', filename)
     mod_date_pdf = _get_pdf_timestamp(file_dict['mod_date'])
@@ -344,12 +361,12 @@ def _filespec_additional_attachments(pdf_filestream, file_dict, file_bin):
         NameObject("/UF"): fname_obj,
         })
     filespec_obj = pdf_filestream._addObject(filespec_dict)
-    return (filespec_obj, fname_obj)
+    name_arrayobj_cdict[fname_obj] = filespec_obj
 
 
 def _facturx_update_metadata_add_attachment(
         pdf_filestream, facturx_xml_str, pdf_metadata, facturx_level,
-        additional_attachments={}):
+        output_intents=[], additional_attachments={}):
     '''This method is inspired from the code of the addAttachment()
     method of the PyPDF2 lib'''
     # The entry for the file
@@ -385,18 +402,13 @@ def _facturx_update_metadata_add_attachment(
         NameObject("/UF"): fname_obj,
         })
     filespec_obj = pdf_filestream._addObject(filespec_dict)
-    name_arrayobj_content = [(fname_obj, filespec_obj)]
+    name_arrayobj_cdict = {fname_obj: filespec_obj}
     for attach_bin, attach_dict in additional_attachments.items():
-        additional_filespec_obj, additional_fname_obj =\
-            _filespec_additional_attachments(
-                pdf_filestream, attach_dict, attach_bin)
-        name_arrayobj_content.append((
-            additional_fname_obj,
-            additional_filespec_obj,
-            ))
-    logger.debug('name_arrayobj_content=%s', name_arrayobj_content)
+        _filespec_additional_attachments(
+            pdf_filestream, name_arrayobj_cdict, attach_dict, attach_bin)
+    logger.debug('name_arrayobj_cdict=%s', name_arrayobj_cdict)
     name_arrayobj_content_sort = list(
-        sorted(name_arrayobj_content, key=lambda x: x[0]))
+        sorted(name_arrayobj_cdict.items(), key=lambda x: x[0]))
     logger.debug('name_arrayobj_content_sort=%s', name_arrayobj_content_sort)
     name_arrayobj_content_final = []
     for (fname_obj, filespec_obj) in name_arrayobj_content_sort:
@@ -404,14 +416,23 @@ def _facturx_update_metadata_add_attachment(
     embedded_files_names_dict = DictionaryObject({
         NameObject("/Names"): ArrayObject(name_arrayobj_content_final),
         })
-    embedded_files_names_obj = pdf_filestream._addObject(
-        embedded_files_names_dict)
     # Then create the entry for the root, as it needs a
     # reference to the Filespec
     embedded_files_dict = DictionaryObject({
-        NameObject("/EmbeddedFiles"): embedded_files_names_obj,
+        NameObject("/EmbeddedFiles"): embedded_files_names_dict,
         })
-    embedded_files_obj = pdf_filestream._addObject(embedded_files_dict)
+    res_output_intents = []
+    logger.debug('output_intents=%s', output_intents)
+    for output_intent_dict, dest_output_profile_dict in output_intents:
+        dest_output_profile_obj = pdf_filestream._addObject(
+            dest_output_profile_dict)
+        # TODO detect if there are no other objects in output_intent_dest_obj
+        # than /DestOutputProfile
+        output_intent_dict.update({
+            NameObject("/DestOutputProfile"): dest_output_profile_obj,
+            })
+        output_intent_obj = pdf_filestream._addObject(output_intent_dict)
+        res_output_intents.append(output_intent_obj)
     # Update the root
     metadata_xml_str = _prepare_pdf_metadata_xml(facturx_level, pdf_metadata)
     metadata_file_entry = DecodedStreamObject()
@@ -426,9 +447,14 @@ def _facturx_update_metadata_add_attachment(
     pdf_filestream._root_object.update({
         NameObject("/AF"): af_value_obj,
         NameObject("/Metadata"): metadata_obj,
-        NameObject("/Names"): embedded_files_obj,
+        NameObject("/Names"): embedded_files_dict,
         # show attachments when opening PDF
         NameObject("/PageMode"): NameObject("/UseAttachments"),
+        })
+    logger.debug('res_output_intents=%s', res_output_intents)
+    if res_output_intents:
+        pdf_filestream._root_object.update({
+            NameObject("/OutputIntents"): ArrayObject(res_output_intents),
         })
     metadata_txt_dict = _prepare_pdf_metadata_txt(pdf_metadata)
     pdf_filestream.addMetadata(metadata_txt_dict)
@@ -518,6 +544,24 @@ def get_facturx_flavor(facturx_xml_etree):
             "invoice.")
     logger.info('Factur-X flavor is %s (autodetected)', flavor)
     return flavor
+
+
+def _get_original_output_intents(original_pdf):
+    output_intents = []
+    try:
+        pdf_root = original_pdf.trailer['/Root']
+        ori_output_intents = pdf_root['/OutputIntents']
+        logger.debug('output_intents_list=%s', ori_output_intents)
+        for ori_output_intent in ori_output_intents:
+            ori_output_intent_dict = ori_output_intent.getObject()
+            logger.debug('ori_output_intents_dict=%s', ori_output_intent_dict)
+            dest_output_profile_dict =\
+                ori_output_intent_dict['/DestOutputProfile'].getObject()
+            output_intents.append(
+                (ori_output_intent_dict, dest_output_profile_dict))
+    except:
+        pass
+    return output_intents
 
 
 def generate_facturx_from_binary(
@@ -704,10 +748,19 @@ def generate_facturx_from_file(
         check_facturx_xsd(
             xml_string, flavor='factur-x', facturx_level=facturx_level)
     original_pdf = PdfFileReader(pdf_invoice)
+    # Extract /OutputIntents obj from original invoice
+    output_intents = _get_original_output_intents(original_pdf)
     new_pdf_filestream = PdfFileWriter()
     new_pdf_filestream.appendPagesFromReader(original_pdf)
+
+    original_pdf_id = original_pdf.trailer.get('/ID')
+    logger.debug('original_pdf_id=%s', original_pdf_id)
+    if original_pdf_id:
+        new_pdf_filestream._ID = original_pdf_id
+        # else : generate some ?
     _facturx_update_metadata_add_attachment(
         new_pdf_filestream, xml_string, pdf_metadata, facturx_level,
+        output_intents=output_intents,
         additional_attachments=additional_attachments_read)
     if output_pdf_file:
         with open(output_pdf_file, 'wb') as output_f:

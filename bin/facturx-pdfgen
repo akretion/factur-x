@@ -128,8 +128,11 @@ if __name__ == '__main__':
             "metadata only apply if none of the meta-* arguments are used."
     epilog = "Author: %s\n\nVersion: %s" % (__author__, __version__)
     description = "This script generate a Factur-X PDF invoice from a "\
-                  "regular PDF invoice and a Factur-X XML file."\
-                  "It can also include additional embedded files in the PDF."
+                  "regular PDF/A invoice and a Factur-X XML file."\
+                  "It can also include additional embedded files in the PDF."\
+                  "To generate a valid PDF/A-3 invoice as requested by the "\
+                  "Factur-X standard, you need to give a valid PDF/A "\
+                  "regular invoice as input."
     parser = OptionParser(usage=usage, epilog=epilog, description=description)
     for option in options:
         param = option['names']

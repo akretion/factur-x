@@ -52,3 +52,22 @@ Contributors
 ============
 
 * Alexis de Lattre <alexis.delattre@akretion.com>
+
+Changelog
+=========
+
+* Version 0.5 dated 2018-03-29
+
+ * Fix XMP metadata structure
+ * Now fully PDF/A-3 compliant when the input PDF file is PDF/A compliant (tested with veraPDF). This implied copying /OutputIntents and /ID datas from source PDF to Factur-X PDF.
+ * Fix support for additionnal attachments: they can now all be saved with Acrobat Reader
+ * Improve XML extraction from PDF Factur-x file
+
+* Version 0.4 dated 2018-03-27
+
+  * Factur-x specs say /AFRelationship must be /Data (and not /Alternative)
+  * Update Factur-X XSD to v1.0 final
+  * Add support for additionnal attachments
+  * Add factur-x lib version in Creator metadata table
+  * Add /PageMode = /UseAttachments, so that the attachments are displayed by default when opening Factur-X PDF invoice with Acrobat Reader
+  * Improve and enrich PDF objects (ModDate, CheckSum, Size)
