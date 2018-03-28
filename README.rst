@@ -58,10 +58,10 @@ Changelog
 
 * Version 0.5 dated 2018-03-29
 
- * Fix XMP metadata structure
- * Now fully PDF/A-3 compliant when the input PDF file is PDF/A compliant (tested with veraPDF). This implied copying /OutputIntents and /ID datas from source PDF to Factur-X PDF.
- * Fix support for additionnal attachments: they can now all be saved with Acrobat Reader
- * Improve XML extraction from PDF Factur-x file
+  * Fix XMP metadata structure
+  * Now fully PDF/A-3 compliant when the input PDF file is PDF/A compliant (tested with veraPDF). This implied copying /OutputIntents and /ID datas from source PDF to Factur-X PDF.
+  * Fix support for additionnal attachments: they can now all be saved with Acrobat Reader
+  * Improve XML extraction from PDF Factur-x file
 
 * Version 0.4 dated 2018-03-27
 
