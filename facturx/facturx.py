@@ -284,7 +284,7 @@ def _prepare_pdf_metadata_xml(facturx_level, pdf_metadata):
     desc_xmp.set(ns_rdf + 'about', '')
     creator = etree.SubElement(
         desc_xmp, ns_xmp + 'CreatorTool')
-    creator.text = 'factur-x python lib by Alexis de Lattre'
+    creator.text = 'factur-x python lib v%s by Alexis de Lattre' % __version__
     timestamp = _get_metadata_timestamp()
     etree.SubElement(desc_xmp, ns_xmp + 'CreateDate').text = timestamp
     etree.SubElement(desc_xmp, ns_xmp + 'ModifyDate').text = timestamp
