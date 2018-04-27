@@ -135,11 +135,10 @@ def check_facturx_xsd(
         # if the validation of the XSD fails, we arrive here
         logger.error(
             "The XML file is invalid against the XML Schema Definition")
-        logger.error(xml_string)
+        logger.error('XSD Error: %s', e)
         raise Exception(
             "The %s XML file is not valid against the official "
-            "XML Schema Definition. The XML file and the "
-            "full error have been written in the server logs. "
+            "XML Schema Definition. "
             "Here is the error, which may give you an idea on the "
             "cause of the problem: %s." % (flavor.capitalize(), unicode(e)))
     return True
