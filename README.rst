@@ -56,6 +56,12 @@ Contributors
 Changelog
 =========
 
+* Version 0.6 dated 2018-05-01
+
+  * Now fully PDF/A-3 compliant with additionnal attachments (tested with veraPDF)
+  * facturx-pdfgen: don't overwrite by default and add --overwrite option
+  * Add factur-x library version number in metadata creator entry
+
 * Version 0.5 dated 2018-03-29
 
   * Fix XMP metadata structure

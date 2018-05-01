@@ -410,8 +410,10 @@ def _facturx_update_metadata_add_attachment(
         sorted(name_arrayobj_cdict.items(), key=lambda x: x[0]))
     logger.debug('name_arrayobj_content_sort=%s', name_arrayobj_content_sort)
     name_arrayobj_content_final = []
+    af_list = []
     for (fname_obj, filespec_obj) in name_arrayobj_content_sort:
         name_arrayobj_content_final += [fname_obj, filespec_obj]
+        af_list.append(filespec_obj)
     embedded_files_names_dict = DictionaryObject({
         NameObject("/Names"): ArrayObject(name_arrayobj_content_final),
         })
@@ -441,8 +443,7 @@ def _facturx_update_metadata_add_attachment(
         NameObject('/Type'): NameObject('/Metadata'),
         })
     metadata_obj = pdf_filestream._addObject(metadata_file_entry)
-    af_value_obj = pdf_filestream._addObject(
-        ArrayObject([filespec_obj]))
+    af_value_obj = pdf_filestream._addObject(ArrayObject(af_list))
     pdf_filestream._root_object.update({
         NameObject("/AF"): af_value_obj,
         NameObject("/Metadata"): metadata_obj,

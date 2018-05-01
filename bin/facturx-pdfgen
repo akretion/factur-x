@@ -10,8 +10,8 @@ import logging
 from os.path import isfile, isdir
 
 __author__ = "Alexis de Lattre <alexis.delattre@akretion.com>"
-__date__ = "March 2018"
-__version__ = "0.3"
+__date__ = "May 2018"
+__version__ = "0.4"
 
 options = [
     {'names': ('-l', '--log-level'), 'dest': 'log_level',
@@ -48,6 +48,9 @@ options = [
         "Default: generic English subject with information extracted from the "
         "Factur-X XML file such as: "
         "'Factur-X invoice I1242 dated 2017-08-17 issued by Akretion'"},
+    {'names': ('-w', '--overwrite'), 'dest': 'overwrite',
+        'action': 'store_true', 'default': False,
+        'help': "Overwrite Factur-X invoice file if it already exists."},
     ]
 
 
@@ -102,14 +105,20 @@ def main(options, arguments):
             'title': options.meta_title,
             'subject': options.meta_subject,
             }
-    # The important line of code is below !
     if isfile(facturx_pdf_filename):
-        logger.warn(
-            'File %s already exists. Overwriting it!', facturx_pdf_filename)
+        if options.overwrite:
+            logger.warning(
+                'File %s already exists. Overwriting it.',
+                facturx_pdf_filename)
+        else:
+            logger.error(
+                'File %s already exists. Exit.', facturx_pdf_filename)
+            sys.exit(1)
     additional_attachments = {}
     for additional_attachment_filename in additional_attachment_filenames:
         additional_attachments[additional_attachment_filename] = ''  # desc
     try:
+        # The important line of code is below !
         generate_facturx_from_file(
             pdf_filename, xml_file, check_xsd=check_xsd,
             facturx_level=options.facturx_level, pdf_metadata=pdf_metadata,
@@ -128,8 +137,8 @@ if __name__ == '__main__':
             "metadata only apply if none of the meta-* arguments are used."
     epilog = "Author: %s\n\nVersion: %s" % (__author__, __version__)
     description = "This script generate a Factur-X PDF invoice from a "\
-                  "regular PDF/A invoice and a Factur-X XML file."\
-                  "It can also include additional embedded files in the PDF."\
+                  "regular PDF/A invoice and a Factur-X XML file. "\
+                  "It can also include additional embedded files in the PDF. "\
                   "To generate a valid PDF/A-3 invoice as requested by the "\
                   "Factur-X standard, you need to give a valid PDF/A "\
                   "regular invoice as input."
