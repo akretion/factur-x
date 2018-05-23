@@ -56,6 +56,11 @@ Contributors
 Changelog
 =========
 
+* Version 0.7 dated 2018-05-24
+
+  * Fix XMP structure under /x:xmpmeta/rdf:RDF/rdf:Description (use XML tags instead of XML attributes)
+  * declare PDF-1.6 instead of PDF-1.3 (still declared by default by pyPDF2)
+
 * Version 0.6 dated 2018-05-01
 
   * Now fully PDF/A-3 compliant with additionnal attachments (tested with veraPDF)

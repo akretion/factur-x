@@ -37,6 +37,7 @@ from datetime import datetime
 from PyPDF2 import PdfFileWriter, PdfFileReader
 from PyPDF2.generic import DictionaryObject, DecodedStreamObject,\
     NameObject, createStringObject, ArrayObject
+from PyPDF2.utils import b_
 from pkg_resources import resource_filename
 import os.path
 import mimetypes
@@ -299,11 +300,18 @@ def _prepare_pdf_metadata_xml(facturx_level, pdf_metadata):
     facturx_desc = etree.SubElement(
         rdf, ns_rdf + 'Description', nsmap=nsmap_fx)
     facturx_desc.set(ns_rdf + 'about', '')
-    facturx_desc.set(
-        ns_fx + 'ConformanceLevel', FACTURX_LEVEL2xmp[facturx_level])
-    facturx_desc.set(ns_fx + 'DocumentFileName', FACTURX_FILENAME)
-    facturx_desc.set(ns_fx + 'DocumentType', 'INVOICE')
-    facturx_desc.set(ns_fx + 'Version', '1.0')
+    fx_doc_type = etree.SubElement(
+        facturx_desc, ns_fx + 'DocumentType', nsmap=nsmap_fx)
+    fx_doc_type.text = 'INVOICE'
+    fx_doc_filename = etree.SubElement(
+        facturx_desc, ns_fx + 'DocumentFileName', nsmap=nsmap_fx)
+    fx_doc_filename.text = FACTURX_FILENAME
+    fx_doc_version = etree.SubElement(
+        facturx_desc, ns_fx + 'Version', nsmap=nsmap_fx)
+    fx_doc_version.text = '1.0'
+    fx_conformance_level = etree.SubElement(
+        facturx_desc, ns_fx + 'ConformanceLevel', nsmap=nsmap_fx)
+    fx_conformance_level.text = FACTURX_LEVEL2xmp[facturx_level]
 
     # TODO: should be UTF-16be ??
     xml_str = etree.tostring(
@@ -751,6 +759,7 @@ def generate_facturx_from_file(
     # Extract /OutputIntents obj from original invoice
     output_intents = _get_original_output_intents(original_pdf)
     new_pdf_filestream = PdfFileWriter()
+    new_pdf_filestream._header = b_("%PDF-1.6")
     new_pdf_filestream.appendPagesFromReader(original_pdf)
 
     original_pdf_id = original_pdf.trailer.get('/ID')
