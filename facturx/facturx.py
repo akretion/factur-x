@@ -291,7 +291,10 @@ def _prepare_pdf_metadata_xml(facturx_level, pdf_metadata):
 
     xmp_file = resource_filename(
         __name__, 'xmp/Factur-X_extension_schema.xmp')
-    facturx_ext_schema_root = etree.parse(open(xmp_file))
+    # Reason for defining a parser below:
+    # http://lxml.de/FAQ.html#why-doesn-t-the-pretty-print-option-reformat-my-xml-output
+    parser = etree.XMLParser(remove_blank_text=True)
+    facturx_ext_schema_root = etree.parse(open(xmp_file), parser)
     # The Factur-X extension schema must be embedded into each PDF document
     facturx_ext_schema_desc_xpath = facturx_ext_schema_root.xpath(
         '//rdf:Description', namespaces=nsmap_rdf)

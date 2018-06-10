@@ -56,6 +56,10 @@ Contributors
 Changelog
 =========
 
+* Version 0.8 dated 2018-06-10
+
+  * Make pretty_print work for XMP file, for better readability of that file
+
 * Version 0.7 dated 2018-05-24
 
   * Fix XMP structure under /x:xmpmeta/rdf:RDF/rdf:Description (use XML tags instead of XML attributes)
