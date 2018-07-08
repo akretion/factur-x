@@ -125,7 +125,7 @@ def check_facturx_xsd(
             __name__, 'xsd/factur-x/%s' % xsd_filename)
     elif flavor == 'zugferd':
         xsd_file = resource_filename(
-            __name__, 'xsd/xsd-zugferd/ZUGFeRD1p0.xsd')
+            __name__, 'xsd/zugferd/ZUGFeRD1p0.xsd')
     xsd_etree_obj = etree.parse(open(xsd_file))
     official_schema = etree.XMLSchema(xsd_etree_obj)
     try:
