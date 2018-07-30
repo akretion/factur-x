@@ -81,32 +81,27 @@ def check_facturx_xsd(
     """
     if not facturx_xml:
         raise ValueError('Missing facturx_xml argument')
-    if not isinstance(flavor, (str, unicode)):
+    if not isinstance(flavor, (str, bytes)):
         raise ValueError('Wrong type for flavor argument')
-    if not isinstance(facturx_level, (type(None), str, unicode)):
+    if not isinstance(facturx_level, (type(None), str, bytes)):
         raise ValueError('Wrong type for facturx_level argument')
     facturx_xml_etree = None
     if isinstance(facturx_xml, str):
         xml_string = facturx_xml
-    elif isinstance(facturx_xml, unicode):
-        xml_string = facturx_xml.encode('utf8')
     elif isinstance(facturx_xml, type(etree.Element('pouet'))):
         facturx_xml_etree = facturx_xml
         xml_string = etree.tostring(
             facturx_xml, pretty_print=True, encoding='UTF-8',
             xml_declaration=True)
-    elif isinstance(facturx_xml, file):
-        facturx_xml.seek(0)
-        xml_string = facturx_xml.read()
-        facturx_xml.close()
-
+    elif isinstance(facturx_xml, bytes):
+        xml_string = facturx_xml
     if flavor not in ('factur-x', 'facturx', 'zugferd'):  # autodetect
         if facturx_xml_etree is None:
             try:
                 facturx_xml_etree = etree.fromstring(xml_string)
             except Exception as e:
                 raise Exception(
-                    "The XML syntax is invalid: %s." % unicode(e))
+                    "The XML syntax is invalid: %s." % str(e))
         flavor = get_facturx_flavor(facturx_xml_etree)
     if flavor in ('factur-x', 'facturx'):
         if facturx_level not in FACTURX_LEVEL2xsd:
@@ -115,7 +110,7 @@ def check_facturx_xsd(
                     facturx_xml_etree = etree.fromstring(xml_string)
                 except Exception as e:
                     raise Exception(
-                        "The XML syntax is invalid: %s." % unicode(e))
+                        "The XML syntax is invalid: %s." % str(e))
             facturx_level = get_facturx_level(facturx_xml_etree)
         if facturx_level not in FACTURX_LEVEL2xsd:
             raise ValueError(
@@ -141,7 +136,7 @@ def check_facturx_xsd(
             "The %s XML file is not valid against the official "
             "XML Schema Definition. "
             "Here is the error, which may give you an idea on the "
-            "cause of the problem: %s." % (flavor.capitalize(), unicode(e)))
+            "cause of the problem: %s." % (flavor.capitalize(), str(e)))
     return True
 
 
@@ -152,7 +147,7 @@ def get_facturx_xml_from_pdf(pdf_invoice, check_xsd=True):
         raise ValueError('Missing pdf_invoice argument')
     if isinstance(pdf_invoice, str):
         pdf_file = BytesIO(pdf_invoice)
-    elif isinstance(pdf_invoice, file):
+    elif isinstance(pdf_invoice, bytes):
         pdf_file = pdf_invoice
     else:
         raise TypeError(
@@ -167,7 +162,7 @@ def get_facturx_xml_from_pdf(pdf_invoice, check_xsd=True):
         logger.debug('embeddedfiles=%s', embeddedfiles)
         # embeddedfiles must contain an even number of elements
         if len(embeddedfiles) % 2 != 0:
-            raise
+            raise Exception
         embeddedfiles_by_two = zip(embeddedfiles, embeddedfiles[1:])[::2]
         logger.debug('embeddedfiles_by_two=%s', embeddedfiles_by_two)
         for (filename, file_obj) in embeddedfiles_by_two:
@@ -614,9 +609,6 @@ def generate_facturx_from_binary(
     :return: The Factur-X PDF file as binary string.
     :rtype: string
     """
-
-    if not isinstance(pdf_invoice, str):
-        raise ValueError('pdf_invoice argument must be a string')
     facturx_pdf_invoice = False
     with NamedTemporaryFile(prefix='invoice-facturx-', suffix='.pdf') as f:
         f.write(pdf_invoice)
@@ -689,7 +681,7 @@ def generate_facturx_from_file(
         raise ValueError('Missing pdf_invoice argument')
     if not facturx_xml:
         raise ValueError('Missing facturx_xml argument')
-    if not isinstance(facturx_level, (str, unicode)):
+    if not isinstance(facturx_level, (str, bytes)):
         raise ValueError('Wrong facturx_level argument')
     if not isinstance(check_xsd, bool):
         raise ValueError('check_xsd argument must be a boolean')
@@ -700,26 +692,22 @@ def generate_facturx_from_file(
     if not isinstance(additional_attachments, (dict, type(None))):
         raise ValueError(
             'additional_attachments argument must be a dict or None')
-    if not isinstance(output_pdf_file, (type(None), str, unicode)):
+    if not isinstance(output_pdf_file, (type(None), str, bytes)):
         raise ValueError('output_pdf_file argument must be a string or None')
-    if isinstance(pdf_invoice, (str, unicode)):
+    if isinstance(pdf_invoice, (str, bytes)):
         file_type = 'path'
     else:
         file_type = 'file'
     xml_root = None
     if isinstance(facturx_xml, str):
         xml_string = facturx_xml
-    elif isinstance(facturx_xml, unicode):
-        xml_string = facturx_xml.encode('utf8')
     elif isinstance(facturx_xml, type(etree.Element('pouet'))):
         xml_root = facturx_xml
         xml_string = etree.tostring(
             xml_root, pretty_print=True, encoding='UTF-8',
             xml_declaration=True)
-    elif isinstance(facturx_xml, file):
-        facturx_xml.seek(0)
-        xml_string = facturx_xml.read()
-        facturx_xml.close()
+    elif isinstance(facturx_xml, bytes):
+        xml_string = facturx_xml
     else:
         raise TypeError(
             "The second argument of the method generate_facturx must be "
@@ -746,8 +734,8 @@ def generate_facturx_from_file(
         pdf_metadata = _base_info2pdf_metadata(base_info)
     else:
         # clean-up pdf_metadata dict
-        for key, value in pdf_metadata.iteritems():
-            if not isinstance(value, (str, unicode)):
+        for key, value in pdf_metadata.items():
+            if not isinstance(value, (str, bytes)):
                 pdf_metadata[key] = ''
     facturx_level = facturx_level.lower()
     if facturx_level not in FACTURX_LEVEL2xsd:
