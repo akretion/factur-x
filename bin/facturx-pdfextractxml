@@ -57,7 +57,7 @@ def main(options, arguments):
             '2nd argument %s is a directory name (should be a the '
             'output XML filename)', out_xml_filename)
         sys.exit(1)
-    pdf_file = open(pdf_filename)
+    pdf_file = open(pdf_filename, 'rb')
     check_xsd = True
     if options.disable_xsd_check:
         check_xsd = False
@@ -72,7 +72,7 @@ def main(options, arguments):
         if isfile(out_xml_filename):
             logger.warn(
                 'File %s already exists. Overwriting it!', out_xml_filename)
-        xml_file = open(out_xml_filename, 'w')
+        xml_file = open(out_xml_filename, 'wb')
         xml_file.write(xml_string)
         xml_file.close()
         logger.info('File %s generated', out_xml_filename)
