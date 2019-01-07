@@ -59,13 +59,13 @@ def main(options, arguments):
     if not isfile(xml_filename):
         logger.error('%s is not a filename', xml_filename)
         sys.exit(1)
-    xml_file = open(xml_filename)
+    xml_file = open(xml_filename, 'rb')
     # The important line of code is below !
     try:
         check_facturx_xsd(
             xml_file, flavor=options.flavor,
             facturx_level=options.facturx_level)
-    except Exception, e:
+    except Exception as e:
         logger.error(e)
         sys.exit(1)
 
