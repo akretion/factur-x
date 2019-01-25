@@ -89,7 +89,7 @@ def main(options, arguments):
             '3rd argument %s is a directory name (should be a the '
             'Factur-X PDF filename)', facturx_pdf_filename)
         sys.exit(1)
-    xml_file = open(xml_filename)
+    xml_file = open(xml_filename, 'rb')
     check_xsd = True
     if options.disable_xsd_check:
         check_xsd = False
