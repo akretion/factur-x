@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2016-2018, Alexis de Lattre <alexis.delattre@akretion.com>
+# Copyright 2016-2019, Alexis de Lattre <alexis.delattre@akretion.com>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,7 +25,6 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # TODO list:
-# - have both python2 and python3 support
 # - add automated tests (currently, we only have tests at odoo module level)
 # - keep original metadata by copy of pdf_tailer[/Info] ?
 
@@ -43,6 +42,12 @@ import os.path
 import mimetypes
 import hashlib
 import logging
+import sys
+if sys.version_info[0] == 3:
+    unicode = str
+    from io import IOBase
+    file = IOBase
+
 
 FORMAT = '%(asctime)s [%(levelname)s] %(message)s'
 logging.basicConfig(format=FORMAT)
@@ -63,11 +68,6 @@ FACTURX_LEVEL2xmp = {
     'en16931': 'EN 16931',
     }
 
-import sys
-if sys.version_info[0] == 3:
-    unicode = str
-    from io import IOBase
-    file = IOBase
 
 def check_facturx_xsd(
         facturx_xml, flavor='autodetect', facturx_level='autodetect'):
@@ -84,6 +84,8 @@ def check_facturx_xsd(
     :return: True if the XML is valid against the XSD
     raise an error if it is not valid against the XSD
     """
+    logger.debug(
+        'check_facturx_xsd with factur-x lib %s', __version__)
     if not facturx_xml:
         raise ValueError('Missing facturx_xml argument')
     if not isinstance(flavor, (str, unicode)):
@@ -151,6 +153,8 @@ def check_facturx_xsd(
 
 
 def get_facturx_xml_from_pdf(pdf_invoice, check_xsd=True):
+    logger.debug(
+        'get_facturx_xml_from_pdf with factur-x lib %s', __version__)
     if not pdf_invoice:
         raise ValueError('Missing pdf_invoice argument')
     if not isinstance(check_xsd, bool):
@@ -684,6 +688,8 @@ def generate_facturx_from_file(
     :rtype: bool
     """
     start_chrono = datetime.now()
+    logger.debug(
+        'generate_facturx_from_file with factur-x lib %s', __version__)
     logger.debug('1st arg pdf_invoice type=%s', type(pdf_invoice))
     logger.debug('2nd arg facturx_xml type=%s', type(facturx_xml))
     logger.debug('optional arg facturx_level=%s', facturx_level)

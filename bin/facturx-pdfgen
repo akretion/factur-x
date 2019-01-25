@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: utf-8 -*-
-# © 2017 Alexis de Lattre <alexis.delattre@akretion.com>
+# Copyright 2017-2019 Alexis de Lattre <alexis.delattre@akretion.com>
 
 from optparse import OptionParser
 import sys
