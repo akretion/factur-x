@@ -1,2 +1,2 @@
-PyPDF2
+PyPDF4
 lxml

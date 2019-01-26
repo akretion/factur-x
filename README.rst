@@ -55,7 +55,7 @@ All these commande line tools have a **-h** option that explains how to use them
 Licence
 =======
 
-This library is published under the BSD licence (same licence as `PyPDF2 <http://mstamy2.github.io/PyPDF2/>`_ on which this lib depends).
+This library is published under the BSD licence (same licence as `PyPDF4 <https://github.com/claird/PyPDF4/>`_ on which this lib depends).
 
 Contributors
 ============
@@ -64,6 +64,10 @@ Contributors
 
 Changelog
 =========
+
+* Version 1.0 dated 2019-01-26
+
+  * Use PyPDF4 instead of PyPDF2, because there are no new releases of PyPDF2 since May 2016 (cf https://github.com/mstamy2/PyPDF2/wiki/State-of-PyPDF2-and-Future-Plans), and we need a recent version of PyPDF2 to be able to generate fully compliant PDF/A-3 files.
 
 * Version 0.9 dated 2019-01-25
 

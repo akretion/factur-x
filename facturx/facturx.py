@@ -33,10 +33,10 @@ from io import BytesIO
 from lxml import etree
 from tempfile import NamedTemporaryFile
 from datetime import datetime
-from PyPDF2 import PdfFileWriter, PdfFileReader
-from PyPDF2.generic import DictionaryObject, DecodedStreamObject,\
+from PyPDF4 import PdfFileWriter, PdfFileReader
+from PyPDF4.generic import DictionaryObject, DecodedStreamObject,\
     NameObject, createStringObject, ArrayObject
-from PyPDF2.utils import b_
+from PyPDF4.utils import b_
 from pkg_resources import resource_filename
 import os.path
 import mimetypes
@@ -287,7 +287,7 @@ def _prepare_pdf_metadata_xml(facturx_level, pdf_metadata):
     desc_adobe.set(ns_rdf + 'about', '')
     producer = etree.SubElement(
         desc_adobe, ns_pdf + 'Producer')
-    producer.text = 'PyPDF2'
+    producer.text = 'PyPDF4'
     desc_xmp = etree.SubElement(
         rdf, ns_rdf + 'Description', nsmap=nsmap_xmp)
     desc_xmp.set(ns_rdf + 'about', '')
