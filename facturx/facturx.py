@@ -35,7 +35,7 @@ from tempfile import NamedTemporaryFile
 from datetime import datetime
 from PyPDF4 import PdfFileWriter, PdfFileReader
 from PyPDF4.generic import DictionaryObject, DecodedStreamObject,\
-    NameObject, createStringObject, ArrayObject
+    NameObject, createStringObject, ArrayObject, IndirectObject
 from PyPDF4.utils import b_
 from pkg_resources import resource_filename
 import os.path
@@ -152,6 +152,88 @@ def check_facturx_xsd(
     return True
 
 
+def _get_dict_entry(node, entry):
+    if not isinstance(node, dict):
+        raise ValueError('The node must be a dict')
+    dict_entry = node.get(entry)
+    if isinstance(dict_entry, dict):
+        return dict_entry
+    elif isinstance(dict_entry, IndirectObject):
+        res_dict_entry = dict_entry.getObject()
+        if isinstance(res_dict_entry, dict):
+            return res_dict_entry
+        else:
+            return False
+    else:
+        return False
+
+
+def _parse_embeddedfiles_kids_node(kids_node, level, res):
+    if level not in [1, 2]:
+        raise ValueError('Level argument should be 1 or 2')
+    if not isinstance(kids_node, list):
+        logger.error(
+            'The /Kids entry of the EmbeddedFiles name tree must '
+            'be an array')
+        return False
+    logger.debug("kids_node=%s", kids_node)
+    for kid_entry in kids_node:
+        if not isinstance(kid_entry, IndirectObject):
+            logger.error(
+                'The /Kids entry of the EmbeddedFiles name tree '
+                'must be a list of IndirectObjects')
+            return False
+        kids_node = kid_entry.getObject()
+        logger.debug('kids_node=%s', kids_node)
+        if not isinstance(kids_node, dict):
+            logger.error(
+                'The /Kids entry of the EmbeddedFiles name tree '
+                'must be a list of IndirectObjects that point to '
+                'dict ojects')
+            return False
+        if '/Names' in kids_node:
+            if not isinstance(kids_node['/Names'], list):
+                logger.error(
+                    'The /Names entry in EmbeddedFiles must be an array')
+            res += kids_node['/Names']
+        elif '/Kids' in kids_node and level == 1:
+            kids_node_l2 = kids_node['/Kids']
+            _parse_embeddedfiles_kids_node(kids_node_l2, 2, res)
+        else:
+            logger.error('/Kids node should have a /Names or /Kids entry')
+            return False
+    return True
+
+
+def _get_embeddedfiles(embeddedfiles_node):
+    if not isinstance(embeddedfiles_node, dict):
+        raise ValueError('The EmbeddedFiles node must be a dict')
+    res = []
+    if '/Names' in embeddedfiles_node:
+        if not isinstance(embeddedfiles_node['/Names'], list):
+            logger.error(
+                'The /Names entry of the EmbeddedFiles name tree must '
+                'be an array')
+            return False
+        res = embeddedfiles_node['/Names']
+    elif '/Kids' in embeddedfiles_node:
+        kids_node = embeddedfiles_node['/Kids']
+        parse_result = _parse_embeddedfiles_kids_node(kids_node, 1, res)
+        if parse_result is False:
+            return (None, None)
+    else:
+        logger.error(
+            'The EmbeddedFiles name tree should have either a /Names '
+            'or a /Kids entry')
+        return False
+    if len(res) % 2 != 0:
+        logger.error(
+            'The EmbeddedFiles name tree should point to an even number of '
+            'elements')
+        return False
+    return res
+
+
 def get_facturx_xml_from_pdf(pdf_invoice, check_xsd=True):
     logger.debug(
         'get_facturx_xml_from_pdf with factur-x lib %s', __version__)
@@ -168,17 +250,24 @@ def get_facturx_xml_from_pdf(pdf_invoice, check_xsd=True):
             "The first argument of the method get_facturx_xml_from_pdf must "
             "be either a string or a file (it is a %s)." % type(pdf_invoice))
     xml_string = xml_filename = False
+    pdf = PdfFileReader(pdf_file)
+    pdf_root = pdf.trailer['/Root']  # = Catalog
+    logger.debug('pdf_root=%s', pdf_root)
+    catalog_name = _get_dict_entry(pdf_root, '/Names')
+    if not catalog_name:
+        logger.info('No Names entry in Catalog')
+        return (None, None)
+    embeddedfiles_node = _get_dict_entry(catalog_name, '/EmbeddedFiles')
+    if not embeddedfiles_node:
+        logger.info('No EmbeddedFiles entry in the /Names of the Catalog')
+        return (None, None)
+    embeddedfiles = _get_embeddedfiles(embeddedfiles_node)
+    logger.debug('embeddedfiles=%s', embeddedfiles)
+    if not embeddedfiles:
+        return (None, None)
+    embeddedfiles_by_two = list(zip(embeddedfiles, embeddedfiles[1:]))[::2]
+    logger.debug('embeddedfiles_by_two=%s', embeddedfiles_by_two)
     try:
-        pdf = PdfFileReader(pdf_file)
-        pdf_root = pdf.trailer['/Root']
-        logger.debug('pdf_root=%s', pdf_root)
-        embeddedfiles = pdf_root['/Names']['/EmbeddedFiles']['/Names']
-        logger.debug('embeddedfiles=%s', embeddedfiles)
-        # embeddedfiles must contain an even number of elements
-        if len(embeddedfiles) % 2 != 0:
-            raise
-        embeddedfiles_by_two = list(zip(embeddedfiles, embeddedfiles[1:]))[::2]
-        logger.debug('embeddedfiles_by_two=%s', embeddedfiles_by_two)
         for (filename, file_obj) in embeddedfiles_by_two:
             logger.debug('found filename=%s', filename)
             if filename in (FACTURX_FILENAME, 'ZUGFeRD-invoice.xml'):

@@ -65,6 +65,10 @@ Contributors
 Changelog
 =========
 
+* Version 1.1 dated 2019-04-22
+
+  * Improve support for embedded files extraction by adding support for /Kids
+
 * Version 1.0 dated 2019-01-26
 
   * Use PyPDF4 instead of PyPDF2, because there are no new releases of PyPDF2 since May 2016 (cf https://github.com/mstamy2/PyPDF2/wiki/State-of-PyPDF2-and-Future-Plans), and we need a recent version of PyPDF2 to be able to generate fully compliant PDF/A-3 files.
