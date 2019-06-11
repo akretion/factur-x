@@ -65,6 +65,12 @@ Contributors
 Changelog
 =========
 
+* Version 1.2 dated 2019-06-12
+
+  * add support for the Extended profile
+  * validate XML for Minimum and Basic WL profiles with the XSD of profile EN 16931, as asked by Cyrille Sautereau
+  * minor improvements in the code for /Kids
+
 * Version 1.1 dated 2019-04-22
 
   * Improve support for embedded files extraction by adding support for /Kids

@@ -56,16 +56,18 @@ logger.setLevel(logging.INFO)
 
 FACTURX_FILENAME = 'factur-x.xml'
 FACTURX_LEVEL2xsd = {
-    'minimum': 'FACTUR-X_BASIC-WL.xsd',
-    'basicwl': 'FACTUR-X_BASIC-WL.xsd',
+    'minimum': 'FACTUR-X_EN16931.xsd',
+    'basicwl': 'FACTUR-X_EN16931.xsd',
     'basic': 'FACTUR-X_EN16931.xsd',
     'en16931': 'FACTUR-X_EN16931.xsd',  # comfort
+    'extended': 'FACTUR-X_EXTENDED.xsd',
 }
 FACTURX_LEVEL2xmp = {
     'minimum': 'MINIMUM',
     'basicwl': 'BASIC WL',
     'basic': 'BASIC',
     'en16931': 'EN 16931',
+    'extended': 'EXTENDED',
     }
 
 
@@ -189,12 +191,13 @@ def _parse_embeddedfiles_kids_node(kids_node, level, res):
             logger.error(
                 'The /Kids entry of the EmbeddedFiles name tree '
                 'must be a list of IndirectObjects that point to '
-                'dict ojects')
+                'dict objects')
             return False
         if '/Names' in kids_node:
             if not isinstance(kids_node['/Names'], list):
                 logger.error(
                     'The /Names entry in EmbeddedFiles must be an array')
+                return False
             res += kids_node['/Names']
         elif '/Kids' in kids_node and level == 1:
             kids_node_l2 = kids_node['/Kids']
@@ -220,7 +223,7 @@ def _get_embeddedfiles(embeddedfiles_node):
         kids_node = embeddedfiles_node['/Kids']
         parse_result = _parse_embeddedfiles_kids_node(kids_node, 1, res)
         if parse_result is False:
-            return (None, None)
+            return False
     else:
         logger.error(
             'The EmbeddedFiles name tree should have either a /Names '
