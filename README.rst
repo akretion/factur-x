@@ -65,6 +65,10 @@ Contributors
 Changelog
 =========
 
+* Version 1.3 dated 2019-06-12
+
+  * Add XSD files for Extended profile in the Python package
+
 * Version 1.2 dated 2019-06-12
 
   * add support for the Extended profile
