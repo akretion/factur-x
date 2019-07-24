@@ -7,24 +7,13 @@
   <xs:complexType name="AmountType">
     <xs:simpleContent>
       <xs:extension base="xs:decimal">
-        <xs:attribute name="currencyID" type="xs:token"/>
-      </xs:extension>
-    </xs:simpleContent>
-  </xs:complexType>
-  <xs:complexType name="BinaryObjectType">
-    <xs:simpleContent>
-      <xs:extension base="xs:base64Binary">
-        <xs:attribute name="mimeCode" type="xs:token"/>
-        <xs:attribute name="filename" type="xs:string"/>
+        <xs:attribute name="currencyID" type="xs:token" use="optional"/>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
   <xs:complexType name="CodeType">
     <xs:simpleContent>
-      <xs:extension base="xs:token">
-        <xs:attribute name="listID" type="xs:token"/>
-        <xs:attribute name="listVersionID" type="xs:token"/>
-      </xs:extension>
+      <xs:extension base="xs:token"/>
     </xs:simpleContent>
   </xs:complexType>
   <xs:complexType name="DateTimeType">
@@ -33,20 +22,7 @@
         <xs:complexType>
           <xs:simpleContent>
             <xs:extension base="xs:string">
-              <xs:attribute name="format" type="xs:string"/>
-            </xs:extension>
-          </xs:simpleContent>
-        </xs:complexType>
-      </xs:element>
-    </xs:choice>
-  </xs:complexType>
-  <xs:complexType name="DateType">
-    <xs:choice>
-      <xs:element name="DateString">
-        <xs:complexType>
-          <xs:simpleContent>
-            <xs:extension base="xs:string">
-              <xs:attribute name="format" type="xs:string"/>
+              <xs:attribute name="format" type="xs:string" use="required"/>
             </xs:extension>
           </xs:simpleContent>
         </xs:complexType>
@@ -56,7 +32,7 @@
   <xs:complexType name="IDType">
     <xs:simpleContent>
       <xs:extension base="xs:token">
-        <xs:attribute name="schemeID" type="xs:token"/>
+        <xs:attribute name="schemeID" type="xs:token" use="optional"/>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
@@ -68,13 +44,6 @@
   <xs:complexType name="PercentType">
     <xs:simpleContent>
       <xs:extension base="xs:decimal"/>
-    </xs:simpleContent>
-  </xs:complexType>
-  <xs:complexType name="QuantityType">
-    <xs:simpleContent>
-      <xs:extension base="xs:decimal">
-        <xs:attribute name="unitCode" type="xs:token"/>
-      </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
   <xs:complexType name="TextType">

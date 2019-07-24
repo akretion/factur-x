@@ -34,9 +34,9 @@ Usage
 
 .. code::
 
-  from facturx import generate_facturx
+  from facturx import generate_facturx_from_file
 
-  facturx_pdf_invoice = generate_facturx(regular_pdf_invoice, facturx_xml_file)
+  facturx_pdf_invoice = generate_facturx_from_file(regular_pdf_invoice, facturx_xml_file)
 
 
 To have more examples, look at the source code of the command line tools located in the *bin* subdirectory.
@@ -64,6 +64,11 @@ Contributors
 
 Changelog
 =========
+
+* Version 1.4 dated 2019-07-24
+
+  * Update Factur-X XSD to the final version of Factur-X v1.0.4
+  * Support XML extraction with ZUGFeRD invoices using 'zugferd-invoice.xml' filename (instead of the filename 'ZUGFeRD-invoice.xml' specified by the standard)
 
 * Version 1.3 dated 2019-06-12
 

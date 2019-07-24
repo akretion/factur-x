@@ -55,13 +55,13 @@ logger = logging.getLogger('factur-x')
 logger.setLevel(logging.INFO)
 
 FACTURX_FILENAME = 'factur-x.xml'
-FACTURX_FILENAME_PATTERN = ['factur-x.xml', 'zugferd-invoice.xml', 'ZUGFeRD-invoice.xml']
+ZUGFERD_FILENAMES = ['zugferd-invoice.xml', 'ZUGFeRD-invoice.xml']
 FACTURX_LEVEL2xsd = {
-    'minimum': 'FACTUR-X_EN16931.xsd',
-    'basicwl': 'FACTUR-X_EN16931.xsd',
-    'basic': 'FACTUR-X_EN16931.xsd',
-    'en16931': 'FACTUR-X_EN16931.xsd',  # comfort
-    'extended': 'FACTUR-X_EXTENDED.xsd',
+    'minimum': 'facturx-minimum/FACTUR-X_MINIMUM.xsd',
+    'basicwl': 'facturx-basicwl/FACTUR-X_BASIC-WL.xsd',
+    'basic': 'facturx-basic/FACTUR-X_BASIC.xsd',
+    'en16931': 'facturx-en16931/FACTUR-X_EN16931.xsd',  # comfort
+    'extended': 'facturx-extended/FACTUR-X_EXTENDED.xsd',
 }
 FACTURX_LEVEL2xmp = {
     'minimum': 'MINIMUM',
@@ -83,7 +83,7 @@ def check_facturx_xsd(
     :param facturx_level: the level of the Factur-X XML file. Default value
     is 'autodetect'. The only advantage to specifiy a particular value instead
     of using the autodetection is for a small perf improvement.
-    Possible values: minimum, basicwl, basic, en16931.
+    Possible values: minimum, basicwl, basic, en16931, extended.
     :return: True if the XML is valid against the XSD
     raise an error if it is not valid against the XSD
     """
@@ -132,7 +132,7 @@ def check_facturx_xsd(
                 "Wrong level '%s' for Factur-X invoice." % facturx_level)
         xsd_filename = FACTURX_LEVEL2xsd[facturx_level]
         xsd_file = resource_filename(
-            __name__, 'xsd/factur-x/%s' % xsd_filename)
+            __name__, 'xsd/%s' % xsd_filename)
     elif flavor == 'zugferd':
         xsd_file = resource_filename(
             __name__, 'xsd/zugferd/ZUGFeRD1p0.xsd')
@@ -275,7 +275,7 @@ def get_facturx_xml_from_pdf(pdf_invoice, check_xsd=True):
     try:
         for (filename, file_obj) in embeddedfiles_by_two:
             logger.debug('found filename=%s', filename)
-            if filename in (FACTURX_FILENAME_PATTERN):
+            if filename in [FACTURX_FILENAME] + ZUGFERD_FILENAMES:
                 xml_file_dict = file_obj.getObject()
                 logger.debug('xml_file_dict=%s', xml_file_dict)
                 tmp_xml_string = xml_file_dict['/EF']['/F'].getData()
