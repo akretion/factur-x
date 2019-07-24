@@ -55,6 +55,7 @@ logger = logging.getLogger('factur-x')
 logger.setLevel(logging.INFO)
 
 FACTURX_FILENAME = 'factur-x.xml'
+FACTURX_FILENAME_PATTERN = ['factur-x.xml', 'zugferd-invoice.xml', 'ZUGFeRD-invoice.xml']
 FACTURX_LEVEL2xsd = {
     'minimum': 'FACTUR-X_EN16931.xsd',
     'basicwl': 'FACTUR-X_EN16931.xsd',
@@ -274,7 +275,7 @@ def get_facturx_xml_from_pdf(pdf_invoice, check_xsd=True):
     try:
         for (filename, file_obj) in embeddedfiles_by_two:
             logger.debug('found filename=%s', filename)
-            if filename in (FACTURX_FILENAME, 'ZUGFeRD-invoice.xml'):
+            if filename in (FACTURX_FILENAME_PATTERN):
                 xml_file_dict = file_obj.getObject()
                 logger.debug('xml_file_dict=%s', xml_file_dict)
                 tmp_xml_string = xml_file_dict['/EF']['/F'].getData()
