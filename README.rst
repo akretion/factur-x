@@ -65,9 +65,13 @@ Contributors
 Changelog
 =========
 
+* Version 1.5 dated 2019-11-13
+
+  * Fix bug in generate_facturx_from_file() when using argument additional_attachments
+
 * Version 1.4 dated 2019-07-24
 
-  * Update Factur-X XSD to the final version of Factur-X v1.0.4
+  * Update Factur-X XSD to the final version of Factur-X v1.0.04
   * Support XML extraction with ZUGFeRD invoices using 'zugferd-invoice.xml' filename (instead of the filename 'ZUGFeRD-invoice.xml' specified by the standard)
 
 * Version 1.3 dated 2019-06-12

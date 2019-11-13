@@ -837,7 +837,7 @@ def generate_facturx_from_file(
             filename = os.path.basename(attach_filepath)
             mod_timestamp = os.path.getmtime(attach_filepath)
             mod_dt = datetime.fromtimestamp(mod_timestamp)
-            with open(attach_filepath, 'r') as fa:
+            with open(attach_filepath, 'rb') as fa:
                 fa.seek(0)
                 additional_attachments_read[fa.read()] = {
                     'filename': filename,
