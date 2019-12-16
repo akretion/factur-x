@@ -699,8 +699,10 @@ def generate_facturx_from_file(
     else:
         file_type = 'file'
     xml_root = None
-    if isinstance(facturx_xml, str):
+    if isinstance(facturx_xml, bytes):
         xml_string = facturx_xml
+    elif isinstance(facturx_xml, str):
+        xml_string = facturx_xml.encode('utf8')
     elif isinstance(facturx_xml, type(etree.Element('pouet'))):
         xml_root = facturx_xml
         xml_string = etree.tostring(
