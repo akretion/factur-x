@@ -163,7 +163,7 @@ def get_facturx_xml_from_pdf(pdf_invoice, check_xsd=True):
         # embeddedfiles must contain an even number of elements
         if len(embeddedfiles) % 2 != 0:
             raise Exception
-        embeddedfiles_by_two = zip(embeddedfiles, embeddedfiles[1:])[::2]
+        embeddedfiles_by_two = list(zip(embeddedfiles, embeddedfiles[1:]))[::2]
         logger.debug('embeddedfiles_by_two=%s', embeddedfiles_by_two)
         for (filename, file_obj) in embeddedfiles_by_two:
             logger.debug('found filename=%s', filename)
