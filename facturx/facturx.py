@@ -146,9 +146,9 @@ def get_facturx_xml_from_pdf(pdf_invoice, check_xsd=True):
     if not isinstance(check_xsd, bool):
         raise ValueError('Missing pdf_invoice argument')
     if isinstance(pdf_invoice, str):
-        pdf_file = BytesIO(pdf_invoice)
+        pdf_file = BytesIO(pdf_invoice.encode('utf8'))
     elif isinstance(pdf_invoice, bytes):
-        pdf_file = pdf_invoice
+        pdf_file = BytesIO(pdf_invoice)
     else:
         raise TypeError(
             "The first argument of the method get_facturx_xml_from_pdf must "
