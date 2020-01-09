@@ -65,6 +65,10 @@ Contributors
 Changelog
 =========
 
+* Version 1.6 dated 2020-01-09
+
+  * Generate XMP (XML-based PDF metadata) via string replacement instead of using XML lib
+
 * Version 1.5 dated 2019-11-13
 
   * Fix bug in generate_facturx_from_file() when using argument additional_attachments

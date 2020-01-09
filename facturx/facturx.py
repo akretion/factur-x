@@ -330,105 +330,103 @@ def _prepare_pdf_metadata_txt(pdf_metadata):
 
 
 def _prepare_pdf_metadata_xml(facturx_level, pdf_metadata):
-    nsmap_x = {'x': 'adobe:ns:meta/'}
-    nsmap_rdf = {'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'}
-    nsmap_dc = {'dc': 'http://purl.org/dc/elements/1.1/'}
-    nsmap_pdf = {'pdf': 'http://ns.adobe.com/pdf/1.3/'}
-    nsmap_xmp = {'xmp': 'http://ns.adobe.com/xap/1.0/'}
-    nsmap_pdfaid = {'pdfaid': 'http://www.aiim.org/pdfa/ns/id/'}
-    nsmap_fx = {
-        'fx': 'urn:factur-x:pdfa:CrossIndustryDocument:invoice:1p0#'}
-    ns_x = '{%s}' % nsmap_x['x']
-    ns_dc = '{%s}' % nsmap_dc['dc']
-    ns_rdf = '{%s}' % nsmap_rdf['rdf']
-    ns_pdf = '{%s}' % nsmap_pdf['pdf']
-    ns_xmp = '{%s}' % nsmap_xmp['xmp']
-    ns_pdfaid = '{%s}' % nsmap_pdfaid['pdfaid']
-    ns_fx = '{%s}' % nsmap_fx['fx']
-    ns_xml = '{http://www.w3.org/XML/1998/namespace}'
-
-    root = etree.Element(ns_x + 'xmpmeta', nsmap=nsmap_x)
-    rdf = etree.SubElement(
-        root, ns_rdf + 'RDF', nsmap=nsmap_rdf)
-    desc_pdfaid = etree.SubElement(
-        rdf, ns_rdf + 'Description', nsmap=nsmap_pdfaid)
-    desc_pdfaid.set(ns_rdf + 'about', '')
-    etree.SubElement(
-        desc_pdfaid, ns_pdfaid + 'part').text = '3'
-    etree.SubElement(
-        desc_pdfaid, ns_pdfaid + 'conformance').text = 'B'
-    desc_dc = etree.SubElement(
-        rdf, ns_rdf + 'Description', nsmap=nsmap_dc)
-    desc_dc.set(ns_rdf + 'about', '')
-    dc_title = etree.SubElement(desc_dc, ns_dc + 'title')
-    dc_title_alt = etree.SubElement(dc_title, ns_rdf + 'Alt')
-    dc_title_alt_li = etree.SubElement(
-        dc_title_alt, ns_rdf + 'li')
-    dc_title_alt_li.text = pdf_metadata.get('title', '')
-    dc_title_alt_li.set(ns_xml + 'lang', 'x-default')
-    dc_creator = etree.SubElement(desc_dc, ns_dc + 'creator')
-    dc_creator_seq = etree.SubElement(dc_creator, ns_rdf + 'Seq')
-    etree.SubElement(
-        dc_creator_seq, ns_rdf + 'li').text = pdf_metadata.get('author', '')
-    dc_desc = etree.SubElement(desc_dc, ns_dc + 'description')
-    dc_desc_alt = etree.SubElement(dc_desc, ns_rdf + 'Alt')
-    dc_desc_alt_li = etree.SubElement(
-        dc_desc_alt, ns_rdf + 'li')
-    dc_desc_alt_li.text = pdf_metadata.get('subject', '')
-    dc_desc_alt_li.set(ns_xml + 'lang', 'x-default')
-    desc_adobe = etree.SubElement(
-        rdf, ns_rdf + 'Description', nsmap=nsmap_pdf)
-    desc_adobe.set(ns_rdf + 'about', '')
-    producer = etree.SubElement(
-        desc_adobe, ns_pdf + 'Producer')
-    producer.text = 'PyPDF4'
-    desc_xmp = etree.SubElement(
-        rdf, ns_rdf + 'Description', nsmap=nsmap_xmp)
-    desc_xmp.set(ns_rdf + 'about', '')
-    creator = etree.SubElement(
-        desc_xmp, ns_xmp + 'CreatorTool')
-    creator.text = 'factur-x python lib v%s by Alexis de Lattre' % __version__
-    timestamp = _get_metadata_timestamp()
-    etree.SubElement(desc_xmp, ns_xmp + 'CreateDate').text = timestamp
-    etree.SubElement(desc_xmp, ns_xmp + 'ModifyDate').text = timestamp
-
-    xmp_file = resource_filename(
-        __name__, 'xmp/Factur-X_extension_schema.xmp')
-    # Reason for defining a parser below:
-    # http://lxml.de/FAQ.html#why-doesn-t-the-pretty-print-option-reformat-my-xml-output
-    parser = etree.XMLParser(remove_blank_text=True)
-    facturx_ext_schema_root = etree.parse(open(xmp_file), parser)
-    # The Factur-X extension schema must be embedded into each PDF document
-    facturx_ext_schema_desc_xpath = facturx_ext_schema_root.xpath(
-        '//rdf:Description', namespaces=nsmap_rdf)
-    rdf.append(facturx_ext_schema_desc_xpath[1])
-    # Now is the Factur-X description tag
-    facturx_desc = etree.SubElement(
-        rdf, ns_rdf + 'Description', nsmap=nsmap_fx)
-    facturx_desc.set(ns_rdf + 'about', '')
-    fx_doc_type = etree.SubElement(
-        facturx_desc, ns_fx + 'DocumentType', nsmap=nsmap_fx)
-    fx_doc_type.text = 'INVOICE'
-    fx_doc_filename = etree.SubElement(
-        facturx_desc, ns_fx + 'DocumentFileName', nsmap=nsmap_fx)
-    fx_doc_filename.text = FACTURX_FILENAME
-    fx_doc_version = etree.SubElement(
-        facturx_desc, ns_fx + 'Version', nsmap=nsmap_fx)
-    fx_doc_version.text = '1.0'
-    fx_conformance_level = etree.SubElement(
-        facturx_desc, ns_fx + 'ConformanceLevel', nsmap=nsmap_fx)
-    fx_conformance_level.text = FACTURX_LEVEL2xmp[facturx_level]
-
-    # TODO: should be UTF-16be ??
-    xml_str = etree.tostring(
-        root, pretty_print=True, encoding="UTF-8", xml_declaration=False)
-    head = '<?xpacket begin="\ufeff" id="W5M0MpCehiHzreSzNTczkc9d"?>'.encode(
-        'utf-8')
-    tail = '<?xpacket end="w"?>'.encode('utf-8')
-    xml_final_str = head + xml_str + tail
+    xml_str = """
+<?xpacket begin="\ufeff" id="W5M0MpCehiHzreSzNTczkc9d"?>
+<x:xmpmeta xmlns:x="adobe:ns:meta/">
+  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+    <rdf:Description xmlns:pdfaid="http://www.aiim.org/pdfa/ns/id/" rdf:about="">
+      <pdfaid:part>3</pdfaid:part>
+      <pdfaid:conformance>B</pdfaid:conformance>
+    </rdf:Description>
+    <rdf:Description xmlns:dc="http://purl.org/dc/elements/1.1/" rdf:about="">
+      <dc:title>
+        <rdf:Alt>
+          <rdf:li xml:lang="x-default">{title}</rdf:li>
+        </rdf:Alt>
+      </dc:title>
+      <dc:creator>
+        <rdf:Seq>
+          <rdf:li>{author}</rdf:li>
+        </rdf:Seq>
+      </dc:creator>
+      <dc:description>
+        <rdf:Alt>
+          <rdf:li xml:lang="x-default">{subject}</rdf:li>
+        </rdf:Alt>
+      </dc:description>
+    </rdf:Description>
+    <rdf:Description xmlns:pdf="http://ns.adobe.com/pdf/1.3/" rdf:about="">
+      <pdf:Producer>{producer}</pdf:Producer>
+    </rdf:Description>
+    <rdf:Description xmlns:xmp="http://ns.adobe.com/xap/1.0/" rdf:about="">
+      <xmp:CreatorTool>{creator_tool}</xmp:CreatorTool>
+      <xmp:CreateDate>{timestamp}</xmp:CreateDate>
+      <xmp:ModifyDate>{timestamp}</xmp:ModifyDate>
+    </rdf:Description>
+    <rdf:Description xmlns:pdfaExtension="http://www.aiim.org/pdfa/ns/extension/" xmlns:pdfaSchema="http://www.aiim.org/pdfa/ns/schema#" xmlns:pdfaProperty="http://www.aiim.org/pdfa/ns/property#" rdf:about="">
+      <pdfaExtension:schemas>
+        <rdf:Bag>
+          <rdf:li rdf:parseType="Resource">
+            <pdfaSchema:schema>Factur-X PDFA Extension Schema</pdfaSchema:schema>
+            <pdfaSchema:namespaceURI>urn:factur-x:pdfa:CrossIndustryDocument:invoice:1p0#</pdfaSchema:namespaceURI>
+            <pdfaSchema:prefix>fx</pdfaSchema:prefix>
+            <pdfaSchema:property>
+              <rdf:Seq>
+                <rdf:li rdf:parseType="Resource">
+                  <pdfaProperty:name>DocumentFileName</pdfaProperty:name>
+                  <pdfaProperty:valueType>Text</pdfaProperty:valueType>
+                  <pdfaProperty:category>external</pdfaProperty:category>
+                  <pdfaProperty:description>name of the embedded XML invoice file</pdfaProperty:description>
+                </rdf:li>
+                <rdf:li rdf:parseType="Resource">
+                  <pdfaProperty:name>DocumentType</pdfaProperty:name>
+                  <pdfaProperty:valueType>Text</pdfaProperty:valueType>
+                  <pdfaProperty:category>external</pdfaProperty:category>
+                  <pdfaProperty:description>INVOICE</pdfaProperty:description>
+                </rdf:li>
+                <rdf:li rdf:parseType="Resource">
+                  <pdfaProperty:name>Version</pdfaProperty:name>
+                  <pdfaProperty:valueType>Text</pdfaProperty:valueType>
+                  <pdfaProperty:category>external</pdfaProperty:category>
+                  <pdfaProperty:description>The actual version of the Factur-X XML schema</pdfaProperty:description>
+                </rdf:li>
+                <rdf:li rdf:parseType="Resource">
+                  <pdfaProperty:name>ConformanceLevel</pdfaProperty:name>
+                  <pdfaProperty:valueType>Text</pdfaProperty:valueType>
+                  <pdfaProperty:category>external</pdfaProperty:category>
+                  <pdfaProperty:description>The conformance level of the embedded Factur-X data</pdfaProperty:description>
+                </rdf:li>
+              </rdf:Seq>
+            </pdfaSchema:property>
+          </rdf:li>
+        </rdf:Bag>
+      </pdfaExtension:schemas>
+    </rdf:Description>
+    <rdf:Description xmlns:fx="urn:factur-x:pdfa:CrossIndustryDocument:invoice:1p0#" rdf:about="">
+      <fx:DocumentType>{facturx_documenttype}</fx:DocumentType>
+      <fx:DocumentFileName>{facturx_filename}</fx:DocumentFileName>
+      <fx:Version>{facturx_version}</fx:Version>
+      <fx:ConformanceLevel>{facturx_level}</fx:ConformanceLevel>
+    </rdf:Description>
+  </rdf:RDF>
+</x:xmpmeta>
+<?xpacket end="w"?>
+"""
+    xml_str.format(
+        title=pdf_metadata.get('title', ''),
+        author=pdf_metadata.get('author', ''),
+        subject=pdf_metadata.get('subject', ''),
+        producer='PyPDF4',
+        creator_tool='factur-x python lib v%s by Alexis de Lattre' % __version__,
+        timestamp=_get_metadata_timestamp(),
+        facturx_documenttype='INVOICE',
+        facturx_filename=FACTURX_FILENAME,
+        facturx_version='1.0',
+        facturx_level=FACTURX_LEVEL2xmp[facturx_level])
+    xml_byte = xml_str.encode('utf-8')
     logger.debug('metadata XML:')
-    logger.debug(xml_final_str)
-    return xml_final_str
+    logger.debug(xml_byte)
+    return xml_byte
 
 
 # def createByteObject(string):
@@ -813,7 +811,8 @@ def generate_facturx_from_file(
     else:
         file_type = 'file'
     xml_root = None
-    if isinstance(facturx_xml, str):
+    # in Python3, xml_string is a byte
+    if isinstance(facturx_xml, (str, bytes)):
         xml_string = facturx_xml
     elif isinstance(facturx_xml, unicode):
         xml_string = facturx_xml.encode('utf8')
