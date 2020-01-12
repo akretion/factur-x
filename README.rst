@@ -65,6 +65,10 @@ Contributors
 Changelog
 =========
 
+* Version 1.7 dated 2020-01-13
+
+  * Fix bug in release 1.6 in XMP: variables were not replaced by their real value
+
 * Version 1.6 dated 2020-01-09
 
   * Generate XMP (XML-based PDF metadata) via string replacement instead of using XML lib

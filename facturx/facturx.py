@@ -412,7 +412,7 @@ def _prepare_pdf_metadata_xml(facturx_level, pdf_metadata):
 </x:xmpmeta>
 <?xpacket end="w"?>
 """
-    xml_str.format(
+    xml_str = xml_str.format(
         title=pdf_metadata.get('title', ''),
         author=pdf_metadata.get('author', ''),
         subject=pdf_metadata.get('subject', ''),
