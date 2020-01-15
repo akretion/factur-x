@@ -39,6 +39,8 @@ setup(
     scripts=[
         'bin/facturx-pdfgen',
         'bin/facturx-pdfextractxml',
-        'bin/facturx-xmlcheck'],
+        'bin/facturx-xmlcheck',
+        'bin/facturx-webservice',
+        ],
     zip_safe=False,
 )

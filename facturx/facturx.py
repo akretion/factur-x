@@ -436,19 +436,23 @@ def _prepare_pdf_metadata_xml(facturx_level, pdf_metadata):
 
 
 def _filespec_additional_attachments(
-        pdf_filestream, name_arrayobj_cdict, file_dict, file_bin):
-    filename = file_dict['filename']
+        pdf_filestream, name_arrayobj_cdict, file_dict, filename):
     logger.debug('_filespec_additional_attachments filename=%s', filename)
-    mod_date_pdf = _get_pdf_timestamp(file_dict['mod_date'])
-    md5sum = hashlib.md5(file_bin).hexdigest()
+    md5sum = hashlib.md5(file_dict['filedata']).hexdigest()
     md5sum_obj = createStringObject(md5sum)
     params_dict = DictionaryObject({
         NameObject('/CheckSum'): md5sum_obj,
-        NameObject('/ModDate'): createStringObject(mod_date_pdf),
-        NameObject('/Size'): NameObject(str(len(file_bin))),
+        NameObject('/Size'): NameObject(str(len(file_dict['filedata']))),
         })
+    # creation date and modification date are optional
+    if isinstance(file_dict.get('modification_datetime'), datetime):
+        mod_date_pdf = _get_pdf_timestamp(file_dict['modification_datetime'])
+        params_dict[NameObject('/ModDate')] = createStringObject(mod_date_pdf)
+    if isinstance(file_dict.get('creation_datetime'), datetime):
+        creation_date_pdf = _get_pdf_timestamp(file_dict['creation_datetime'])
+        params_dict[NameObject('/CreationDate')] = createStringObject(creation_date_pdf)
     file_entry = DecodedStreamObject()
-    file_entry.setData(file_bin)
+    file_entry.setData(file_dict['filedata'])
     file_mimetype = mimetypes.guess_type(filename)[0]
     if not file_mimetype:
         file_mimetype = 'application/octet-stream'
@@ -465,7 +469,7 @@ def _filespec_additional_attachments(
     fname_obj = createStringObject(filename)
     filespec_dict = DictionaryObject({
         NameObject("/AFRelationship"): NameObject("/Unspecified"),
-        NameObject("/Desc"): createStringObject(file_dict.get('desc', '')),
+        NameObject("/Desc"): createStringObject(file_dict.get('description', '')),
         NameObject("/Type"): NameObject("/Filespec"),
         NameObject("/F"): fname_obj,
         NameObject("/EF"): ef_dict,
@@ -515,9 +519,9 @@ def _facturx_update_metadata_add_attachment(
         })
     filespec_obj = pdf_filestream._addObject(filespec_dict)
     name_arrayobj_cdict = {fname_obj: filespec_obj}
-    for attach_bin, attach_dict in additional_attachments.items():
+    for attach_filename, attach_dict in additional_attachments.items():
         _filespec_additional_attachments(
-            pdf_filestream, name_arrayobj_cdict, attach_dict, attach_bin)
+            pdf_filestream, name_arrayobj_cdict, attach_dict, attach_filename)
     logger.debug('name_arrayobj_cdict=%s', name_arrayobj_cdict)
     name_arrayobj_content_sort = list(
         sorted(name_arrayobj_cdict.items(), key=lambda x: x[0]))
@@ -734,7 +738,7 @@ def generate_facturx_from_binary(
 def generate_facturx_from_file(
         pdf_invoice, facturx_xml, facturx_level='autodetect',
         check_xsd=True, pdf_metadata=None, output_pdf_file=None,
-        additional_attachments=None):
+        additional_attachments=None, attachments=None):
     """
     Generate a Factur-X invoice from a regular PDF invoice and a factur-X XML
     file. The method uses a file as input (regular PDF invoice) and re-writes
@@ -771,10 +775,16 @@ def generate_facturx_from_file(
     :type pdf_metadata: dict
     :param output_pdf_file: File Path to the output Factur-X PDF file
     :type output_pdf_file: string or unicode
-    :param additional_attachments: Specify the other files that you want to
-    embed in the PDF file. It is a dict where keys are filepath and value
-    is the description of the file (as unicode or string).
-    :type additional_attachments: dict
+    :param attachments: Specify the other files that you want to
+    embed in the PDF file. It is a dict where key is the filename and value
+    is a dict. In this dict, keys are 'filepath' (value is the full file path)
+    or 'filedata' (value is the encoded file),
+    'description' (text description, optional) and
+    'modification_datetime' (modification date and time as datetime object, optional).
+    'creation_datetime' (creation date and time as datetime object, optional).
+    :type attachments: dict
+    :param additional_attachments: DEPRECATED. Use attachments instead.
+    Undocumented.
     :return: Returns True. This method re-writes the input PDF invoice file,
     unless if the output_pdf_file is provided.
     :rtype: bool
@@ -830,20 +840,47 @@ def generate_facturx_from_file(
             "The second argument of the method generate_facturx must be "
             "either a string, an etree.Element() object or a file "
             "(it is a %s)." % type(facturx_xml))
-    additional_attachments_read = {}
-    if additional_attachments:
+    # The additional_attachments arg is deprecated
+    if attachments is None:
+        attachments = {}
+    if additional_attachments and not attachments:
+        logger.warning(
+            'The argument additional_attachments is deprecated. '
+            'It will be removed in future versions. Use the argument '
+            'attachments instead.')
         for attach_filepath, attach_desc in additional_attachments.items():
             filename = os.path.basename(attach_filepath)
             mod_timestamp = os.path.getmtime(attach_filepath)
             mod_dt = datetime.fromtimestamp(mod_timestamp)
             with open(attach_filepath, 'rb') as fa:
                 fa.seek(0)
-                additional_attachments_read[fa.read()] = {
-                    'filename': filename,
-                    'desc': attach_desc,
-                    'mod_date': mod_dt,
+                attachments[filename] = {
+                    'filedata': fa.read(),
+                    'description': attach_desc,
+                    'modification_datetime': mod_dt,
                     }
                 fa.close()
+    if attachments:
+        for filename, fadict in attachments.items():
+            if filename in [FACTURX_FILENAME] + ZUGFERD_FILENAMES:
+                logger.warning(
+                    'You cannot provide as attachment a file named %s. '
+                    'This file will NOT be attached.', filename)
+                attachments.pop(filename)
+                continue
+            if fadict.get('filepath') and not fadict.get('filedata'):
+                with open(fadict['filepath'], 'rb') as fa:
+                    fa.seek(0)
+                    fadict['filedata'] = fa.read()
+                    fa.close()
+
+                # As explained here
+                # https://stackoverflow.com/questions/237079/how-to-get-file-creation-modification-date-times-in-python
+                # creation date is not easy to get.
+                # So we only implement getting the modification date
+                if not fadict.get('modification_datetime'):
+                    mod_timestamp = os.path.getmtime(fadict['filepath'])
+                    fadict['modification_datetime'] = datetime.fromtimestamp(mod_timestamp)
     if pdf_metadata is None:
         if xml_root is None:
             xml_root = etree.fromstring(xml_string)
@@ -877,8 +914,7 @@ def generate_facturx_from_file(
         # else : generate some ?
     _facturx_update_metadata_add_attachment(
         new_pdf_filestream, xml_string, pdf_metadata, facturx_level,
-        output_intents=output_intents,
-        additional_attachments=additional_attachments_read)
+        output_intents=output_intents, additional_attachments=attachments)
     if output_pdf_file:
         with open(output_pdf_file, 'wb') as output_f:
             new_pdf_filestream.write(output_f)

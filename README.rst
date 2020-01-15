@@ -49,6 +49,7 @@ Several command line tools are provided with this lib:
 * **facturx-pdfgen**: generate a Factur-X PDF invoice from a regular PDF invoice and an XML file
 * **facturx-pdfextractxml**: extract the Factur-X XML file from a Factur-X PDF invoice
 * **facturx-xmlcheck**: check a Factur-X XML file against the official Factur-X XML Schema Definition
+* **facturx-webservice**: implements a REST webservice to generate a Factur-X PDF invoice from a regular PDF and an XML file (python3 only, requires Flask)
 
 All these commande line tools have a **-h** option that explains how to use them and shows all the available options.
 
@@ -64,6 +65,14 @@ Contributors
 
 Changelog
 =========
+
+* Version 1.8 dated 2020-01-16
+
+  * New tool facturx-webservice which implements a REST webservice using Flask to generate a Factur-X PDF invoice via a simple POST request.
+  * New argument 'attachments' for generate_facturx_from_file() which replaces argument additional_attachments:
+    * Possibility to set a filename for the attachment different from filename of the filepath
+    * Possibility to set creation dates for attachments
+    * Update script facturx-pdfgen to use the new attachments argument
 
 * Version 1.7 dated 2020-01-13
 

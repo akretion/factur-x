@@ -1,17 +1,17 @@
 #! /usr/bin/python
 # -*- coding: utf-8 -*-
-# Copyright 2017-2019 Alexis de Lattre <alexis.delattre@akretion.com>
+# Copyright 2017-2020 Alexis de Lattre <alexis.delattre@akretion.com>
 
 from optparse import OptionParser
 import sys
 from facturx import generate_facturx_from_file
 from facturx.facturx import logger
 import logging
-from os.path import isfile, isdir
+from os.path import isfile, isdir, basename
 
 __author__ = "Alexis de Lattre <alexis.delattre@akretion.com>"
-__date__ = "May 2018"
-__version__ = "0.4"
+__date__ = "January 2020"
+__version__ = "0.5"
 
 options = [
     {'names': ('-l', '--log-level'), 'dest': 'log_level',
@@ -114,18 +114,18 @@ def main(options, arguments):
             logger.error(
                 'File %s already exists. Exit.', facturx_pdf_filename)
             sys.exit(1)
-    additional_attachments = {}
+    attachments = {}
     for additional_attachment_filename in additional_attachment_filenames:
-        additional_attachments[additional_attachment_filename] = ''  # desc
+        attachments[basename(additional_attachment_filename)] = {
+            'filepath': additional_attachment_filename}
     try:
         # The important line of code is below !
         generate_facturx_from_file(
             pdf_filename, xml_file, check_xsd=check_xsd,
             facturx_level=options.facturx_level, pdf_metadata=pdf_metadata,
-            output_pdf_file=facturx_pdf_filename,
-            additional_attachments=additional_attachments)
+            output_pdf_file=facturx_pdf_filename, attachments=attachments)
     except Exception as e:
-        logger.error(e)
+        logger.error('Factur-x lib call failed. Error: %s', e)
         sys.exit(1)
 
 if __name__ == '__main__':
