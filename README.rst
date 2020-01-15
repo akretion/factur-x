@@ -70,6 +70,7 @@ Changelog
 
   * New tool facturx-webservice which implements a REST webservice using Flask to generate a Factur-X PDF invoice via a simple POST request.
   * New argument 'attachments' for generate_facturx_from_file() which replaces argument additional_attachments:
+
     * Possibility to set a filename for the attachment different from filename of the filepath
     * Possibility to set creation dates for attachments
     * Update script facturx-pdfgen to use the new attachments argument
