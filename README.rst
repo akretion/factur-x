@@ -49,9 +49,29 @@ Several command line tools are provided with this lib:
 * **facturx-pdfgen**: generate a Factur-X PDF invoice from a regular PDF invoice and an XML file
 * **facturx-pdfextractxml**: extract the Factur-X XML file from a Factur-X PDF invoice
 * **facturx-xmlcheck**: check a Factur-X XML file against the official Factur-X XML Schema Definition
-* **facturx-webservice**: implements a REST webservice to generate a Factur-X PDF invoice from a regular PDF and an XML file (python3 only, requires Flask)
 
 All these commande line tools have a **-h** option that explains how to use them and shows all the available options.
+
+Webservice
+==========
+
+This project also provides a webservice to generate a Factur-X invoice from a regular PDF invoice, the *factur-x.xml* file and additional attachments (if any). This webservice runs on Python3 and uses `Flask <https://www.palletsprojects.com/p/flask/>`_. To run the webservice, run **facturx-webservice** available in the *bin* subdirectory of the project. To query the webservice, you must send an **HTTP POST** request in **multipart/form-data** using the following keys:
+
+* **pdf** -> PDF invoice (required)
+* **xml** -> factur-x.xml file (any profile, required)
+* **attachment1** -> First attachment (optional)
+* **attachment2** -> Second attachment (optional)
+* ...
+
+It is recommended to run the webservice behind an HTTPS/HTTP proxy such as `Nginx <https://www.nginx.com/>`_ or `Apache <https://httpd.apache.org/>`_.
+
+You can use `curl <https://curl.haxx.se/>`_, a command line tool to send HTTP requests (on Linux Ubuntu/Debian, just install the **curl** package) to generate the request:
+
+.. code::
+
+  curl -X POST -F 'pdf=@/home/me/invoice.pdf' -F 'xml=@/home/me/factur-x.xml' -F 'attachment1=@/home/me/purchase_order.pdf' -o /home/me/facturx_invoice.pdf https://ws.fnfe-mpe.org/generate_facturx
+
+A public instance of this webservice is available on a server of `FNFE-MPE <http://fnfe-mpe.org/>`_ at the URL **https://ws.fnfe-mpe.org/generate_facturx**.
 
 Licence
 =======
