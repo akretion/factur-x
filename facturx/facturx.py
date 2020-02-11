@@ -245,8 +245,8 @@ def get_facturx_xml_from_pdf(pdf_invoice, check_xsd=True):
     if not pdf_invoice:
         raise ValueError('Missing pdf_invoice argument')
     if not isinstance(check_xsd, bool):
-        raise ValueError('Missing pdf_invoice argument')
-    if isinstance(pdf_invoice, str):
+        raise ValueError('Bad type for check_xsd argument')
+    if isinstance(pdf_invoice, (str, bytes)):
         pdf_file = BytesIO(pdf_invoice)
     elif isinstance(pdf_invoice, file):
         pdf_file = pdf_invoice

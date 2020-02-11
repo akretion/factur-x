@@ -86,6 +86,10 @@ Contributors
 Changelog
 =========
 
+* Version 1.9 dated 2020-02-11
+
+  * Improve Python3 support in get_facturx_xml_from_pdf()
+
 * Version 1.8 dated 2020-01-16
 
   * New tool facturx-webservice which implements a REST webservice using Flask to generate a Factur-X PDF invoice via a simple POST request.
