@@ -229,6 +229,7 @@
   </xs:complexType>
   <xs:simpleType name="CountryIDContentType">
     <xs:restriction base="xs:token">
+      <xs:enumeration value="1A"/>
       <xs:enumeration value="AD"/>
       <xs:enumeration value="AE"/>
       <xs:enumeration value="AF"/>
@@ -582,7 +583,7 @@
       <xs:enumeration value="MMK"/>
       <xs:enumeration value="MNT"/>
       <xs:enumeration value="MOP"/>
-      <xs:enumeration value="MRO"/>
+      <xs:enumeration value="MRU"/>
       <xs:enumeration value="MUR"/>
       <xs:enumeration value="MVR"/>
       <xs:enumeration value="MWK"/>
@@ -620,7 +621,7 @@
       <xs:enumeration value="SOS"/>
       <xs:enumeration value="SRD"/>
       <xs:enumeration value="SSP"/>
-      <xs:enumeration value="STD"/>
+      <xs:enumeration value="STN"/>
       <xs:enumeration value="SVC"/>
       <xs:enumeration value="SYP"/>
       <xs:enumeration value="SZL"/>
@@ -641,7 +642,7 @@
       <xs:enumeration value="UYU"/>
       <xs:enumeration value="UYW"/>
       <xs:enumeration value="UZS"/>
-      <xs:enumeration value="VEF"/>
+      <xs:enumeration value="VES"/>
       <xs:enumeration value="VND"/>
       <xs:enumeration value="VUV"/>
       <xs:enumeration value="WST"/>
@@ -1525,6 +1526,7 @@
       <xs:enumeration value="66"/>
       <xs:enumeration value="67"/>
       <xs:enumeration value="68"/>
+      <xs:enumeration value="69"/>
       <xs:enumeration value="70"/>
       <xs:enumeration value="74"/>
       <xs:enumeration value="75"/>
@@ -2161,6 +2163,7 @@
       <xs:enumeration value="AXP"/>
       <xs:enumeration value="AXQ"/>
       <xs:enumeration value="AXR"/>
+      <xs:enumeration value="AXS"/>
       <xs:enumeration value="BA"/>
       <xs:enumeration value="BC"/>
       <xs:enumeration value="BD"/>
@@ -2171,6 +2174,7 @@
       <xs:enumeration value="BO"/>
       <xs:enumeration value="BR"/>
       <xs:enumeration value="BT"/>
+      <xs:enumeration value="BTP"/>
       <xs:enumeration value="BW"/>
       <xs:enumeration value="CAS"/>
       <xs:enumeration value="CAT"/>
@@ -2219,6 +2223,7 @@
       <xs:enumeration value="EB"/>
       <xs:enumeration value="ED"/>
       <xs:enumeration value="EE"/>
+      <xs:enumeration value="EEP"/>
       <xs:enumeration value="EI"/>
       <xs:enumeration value="EN"/>
       <xs:enumeration value="EQ"/>

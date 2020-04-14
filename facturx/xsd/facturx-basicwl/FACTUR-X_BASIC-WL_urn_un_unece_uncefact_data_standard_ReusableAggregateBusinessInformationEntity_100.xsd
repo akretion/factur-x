@@ -49,7 +49,7 @@
   </xs:complexType>
   <xs:complexType name="HeaderTradeDeliveryType">
     <xs:sequence>
-      <xs:element name="ShipToTradeParty" type="ram:TradePartyType" minOccurs="0"/>      
+      <xs:element name="ShipToTradeParty" type="ram:TradePartyType" minOccurs="0"/>
       <xs:element name="ActualDeliverySupplyChainEvent" type="ram:SupplyChainEventType" minOccurs="0"/>
       <xs:element name="DespatchAdviceReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
     </xs:sequence>
@@ -62,7 +62,7 @@
       <xs:element name="PayeeTradeParty" type="ram:TradePartyType" minOccurs="0"/>
       <xs:element name="SpecifiedTradeSettlementPaymentMeans" type="ram:TradeSettlementPaymentMeansType" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="ApplicableTradeTax" type="ram:TradeTaxType" maxOccurs="unbounded"/>
-      <xs:element name="BillingSpecifiedPeriod" type="ram:SpecifiedPeriodType" minOccurs="0"/>      
+      <xs:element name="BillingSpecifiedPeriod" type="ram:SpecifiedPeriodType" minOccurs="0"/>
       <xs:element name="SpecifiedTradeAllowanceCharge" type="ram:TradeAllowanceChargeType" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="SpecifiedTradePaymentTerms" type="ram:TradePaymentTermsType" minOccurs="0"/>
       <xs:element name="SpecifiedTradeSettlementHeaderMonetarySummation" type="ram:TradeSettlementHeaderMonetarySummationType"/>
@@ -87,7 +87,7 @@
       <xs:element name="IssuerAssignedID" type="udt:IDType"/>
       <xs:element name="FormattedIssueDateTime" type="qdt:FormattedDateTimeType" minOccurs="0"/>
     </xs:sequence>
-  </xs:complexType> 
+  </xs:complexType>
   <xs:complexType name="SpecifiedPeriodType">
     <xs:sequence>
       <xs:element name="StartDateTime" type="udt:DateTimeType" minOccurs="0"/>
@@ -142,7 +142,7 @@
     <xs:sequence>
       <xs:element name="ID" type="udt:IDType" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="GlobalID" type="udt:IDType" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element name="Name" type="udt:TextType"/>
+      <xs:element name="Name" type="udt:TextType" minOccurs="0"/>
       <xs:element name="SpecifiedLegalOrganization" type="ram:LegalOrganizationType" minOccurs="0"/>
       <xs:element name="PostalTradeAddress" type="ram:TradeAddressType" minOccurs="0"/>
       <xs:element name="URIUniversalCommunication" type="ram:UniversalCommunicationType" minOccurs="0"/>
@@ -161,7 +161,7 @@
       <xs:element name="ChargeTotalAmount" type="udt:AmountType" minOccurs="0"/>
       <xs:element name="AllowanceTotalAmount" type="udt:AmountType" minOccurs="0"/>
       <xs:element name="TaxBasisTotalAmount" type="udt:AmountType"/>
-      <xs:element name="TaxTotalAmount" type="udt:AmountType"/>
+      <xs:element name="TaxTotalAmount" type="udt:AmountType" minOccurs="0"/>
       <xs:element name="GrandTotalAmount" type="udt:AmountType"/>
       <xs:element name="TotalPrepaidAmount" type="udt:AmountType" minOccurs="0"/>
       <xs:element name="DuePayableAmount" type="udt:AmountType"/>

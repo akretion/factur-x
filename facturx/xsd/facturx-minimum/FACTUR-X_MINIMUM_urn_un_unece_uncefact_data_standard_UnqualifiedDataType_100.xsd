@@ -36,16 +36,6 @@
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
-  <xs:complexType name="IndicatorType">
-    <xs:choice>
-      <xs:element name="Indicator" type="xs:boolean"/>
-    </xs:choice>
-  </xs:complexType>
-  <xs:complexType name="PercentType">
-    <xs:simpleContent>
-      <xs:extension base="xs:decimal"/>
-    </xs:simpleContent>
-  </xs:complexType>
   <xs:complexType name="TextType">
     <xs:simpleContent>
       <xs:extension base="xs:string"/>

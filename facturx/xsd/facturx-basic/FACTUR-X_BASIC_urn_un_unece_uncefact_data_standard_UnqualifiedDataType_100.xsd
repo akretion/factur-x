@@ -11,38 +11,14 @@
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
-  <xs:complexType name="BinaryObjectType">
-    <xs:simpleContent>
-      <xs:extension base="xs:base64Binary">
-        <xs:attribute name="mimeCode" type="xs:token" use="required"/>
-        <xs:attribute name="filename" type="xs:string" use="required"/>
-      </xs:extension>
-    </xs:simpleContent>
-  </xs:complexType>
   <xs:complexType name="CodeType">
     <xs:simpleContent>
-      <xs:extension base="xs:token">
-        <xs:attribute name="listID" type="xs:token" use="optional"/>
-        <xs:attribute name="listVersionID" type="xs:token" use="optional"/>
-      </xs:extension>
+      <xs:extension base="xs:token"/>
     </xs:simpleContent>
   </xs:complexType>
   <xs:complexType name="DateTimeType">
     <xs:choice>
       <xs:element name="DateTimeString">
-        <xs:complexType>
-          <xs:simpleContent>
-            <xs:extension base="xs:string">
-              <xs:attribute name="format" type="xs:string" use="required"/>
-            </xs:extension>
-          </xs:simpleContent>
-        </xs:complexType>
-      </xs:element>
-    </xs:choice>
-  </xs:complexType>
-  <xs:complexType name="DateType">
-    <xs:choice>
-      <xs:element name="DateString">
         <xs:complexType>
           <xs:simpleContent>
             <xs:extension base="xs:string">

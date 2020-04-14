@@ -58,7 +58,7 @@
       <xs:element name="TypeCode" type="qdt:DocumentCodeType"/>
       <xs:element name="IssueDateTime" type="udt:DateTimeType"/>
       <xs:element name="CopyIndicator" type="udt:IndicatorType" minOccurs="0"/>
-      <xs:element name="LanguageID" type="udt:IDType" minOccurs="0"/>
+      <xs:element name="LanguageID" type="udt:IDType" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="IncludedNote" type="ram:NoteType" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="EffectiveSpecifiedPeriod" type="ram:SpecifiedPeriodType" minOccurs="0"/>
     </xs:sequence>
@@ -98,6 +98,7 @@
       <xs:element name="TaxCurrencyCode" type="qdt:CurrencyCodeType" minOccurs="0"/>
       <xs:element name="InvoiceCurrencyCode" type="qdt:CurrencyCodeType"/>
       <xs:element name="InvoiceIssuerReference" type="udt:TextType" minOccurs="0"/>
+      <xs:element name="InvoicerTradeParty" type="ram:TradePartyType" minOccurs="0"/>
       <xs:element name="InvoiceeTradeParty" type="ram:TradePartyType" minOccurs="0"/>
       <xs:element name="PayeeTradeParty" type="ram:TradePartyType" minOccurs="0"/>
       <xs:element name="TaxApplicableTradeCurrencyExchange" type="ram:TradeCurrencyExchangeType" minOccurs="0"/>
@@ -313,7 +314,7 @@
   </xs:complexType>
   <xs:complexType name="TradePartyType">
     <xs:sequence>
-      <xs:element name="ID" type="udt:IDType" minOccurs="0"/>
+      <xs:element name="ID" type="udt:IDType" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="GlobalID" type="udt:IDType" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="Name" type="udt:TextType" minOccurs="0"/>
       <xs:element name="Description" type="udt:TextType" minOccurs="0"/>
@@ -385,7 +386,7 @@
       <xs:element name="ChargeTotalAmount" type="udt:AmountType" minOccurs="0"/>
       <xs:element name="AllowanceTotalAmount" type="udt:AmountType" minOccurs="0"/>
       <xs:element name="TaxBasisTotalAmount" type="udt:AmountType" maxOccurs="2"/>
-      <xs:element name="TaxTotalAmount" type="udt:AmountType" maxOccurs="2"/>
+      <xs:element name="TaxTotalAmount" type="udt:AmountType" minOccurs="0" maxOccurs="2"/>
       <xs:element name="RoundingAmount" type="udt:AmountType" minOccurs="0"/>
       <xs:element name="GrandTotalAmount" type="udt:AmountType" maxOccurs="2"/>
       <xs:element name="TotalPrepaidAmount" type="udt:AmountType" minOccurs="0"/>

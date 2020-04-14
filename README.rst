@@ -86,6 +86,10 @@ Contributors
 Changelog
 =========
 
+* Version 1.10 dated 2020-04-14
+
+  * Update XSD of all profiles to Factur-X version 1.0.5
+
 * Version 1.9 dated 2020-02-11
 
   * Improve Python3 support in get_facturx_xml_from_pdf()

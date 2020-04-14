@@ -38,6 +38,7 @@
           </xs:simpleContent>
         </xs:complexType>
       </xs:element>
+      <xs:element name="DateTime" type="xs:dateTime"/>
     </xs:choice>
   </xs:complexType>
   <xs:complexType name="DateType">
