@@ -330,7 +330,7 @@ def _prepare_pdf_metadata_txt(pdf_metadata):
 
 
 def _prepare_pdf_metadata_xml(facturx_level, pdf_metadata):
-    xml_str = """
+    xml_str = u"""
 <?xpacket begin="\ufeff" id="W5M0MpCehiHzreSzNTczkc9d"?>
 <x:xmpmeta xmlns:x="adobe:ns:meta/">
   <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">

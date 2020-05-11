@@ -86,6 +86,10 @@ Contributors
 Changelog
 =========
 
+* Version 1.11 dated 2020-05-11
+
+  * Fix crash UnicodeEncodeError on Python 2.7
+
 * Version 1.10 dated 2020-04-14
 
   * Update XSD of all profiles to Factur-X version 1.0.5
