@@ -453,6 +453,7 @@ def _filespec_additional_attachments(
         params_dict[NameObject('/CreationDate')] = createStringObject(creation_date_pdf)
     file_entry = DecodedStreamObject()
     file_entry.setData(file_dict['filedata'])
+    file_entry = file_entry.flateEncode()
     file_mimetype = mimetypes.guess_type(filename)[0]
     if not file_mimetype:
         file_mimetype = 'application/octet-stream'
@@ -495,6 +496,7 @@ def _facturx_update_metadata_add_attachment(
         })
     file_entry = DecodedStreamObject()
     file_entry.setData(facturx_xml_str)  # here we integrate the file itself
+    file_entry = file_entry.flateEncode()
     file_entry.update({
         NameObject("/Type"): NameObject("/EmbeddedFile"),
         NameObject("/Params"): params_dict,
@@ -555,6 +557,7 @@ def _facturx_update_metadata_add_attachment(
     metadata_xml_str = _prepare_pdf_metadata_xml(facturx_level, pdf_metadata)
     metadata_file_entry = DecodedStreamObject()
     metadata_file_entry.setData(metadata_xml_str)
+    metadata_file_entry = metadata_file_entry.flateEncode()
     metadata_file_entry.update({
         NameObject('/Subtype'): NameObject('/XML'),
         NameObject('/Type'): NameObject('/Metadata'),

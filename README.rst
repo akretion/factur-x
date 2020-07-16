@@ -1,7 +1,7 @@
 Factur-X Python library
 =======================
 
-Factur-X is the e-invoicing standard for France and Germany. The Factur-X specifications are available on the `FNFE-MPE website <http://fnfe-mpe.org/factur-x/>`_ in English and French. The Factur-X standard is also called ZUGFeRD 2.0 in Germany.
+Factur-X is the e-invoicing standard for France and Germany. The Factur-X specifications are available on the `FNFE-MPE website <http://fnfe-mpe.org/factur-x/>`_ in English and French. The Factur-X standard is also called `ZUGFeRD 2.1 in Germany <https://www.ferd-net.de/standards/zugferd-2.1.1/index.html>`_.
 
 The main feature of this Python library is to generate Factur-X invoices from a regular PDF invoice and a Factur-X compliant XML file.
 
@@ -85,6 +85,10 @@ Contributors
 
 Changelog
 =========
+
+* Version 1.12 dated 2020-07-16
+
+  * Compress attachments and XMP metadata using Flate compression
 
 * Version 1.11 dated 2020-05-11
 
