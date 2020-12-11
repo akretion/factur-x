@@ -54,6 +54,7 @@ logging.basicConfig(format=FORMAT)
 logger = logging.getLogger('factur-x')
 logger.setLevel(logging.INFO)
 
+ZUGFERD_VERSIONS = ['2.1', '2.0']
 FACTURX_FILENAME = 'factur-x.xml'
 ZUGFERD_FILENAMES = ['zugferd-invoice.xml', 'ZUGFeRD-invoice.xml']
 FACTURX_LEVEL2xsd = {
@@ -329,7 +330,7 @@ def _prepare_pdf_metadata_txt(pdf_metadata):
     return info_dict
 
 
-def _prepare_pdf_metadata_xml(facturx_level, pdf_metadata):
+def _prepare_pdf_metadata_xml(facturx_level, pdf_metadata, zugferd_version=ZUGFERD_VERSIONS[0]):
     xml_str = u"""
 <?xpacket begin="\ufeff" id="W5M0MpCehiHzreSzNTczkc9d"?>
 <x:xmpmeta xmlns:x="adobe:ns:meta/">
@@ -405,13 +406,20 @@ def _prepare_pdf_metadata_xml(facturx_level, pdf_metadata):
     <rdf:Description xmlns:fx="urn:factur-x:pdfa:CrossIndustryDocument:invoice:1p0#" rdf:about="">
       <fx:DocumentType>{facturx_documenttype}</fx:DocumentType>
       <fx:DocumentFileName>{facturx_filename}</fx:DocumentFileName>
-      <fx:Version>{facturx_version}</fx:Version>
+      <fx:Version>1.0</fx:Version>
       <fx:ConformanceLevel>{facturx_level}</fx:ConformanceLevel>
     </rdf:Description>
   </rdf:RDF>
 </x:xmpmeta>
 <?xpacket end="w"?>
 """
+    if zugferd_version == '2.0':
+        facturx_filename = ZUGFERD_FILENAMES[0]
+    elif zugferd_version == '2.1':
+        facturx_filename = FACTURX_FILENAME
+    else:
+        facturx_filename = FACTURX_FILENAME
+
     xml_str = xml_str.format(
         title=pdf_metadata.get('title', ''),
         author=pdf_metadata.get('author', ''),
@@ -420,7 +428,7 @@ def _prepare_pdf_metadata_xml(facturx_level, pdf_metadata):
         creator_tool='factur-x python lib v%s by Alexis de Lattre' % __version__,
         timestamp=_get_metadata_timestamp(),
         facturx_documenttype='INVOICE',
-        facturx_filename=FACTURX_FILENAME,
+        facturx_filename=facturx_filename,
         facturx_version='1.0',
         facturx_level=FACTURX_LEVEL2xmp[facturx_level])
     xml_byte = xml_str.encode('utf-8')
@@ -482,7 +490,8 @@ def _filespec_additional_attachments(
 
 def _facturx_update_metadata_add_attachment(
         pdf_filestream, facturx_xml_str, pdf_metadata, facturx_level,
-        output_intents=[], additional_attachments={}):
+        output_intents=[], additional_attachments={},
+        zugferd_version=ZUGFERD_VERSIONS[0]):
     '''This method is inspired from the code of the addAttachment()
     method of the PyPDF2 lib'''
     # The entry for the file
@@ -554,7 +563,8 @@ def _facturx_update_metadata_add_attachment(
         output_intent_obj = pdf_filestream._addObject(output_intent_dict)
         res_output_intents.append(output_intent_obj)
     # Update the root
-    metadata_xml_str = _prepare_pdf_metadata_xml(facturx_level, pdf_metadata)
+    metadata_xml_str = _prepare_pdf_metadata_xml(
+        facturx_level, pdf_metadata, zugferd_version=zugferd_version)
     metadata_file_entry = DecodedStreamObject()
     metadata_file_entry.setData(metadata_xml_str)
     metadata_file_entry = metadata_file_entry.flateEncode()
@@ -741,7 +751,8 @@ def generate_facturx_from_binary(
 def generate_facturx_from_file(
         pdf_invoice, facturx_xml, facturx_level='autodetect',
         check_xsd=True, pdf_metadata=None, output_pdf_file=None,
-        additional_attachments=None, attachments=None):
+        additional_attachments=None, attachments=None,
+        zugferd_version=ZUGFERD_VERSIONS[0]):
     """
     Generate a Factur-X invoice from a regular PDF invoice and a factur-X XML
     file. The method uses a file as input (regular PDF invoice) and re-writes
@@ -895,6 +906,12 @@ def generate_facturx_from_file(
             if not isinstance(value, (str, unicode)):
                 pdf_metadata[key] = ''
     facturx_level = facturx_level.lower()
+    if zugferd_version not in ZUGFERD_VERSIONS:
+        logger.warning(
+            'Zugferd version %s is not allowed. '
+            '%s will be used instead', zugferd_version, ZUGFERD_VERSION[0])
+        zugferd_version = ZUGFERD_VERSION[0]
+
     if facturx_level not in FACTURX_LEVEL2xsd:
         if xml_root is None:
             xml_root = etree.fromstring(xml_string)
@@ -917,7 +934,8 @@ def generate_facturx_from_file(
         # else : generate some ?
     _facturx_update_metadata_add_attachment(
         new_pdf_filestream, xml_string, pdf_metadata, facturx_level,
-        output_intents=output_intents, additional_attachments=attachments)
+        output_intents=output_intents, additional_attachments=attachments,
+        zugferd_version=zugferd_version)
     if output_pdf_file:
         with open(output_pdf_file, 'wb') as output_f:
             new_pdf_filestream.write(output_f)

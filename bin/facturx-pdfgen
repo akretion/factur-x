@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 # Copyright 2017-2020 Alexis de Lattre <alexis.delattre@akretion.com>
 
@@ -6,6 +6,7 @@ from optparse import OptionParser
 import sys
 from facturx import generate_facturx_from_file
 from facturx.facturx import logger
+from facturx.facturx import ZUGFERD_VERSIONS
 import logging
 from os.path import isfile, isdir, basename
 
@@ -18,6 +19,10 @@ options = [
         'action': 'store', 'default': 'info',
         'help': "Set log level. Possible values: debug, info, warn, error. "
         "Default value: info."},
+    {'names': ('-z', '--zugferd-version'), 'dest': 'zugferd_version',
+        'action': 'store', 'default': '2.1',
+        'help': "Choose to match either ZUGFeRD 2.1 or 2.0. "
+        "Default: 2.1"},
     {'names': ('-d', '--disable-xsd-check'), 'dest': 'disable_xsd_check',
         'action': 'store_true', 'default': False,
         'help': "De-activate XML Schema Definition check on Factur-X XML file "
@@ -94,6 +99,9 @@ def main(options, arguments):
     if options.disable_xsd_check:
         check_xsd = False
     pdf_metadata = None
+    if options.zugferd_version not in ZUGFERD_VERSIONS:
+        logger.error('The version %s is not allowed. Exit.', options.zugferd_version)
+        sys.exit(1)
     if (
             options.meta_author or
             options.meta_keywords or
@@ -123,7 +131,7 @@ def main(options, arguments):
         generate_facturx_from_file(
             pdf_filename, xml_file, check_xsd=check_xsd,
             facturx_level=options.facturx_level, pdf_metadata=pdf_metadata,
-            output_pdf_file=facturx_pdf_filename, attachments=attachments)
+            output_pdf_file=facturx_pdf_filename, attachments=attachments, zugferd_version=options.zugferd_version)
     except Exception as e:
         logger.error('Factur-x lib call failed. Error: %s', e)
         sys.exit(1)
