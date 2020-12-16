@@ -4,6 +4,7 @@ Factur-X Python library
 Factur-X is the e-invoicing standard for France and Germany. The Factur-X specifications are available on the `FNFE-MPE website <http://fnfe-mpe.org/factur-x/>`_ in English and French. The Factur-X standard is also called `ZUGFeRD 2.1 in Germany <https://www.ferd-net.de/standards/zugferd-2.1.1/index.html>`_.
 
 The main feature of this Python library is to generate Factur-X invoices from a regular PDF invoice and a Factur-X compliant XML file.
+Also it's possible to choose to generate Factur-x invoices matching the ZUGFeRD 2.0 standard (instead of ZUGFeRD 2.1), even though it's not recommended.
 
 This lib provides additionnal features such as:
 
@@ -55,13 +56,15 @@ All these commande line tools have a **-h** option that explains how to use them
 Webservice
 ==========
 
-This project also provides a webservice to generate a Factur-X invoice from a regular PDF invoice, the *factur-x.xml* file and additional attachments (if any). This webservice runs on Python3 and uses `Flask <https://www.palletsprojects.com/p/flask/>`_. To run the webservice, run **facturx-webservice** available in the *bin* subdirectory of the project. To query the webservice, you must send an **HTTP POST** request in **multipart/form-data** using the following keys:
+This project also provides a webservice to generate a Factur-X invoice from a regular PDF invoice, the *factur-x.xml* file and additional attachments (if any). This webservice runs on Python3 and uses `Flask <https://www.palletsprojects.com/p/flask/>`_. To run the webservice, run **facturx-webservice** available in the *bin* subdirectory of the project. To query the webservice, you must send an **HTTP POST** request at **/generate_facturx** in **multipart/form-data** using the following keys:
 
 * **pdf** -> PDF invoice (required)
 * **xml** -> factur-x.xml file (any profile, required)
 * **attachment1** -> First attachment (optional)
 * **attachment2** -> Second attachment (optional)
 * ...
+
+It's also possible to give the parameter **zugferd_version** in the url (**/generate_facturx?zugferd_version=2.0**) to choose between ZUGFeRD 2.0 and 2.1 (this last one beeing the default value).
 
 It is recommended to run the webservice behind an HTTPS/HTTP proxy such as `Nginx <https://www.nginx.com/>`_ or `Apache <https://httpd.apache.org/>`_. You will certainly have to increase the default maximum upload size (default value is only 1MB under Nginx!): use the parameter **client_max_body_size** for Nginx and **LimitRequestBody** for Apache.
 
@@ -85,6 +88,10 @@ Contributors
 
 Changelog
 =========
+
+* Version 1.13 dated 2020-12-16
+
+  * Allow generating factur-x invoices matching the ZUGFeRD 2.0 standard
 
 * Version 1.12 dated 2020-07-16
 
