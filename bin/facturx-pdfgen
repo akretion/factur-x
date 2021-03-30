@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2017-2020 Alexis de Lattre <alexis.delattre@akretion.com>
 
-from optparse import OptionParser
+import argparse
 import sys
 from facturx import generate_facturx_from_file
 from facturx.facturx import logger
@@ -10,53 +10,13 @@ import logging
 from os.path import isfile, isdir, basename
 
 __author__ = "Alexis de Lattre <alexis.delattre@akretion.com>"
-__date__ = "January 2020"
-__version__ = "0.5"
-
-options = [
-    {'names': ('-l', '--log-level'), 'dest': 'log_level',
-        'action': 'store', 'default': 'info',
-        'help': "Set log level. Possible values: debug, info, warn, error. "
-        "Default value: info."},
-    {'names': ('-d', '--disable-xsd-check'), 'dest': 'disable_xsd_check',
-        'action': 'store_true', 'default': False,
-        'help': "De-activate XML Schema Definition check on Factur-X XML file "
-        "(the check is enabled by default)"},
-    {'names': ('-n', '--facturx-level'), 'dest': 'facturx_level',
-        'action': 'store', 'default': 'autodetect',
-        'help': "Specify the Factur-X level of the XML file. "
-        "Default: autodetect. If you specify a particular level instead of "
-        "using autodetection, you will win a very small amount of time "
-        "(less than 1 millisecond). "
-        "Possible values: minimum, basicwl, basic, en16931."},
-    {'names': ('-a', '--meta-author'), 'dest': 'meta_author',
-        'action': 'store', 'default': False,
-        'help': "Specify the author for PDF metadata. Default: use the vendor "
-        "name extracted from the Factur-X XML file."},
-    {'names': ('-k', '--meta-keywords'), 'dest': 'meta_keywords',
-        'action': 'store', 'default': False,
-        'help': "Specify the keywords for PDF metadata. "
-        "Default: 'Invoice, Factur-X'."},
-    {'names': ('-t', '--meta-title'), 'dest': 'meta_title',
-        'action': 'store', 'default': False,
-        'help': "Specify the title of PDF metadata. "
-        "Default: generic English title with information extracted from "
-        "the Factur-X XML file such as: 'Akretion: Invoice I1242'"},
-    {'names': ('-s', '--meta-subject'), 'dest': 'meta_subject',
-        'action': 'store', 'default': False,
-        'help': "Specify the subject of PDF metadata. "
-        "Default: generic English subject with information extracted from the "
-        "Factur-X XML file such as: "
-        "'Factur-X invoice I1242 dated 2017-08-17 issued by Akretion'"},
-    {'names': ('-w', '--overwrite'), 'dest': 'overwrite',
-        'action': 'store_true', 'default': False,
-        'help': "Overwrite Factur-X invoice file if it already exists."},
-    ]
+__date__ = "March 2021"
+__version__ = "0.6"
 
 
-def main(options, arguments):
-    if options.log_level:
-        log_level = options.log_level.lower()
+def main(args):
+    if args.log_level:
+        log_level = args.log_level.lower()
         log_map = {
             'debug': logging.DEBUG,
             'info': logging.INFO,
@@ -71,15 +31,10 @@ def main(options, arguments):
                 log_level, ', '.join(log_map.keys()))
             sys.exit(1)
 
-    if len(arguments) < 3:
-        logger.error(
-            'This command requires at least 3 arguments (%d used). '
-            'Use --help to get the details.', len(arguments))
-        sys.exit(1)
-    pdf_filename = arguments[0]
-    xml_filename = arguments[1]
-    facturx_pdf_filename = arguments[2]
-    additional_attachment_filenames = arguments[3:]
+    pdf_filename = args.regular_pdf_file
+    xml_filename = args.facturx_xml
+    facturx_pdf_filename = args.facturx_pdf_file
+    additional_attachment_filenames = args.optional_attachments
     for filename in [pdf_filename, xml_filename] + additional_attachment_filenames:
         if not isfile(filename):
             logger.error('Argument %s is not a filename', filename)
@@ -91,22 +46,22 @@ def main(options, arguments):
         sys.exit(1)
     xml_file = open(xml_filename, 'rb')
     check_xsd = True
-    if options.disable_xsd_check:
+    if args.disable_xsd_check:
         check_xsd = False
     pdf_metadata = None
     if (
-            options.meta_author or
-            options.meta_keywords or
-            options.meta_title or
-            options.meta_subject):
+            args.meta_author or
+            args.meta_keywords or
+            args.meta_title or
+            args.meta_subject):
         pdf_metadata = {
-            'author': options.meta_author,
-            'keywords': options.meta_keywords,
-            'title': options.meta_title,
-            'subject': options.meta_subject,
+            'author': args.meta_author,
+            'keywords': args.meta_keywords,
+            'title': args.meta_title,
+            'subject': args.meta_subject,
             }
     if isfile(facturx_pdf_filename):
-        if options.overwrite:
+        if args.overwrite:
             logger.warning(
                 'File %s already exists. Overwriting it.',
                 facturx_pdf_filename)
@@ -122,31 +77,71 @@ def main(options, arguments):
         # The important line of code is below !
         generate_facturx_from_file(
             pdf_filename, xml_file, check_xsd=check_xsd,
-            facturx_level=options.facturx_level, pdf_metadata=pdf_metadata,
+            facturx_level=args.facturx_level, pdf_metadata=pdf_metadata,
             output_pdf_file=facturx_pdf_filename, attachments=attachments)
     except Exception as e:
         logger.error('Factur-x lib call failed. Error: %s', e)
         sys.exit(1)
 
+
 if __name__ == '__main__':
-    usage = "Usage: facturx-pdfgen <regular_invoice.pdf> <factur-x_xml.xml> "\
-            "<facturx_invoice.pdf> <optional_attachment1.xyz> "\
-            "<optional_attach2.abc> [...]\n"\
-            "\nIf you use one of the --meta-* arguments, you should specify "\
-            "all the meta-* arguments because the default values for "\
-            "metadata only apply if none of the meta-* arguments are used."
-    epilog = "Author: %s\n\nVersion: %s" % (__author__, __version__)
+    usage = "facturx-pdfgen <regular_pdf_file> <facturx_xml> "\
+            "<facturx_pdf_file> <optional_attachments>"
+    epilog = "Author: %s - Version: %s" % (__author__, __version__)
     description = "This script generate a Factur-X PDF invoice from a "\
                   "regular PDF/A invoice and a Factur-X XML file. "\
                   "It can also include additional embedded files in the PDF. "\
                   "To generate a valid PDF/A-3 invoice as requested by the "\
                   "Factur-X standard, you need to give a valid PDF/A "\
-                  "regular invoice as input."
-    parser = OptionParser(usage=usage, epilog=epilog, description=description)
-    for option in options:
-        param = option['names']
-        del option['names']
-        parser.add_option(*param, **option)
-    options, arguments = parser.parse_args()
-    sys.argv[:] = arguments
-    main(options, arguments)
+                  "regular invoice as input."\
+                  "\n\nIf you use one of the --meta-* arguments, you should specify "\
+                  "all the meta-* arguments because the default values for "\
+                  "metadata only apply if none of the meta-* arguments are used."
+    parser = argparse.ArgumentParser(
+        usage=usage, epilog=epilog, description=description)
+    parser.add_argument(
+        '-l', '--log-level', dest='log_level', default='info',
+        help="Set log level. Possible values: debug, info, warn, error. "
+        "Default value: info.")
+    parser.add_argument(
+        '-d', '--disable-xsd-check', dest='disable_xsd_check',
+        action='store_true',
+        help="De-activate XML Schema Definition check on Factur-X XML file "
+        "(the check is enabled by default)")
+    parser.add_argument(
+        '-n', '--facturx-level', dest='facturx_level', default='autodetect',
+        help="Specify the Factur-X level of the XML file. "
+        "Default: autodetect. If you specify a particular level instead of "
+        "using autodetection, you will win a very small amount of time "
+        "(less than 1 millisecond). "
+        "Possible values: minimum, basicwl, basic, en16931, extended.")
+    parser.add_argument(
+        '-a', '--meta-author', dest='meta_author',
+        help="Specify the author for PDF metadata. Default: use the vendor "
+        "name extracted from the Factur-X XML file.")
+    parser.add_argument(
+        '-k', '--meta-keywords', dest='meta_keywords',
+        help="Specify the keywords for PDF metadata. "
+        "Default: 'Invoice, Factur-X'.")
+    parser.add_argument(
+        '-t', '--meta-title', dest='meta_title',
+        help="Specify the title of PDF metadata. "
+        "Default: generic English title with information extracted from "
+        "the Factur-X XML file such as: 'Akretion: Invoice I1242'")
+    parser.add_argument(
+        '-s', '--meta-subject', dest='meta_subject',
+        help="Specify the subject of PDF metadata. "
+        "Default: generic English subject with information extracted from the "
+        "Factur-X XML file such as: "
+        "'Factur-X invoice I1242 dated 2017-08-17 issued by Akretion'")
+    parser.add_argument(
+        '-w', '--overwrite', dest='overwrite', action='store_true',
+        help="Overwrite Factur-X invoice file if it already exists.")
+    parser.add_argument("regular_pdf_file", help="Regular PDF invoice")
+    parser.add_argument("facturx_xml", help="Factur-X XML file")
+    parser.add_argument("facturx_pdf_file", help="Generated Factur-X PDF file")
+    parser.add_argument(
+        "optional_attachments", nargs='*',
+        help="Optional list of additionnal attachments")
+    args = parser.parse_args()
+    main(args)

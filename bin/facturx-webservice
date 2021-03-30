@@ -11,7 +11,7 @@ from flask import Flask, request, send_file
 from tempfile import NamedTemporaryFile
 from facturx import generate_facturx_from_file
 from facturx.facturx import logger as fxlogger
-from optparse import OptionParser
+import argparse
 import logging
 from logging.handlers import RotatingFileHandler
 
@@ -61,52 +61,47 @@ def generate_facturx():
 
 
 if __name__ == '__main__':
-    usage = "Usage: facturx_webservice.py [options]"
+    usage = "facturx_webservice.py [options]"
     epilog = "Script written by Alexis de Lattre. "\
         "Published under the BSD licence."
     description = "This is a Flask application that exposes a REST "\
         "webservice to generate a Factur-X invoice from a PDF file and an "\
         "XML file."
-    options_def = [
-        {'names': ('-s', '--host'), 'dest': 'host', 'type': 'string',
-         'action': 'store', 'default': '127.0.0.1',
-         'help': "The hostname to listen on. Defaults to '127.0.0.1': "
-         "the webservice will only accept connexions from localhost. Use "
-         "'0.0.0.0' to have the webservice available from a remote host (but "
-         "it is recommended to listen on localhost and use an HTTPS proxy to "
-         "listen to remote connexions)."},
-        {'names': ('-p', '--port'), 'dest': 'port', 'type': 'int',
-         'action': 'store', 'default': 5000,
-         'help': "Port on which the webservice listens. You can select "
-         "any port between 1024 and 65535. Default port is 5000."},
-        {'names': ('-d', '--debug'), 'dest': 'debug',
-         'action': 'store_true', 'default': False,
-         'help': "Enable debug mode."},
-        {'names': ('-l', '--logfile'), 'dest': 'logfile', 'type': 'string',
-         'action': 'store', 'default': False,
-         'help': "Logs to a file instead of stdout."},
-        {'names': ('-n', '--loglevel'), 'dest': 'loglevel', 'type': 'string',
-         'action': 'store', 'default': 'info',
-         'help': "Log level. Possible values: critical, error, warning, "
-         "info (default), debug."},
-    ]
-    parser = OptionParser(usage=usage, epilog=epilog, description=description)
-    for option in options_def:
-        param = option['names']
-        del option['names']
-        parser.add_option(*param, **option)
-    options, arguments = parser.parse_args()
-    if options.logfile:
+    parser = argparse.ArgumentParser(
+        usage=usage, epilog=epilog, description=description)
+    parser.add_argument(
+        '-s', '--host', dest='host', default='127.0.0.1',
+        help="The hostname to listen on. Defaults to '127.0.0.1': "
+             "the webservice will only accept connexions from localhost. Use "
+             "'0.0.0.0' to have the webservice available from a remote host (but "
+             "it is recommended to listen on localhost and use an HTTPS proxy to "
+             "listen to remote connexions).")
+    parser.add_argument(
+        '-p', '--port', dest='port', type=int, default=5000,
+        help="Port on which the webservice listens. You can select "
+             "any port between 1024 and 65535. Default port is 5000.")
+    parser.add_argument(
+        '-d', '--debug', dest='debug', action='store_true',
+        help="Enable debug mode.")
+    parser.add_argument(
+        '-l', '--logfile', dest='logfile',
+        help="Logs to a file instead of stdout.")
+    parser.add_argument(
+        '-n', '--loglevel', dest='loglevel', default='info',
+        help="Log level. Possible values: critical, error, warning, "
+             "info (default), debug.")
+    args = parser.parse_args()
+    if args.logfile:
         formatter = logging.Formatter(
             "[%(asctime)s] %(levelname)s %(message)s")
-        handler = RotatingFileHandler(options.logfile)
-        if options.loglevel == 'debug':
+        handler = RotatingFileHandler(args.logfile)
+        if args.loglevel == 'debug':
             level = logging.DEBUG
-        elif options.loglevel == 'critical':
+        elif args.loglevel == 'critical':
             level = logging.CRITICAL
-        elif options.loglevel == 'warning':
+        elif args.loglevel == 'warning':
             level = logging.WARNING
-        elif options.loglevel == 'error':
+        elif args.loglevel == 'error':
             level = logging.ERROR
         else:
             level = logging.INFO
@@ -116,4 +111,4 @@ if __name__ == '__main__':
         fxlogger.addHandler(handler)
         app.logger.addHandler(handler)
         app.logger.info('Start webservice to generate Factur-X invoices')
-    app.run(debug=options.debug, port=options.port, host=options.host)
+    app.run(debug=args.debug, port=args.port, host=args.host)

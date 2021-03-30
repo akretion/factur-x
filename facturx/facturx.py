@@ -570,6 +570,7 @@ def _facturx_update_metadata_add_attachment(
         NameObject("/Names"): embedded_files_dict,
         # show attachments when opening PDF
         NameObject("/PageMode"): NameObject("/UseAttachments"),
+        # TODO add /Lang : createStringObject("fr-FR")
         })
     logger.debug('res_output_intents=%s', res_output_intents)
     if res_output_intents:
