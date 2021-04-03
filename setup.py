@@ -19,7 +19,7 @@ setup(
     author='Alexis de Lattre',
     author_email='alexis.delattre@akretion.com',
     url='https://github.com/akretion/factur-x',
-    description='Factur-X: electronic invoicing standard for Germany & France',
+    description='Factur-X and Order-X: electronic invoicing and ordering standards',
     long_description=open('README.rst').read(),
     license='BSD',
     classifiers=[
@@ -33,7 +33,7 @@ setup(
         "Operating System :: OS Independent",
         "Topic :: Office/Business :: Financial :: Accounting",
     ],
-    keywords='e-invoice ZUGFeRD Factur-X Chorus',
+    keywords='e-invoice ZUGFeRD Factur-X Order-X e-procurement',
     packages=find_packages(),
     install_requires=[r.strip() for r in
                       open('requirement.txt').read().splitlines()],

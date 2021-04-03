@@ -4,14 +4,14 @@
 
 import argparse
 import sys
-from facturx import check_facturx_xsd
+from facturx import xml_check_xsd
 from facturx.facturx import logger
 import logging
 from os.path import isfile
 
 __author__ = "Alexis de Lattre <alexis.delattre@akretion.com>"
 __date__ = "March 2021"
-__version__ = "0.2"
+__version__ = "0.3"
 
 
 def main(args):
@@ -31,25 +31,23 @@ def main(args):
                 log_level, ', '.join(log_map.keys()))
             sys.exit(1)
 
-    xml_filename = args.facturx_xml_file
-    if not isfile(xml_filename):
-        logger.error('%s is not a filename', xml_filename)
+    if not isfile(args.xml_file):
+        logger.error('%s is not a filename', args.xml_file)
         sys.exit(1)
-    xml_file = open(xml_filename, 'rb')
+    xml_file = open(args.xml_file, 'rb')
     # The important line of code is below !
     try:
-        check_facturx_xsd(
-            xml_file, flavor=args.flavor,
-            facturx_level=args.facturx_level)
+        xml_check_xsd(
+            xml_file, flavor=args.flavor, level=args.level)
     except Exception as e:
         logger.error(e)
         sys.exit(1)
 
 
 if __name__ == '__main__':
-    usage = "facturx-xmlcheck <facturx_xml_file>"
+    usage = "facturx-xmlcheck <xml_file>"
     epilog = "Author: %s - Version: %s" % (__author__, __version__)
-    description = "This script checks the Factur-X XML against the XML "\
+    description = "This script checks the Factur-X or Order-XML XML against the XML "\
                   "Schema Definition."
     parser = argparse.ArgumentParser(
         usage=usage, epilog=epilog, description=description)
@@ -59,17 +57,18 @@ if __name__ == '__main__':
         "Default value: info.")
     parser.add_argument(
         '-f', '--flavor', dest='flavor', default='autodetect',
-        help="Set XML flavor. Possible values: factur-x, zugferd or autodetect. "
+        help="Set XML flavor. Possible values: factur-x, zugferd, order-x or autodetect. "
         "Default value: autodetect.")
     parser.add_argument(
-        '-n', '--facturx-level', dest='facturx_level',
+        '-n', '--facturx-level', dest='level',
         default='autodetect',
-        help="Specify the Factur-X level of the XML file. "
+        help="Specify the level of the Factur-X or Order-X XML file. "
         "Default: autodetect. If you specify a particular level instead of "
         "using autodetection, you will win a very small amount of time "
         "(less than 1 millisecond). "
-        "Possible values: minimum, basicwl, basic, en16931, extended.")
+        "Possible values for Factur-X: minimum, basicwl, basic, en16931, extended. "
+        "Possible values for Order-X: basic, comfort, extended.")
     parser.add_argument(
-        "facturx_xml_file", help="Factur-X XML file to check")
+        "xml_file", help="Factur-X or Order-X XML file to check")
     args = parser.parse_args()
     main(args)

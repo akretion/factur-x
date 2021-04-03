@@ -1,14 +1,16 @@
-Factur-X Python library
-=======================
+Factur-X and Order-X Python library
+===================================
 
 Factur-X is the e-invoicing standard for France and Germany. The Factur-X specifications are available on the `FNFE-MPE website <http://fnfe-mpe.org/factur-x/>`_ in English and French. The Factur-X standard is also called `ZUGFeRD 2.1 in Germany <https://www.ferd-net.de/standards/zugferd-2.1.1/index.html>`_.
 
-The main feature of this Python library is to generate Factur-X invoices from a regular PDF invoice and a Factur-X compliant XML file.
+Order-X is the equivalent of Factur-X for purchase orders. The Order-X specifications are available on `the FNFE-MPE website <https://fnfe-mpe.org/factur-x/order-x/>`_ in English. The Order-X standard is also the fruit of a collaboration between France and Germany and you can find information about it in German on the `FeRD website <https://www.ferd-net.de/aktuelles/meldungen/order-x-ein-gemeinsamer-standard-fuer-elektronische-bestellungen-in-deutschland-und-frankreich.html>`_.
+
+The main feature of this Python library is to generate Factur-X invoices and Order-X orders from a regular PDF document and a Factur-X or Order-X compliant XML file.
 
 This lib provides additionnal features such as:
 
-* extract the Factur-X XML file from a Factur-X PDF invoice,
-* check a Factur-X XML file against the official XML Schema Definition.
+* extract the XML file from a Factur-X or Order-X PDF file,
+* check a Factur-X or Order-X XML file against the official `XML Schema Definition <https://en.wikipedia.org/wiki/XML_Schema_(W3C)>`_.
 
 Some of the features provided by this lib also work for ZUGFeRD 1.0 (the ancestor of the Factur-X standard).
 
@@ -27,38 +29,39 @@ To install it for python 2.7, run:
 
 .. code::
 
-  sudo pip install --upgrade factur-x
+  sudo pip2 install --upgrade factur-x
 
 Usage
 =====
 
 .. code::
 
-  from facturx import generate_facturx_from_file
+  from facturx import generate_from_file
 
-  facturx_pdf_invoice = generate_facturx_from_file(regular_pdf_invoice, facturx_xml_file)
+  generate_from_file(regular_pdf_file, xml_file)
 
+The PDF file *regular_pdf_file* will be updated to Factur-X/Order-X. If you want to write the resulting Factur-X/Order-X PDF to another file, use the argument *output_pdf_file*.
 
-To have more examples, look at the source code of the command line tools located in the *bin* subdirectory.
+To have more examples, look at the docstrings in the source code or look at the source code of the command line tools located in the *bin* subdirectory.
 
 Command line tools
 ==================
 
 Several command line tools are provided with this lib:
 
-* **facturx-pdfgen**: generate a Factur-X PDF invoice from a regular PDF invoice and an XML file
-* **facturx-pdfextractxml**: extract the Factur-X XML file from a Factur-X PDF invoice
-* **facturx-xmlcheck**: check a Factur-X XML file against the official Factur-X XML Schema Definition
+* **facturx-pdfgen**: generate a Factur-X or Order-X PDF file from a regular PDF file and an XML file
+* **facturx-pdfextractxml**: extract the XML file from a Factur-X or Order-X PDF file
+* **facturx-xmlcheck**: check a Factur-X or Order-X XML file against the official XML Schema Definition
 
 All these commande line tools have a **-h** option that explains how to use them and shows all the available options.
 
 Webservice
 ==========
 
-This project also provides a webservice to generate a Factur-X invoice from a regular PDF invoice, the *factur-x.xml* file and additional attachments (if any). This webservice runs on Python3 and uses `Flask <https://www.palletsprojects.com/p/flask/>`_. To run the webservice, run **facturx-webservice** available in the *bin* subdirectory of the project. To query the webservice, you must send an **HTTP POST** request in **multipart/form-data** using the following keys:
+This project also provides a webservice to generate a Factur-X or Order-X PDF file from a regular PDF file, the XML file and additional attachments (if any). This webservice runs on Python3 and uses `Flask <https://www.palletsprojects.com/p/flask/>`_. To run the webservice, run **facturx-webservice** available in the *bin* subdirectory of the project. To query the webservice, you must send an **HTTP POST** request in **multipart/form-data** using the following keys:
 
-* **pdf** -> PDF invoice (required)
-* **xml** -> factur-x.xml file (any profile, required)
+* **pdf** -> PDF file (required)
+* **xml** -> Factur-X or Order-X file (any profile, required)
 * **attachment1** -> First attachment (optional)
 * **attachment2** -> Second attachment (optional)
 * ...
@@ -69,7 +72,7 @@ You can use `curl <https://curl.haxx.se/>`_, a command line tool to send HTTP re
 
 .. code::
 
-  curl -X POST -F 'pdf=@/home/me/invoice.pdf' -F 'xml=@/home/me/factur-x.xml' -F 'attachment1=@/home/me/purchase_order.pdf' -o /home/me/facturx_invoice.pdf https://ws.fnfe-mpe.org/generate_facturx
+  curl -X POST -F 'pdf=@/home/me/regular_invoice.pdf' -F 'xml=@/home/me/factur-x.xml' -F 'attachment1=@/home/me/delivery_note.pdf' -o /home/me/facturx_invoice.pdf https://ws.fnfe-mpe.org/generate_facturx
 
 A public instance of this webservice is available on a server of `FNFE-MPE <http://fnfe-mpe.org/>`_ at the URL **https://ws.fnfe-mpe.org/generate_facturx**.
 
@@ -85,6 +88,28 @@ Contributors
 
 Changelog
 =========
+
+* Version 2.0 dated 2021-04-04
+
+  * Add support for **Order-X**. This implies several changes:
+
+    * method *check_facturx_xsd()* deprecated in favor of the new method *xml_check_xsd()* but still operates with a warning
+    * method *get_facturx_flavor()* deprecated in favor of the new method *get_flavor()* but still operates with a warning
+    * method *generate_facturx_from_binary()* deprecated in favor of the new method *generate_from_binary()* but still operates with a warning
+    * method *generate_facturx_from_file()* deprecated in favor of the new method *generate_from_file()* but still operates with a warning
+    * new optional argument *orderx_type* for methods *generate_from_file()* and *generate_from_binary()* with default value *autodetect*
+    * new method *get_orderx_type()* to get the Order-X type (order, order change or order response)
+    * new method *get_xml_from_pdf()* that work both on Factur-X and Order-X (the method get_facturx_xml_from_pdf() still exists and only operates on Factur-X)
+    * scripts updated
+
+  * Add **lang** argument to methods *generate_from_file()* and *generate_from_binary()* to set the lang of the PDF. This is one of the requirements for PDF accessibility, which is important for people with disabilities: it allows PDF speech synthesizers for blind people to choose the right language.
+  * Add ability to choose the AFRelationship PDF property for the Factur-X/Order-X XML file and also for the additionnal attachments:
+
+    * new argument *afrelationship* for methods *generate_from_file()* and *generate_from_binary()*
+    * new key *afrelationship* for the *attachments* dict as argument of *generate_from_file()* and *generate_from_binary()*
+
+  * Argument *additional_attachments* was deprecated in method *generate_facturx_from_file()* in version 1.8: it doesn't operate any more and only displays a warning.
+  * Replace the *optparse* lib by the *argparse* lib in scripts.
 
 * Version 1.12 dated 2020-07-16
 

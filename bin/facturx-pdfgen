@@ -4,7 +4,7 @@
 
 import argparse
 import sys
-from facturx import generate_facturx_from_file
+from facturx import generate_from_file
 from facturx.facturx import logger
 import logging
 from os.path import isfile, isdir, basename
@@ -32,17 +32,17 @@ def main(args):
             sys.exit(1)
 
     pdf_filename = args.regular_pdf_file
-    xml_filename = args.facturx_xml
-    facturx_pdf_filename = args.facturx_pdf_file
+    xml_filename = args.xml_file
+    output_pdf_filename = args.facturx_orderx_pdf_file
     additional_attachment_filenames = args.optional_attachments
     for filename in [pdf_filename, xml_filename] + additional_attachment_filenames:
         if not isfile(filename):
             logger.error('Argument %s is not a filename', filename)
             sys.exit(1)
-    if isdir(facturx_pdf_filename):
+    if isdir(output_pdf_filename):
         logger.error(
             '3rd argument %s is a directory name (should be a the '
-            'Factur-X PDF filename)', facturx_pdf_filename)
+            'Factur-X or Order-X PDF filename)', output_pdf_filename)
         sys.exit(1)
     xml_file = open(xml_filename, 'rb')
     check_xsd = True
@@ -60,40 +60,42 @@ def main(args):
             'title': args.meta_title,
             'subject': args.meta_subject,
             }
-    if isfile(facturx_pdf_filename):
+    if isfile(output_pdf_filename):
         if args.overwrite:
             logger.warning(
                 'File %s already exists. Overwriting it.',
-                facturx_pdf_filename)
+                output_pdf_filename)
         else:
             logger.error(
-                'File %s already exists. Exit.', facturx_pdf_filename)
+                'File %s already exists. Exit.', output_pdf_filename)
             sys.exit(1)
     attachments = {}
     for additional_attachment_filename in additional_attachment_filenames:
         attachments[basename(additional_attachment_filename)] = {
             'filepath': additional_attachment_filename}
+    lang = args.lang or None
     try:
         # The important line of code is below !
-        generate_facturx_from_file(
+        generate_from_file(
             pdf_filename, xml_file, check_xsd=check_xsd,
-            facturx_level=args.facturx_level, pdf_metadata=pdf_metadata,
-            output_pdf_file=facturx_pdf_filename, attachments=attachments)
+            flavor=args.flavor, level=args.level, orderx_type=args.orderx_type,
+            pdf_metadata=pdf_metadata, lang=lang, output_pdf_file=output_pdf_filename,
+            attachments=attachments, afrelationship=args.afrelationship)
     except Exception as e:
-        logger.error('Factur-x lib call failed. Error: %s', e)
+        logger.error('factur-x lib call failed. Error: %s', e)
         sys.exit(1)
 
 
 if __name__ == '__main__':
-    usage = "facturx-pdfgen <regular_pdf_file> <facturx_xml> "\
-            "<facturx_pdf_file> <optional_attachments>"
+    usage = "facturx-pdfgen <regular_pdf_file> <xml_file> "\
+            "<facturx_orderx_pdf_file> <optional_attachments>"
     epilog = "Author: %s - Version: %s" % (__author__, __version__)
-    description = "This script generate a Factur-X PDF invoice from a "\
-                  "regular PDF/A invoice and a Factur-X XML file. "\
+    description = "This script generate a Factur-X or Order-X PDF from a "\
+                  "regular PDF/A document and a Factur-X or Order-X XML file. "\
                   "It can also include additional embedded files in the PDF. "\
-                  "To generate a valid PDF/A-3 invoice as requested by the "\
-                  "Factur-X standard, you need to give a valid PDF/A "\
-                  "regular invoice as input."\
+                  "To generate a valid PDF/A-3 document as requested by the "\
+                  "Factur-X/Order-X standards, you need to give a valid PDF/A "\
+                  "document as input."\
                   "\n\nIf you use one of the --meta-* arguments, you should specify "\
                   "all the meta-* arguments because the default values for "\
                   "metadata only apply if none of the meta-* arguments are used."
@@ -106,40 +108,68 @@ if __name__ == '__main__':
     parser.add_argument(
         '-d', '--disable-xsd-check', dest='disable_xsd_check',
         action='store_true',
-        help="De-activate XML Schema Definition check on Factur-X XML file "
+        help="De-activate XML Schema Definition check on XML file "
         "(the check is enabled by default)")
     parser.add_argument(
-        '-n', '--facturx-level', dest='facturx_level', default='autodetect',
-        help="Specify the Factur-X level of the XML file. "
+        '-f', '--flavor', dest='flavor', default='autodetect',
+        help="Specify if you want to generate a Factur-X or Order-X PDF file. "
+        "Default: autodetect. If you specify a particular flavor instead of "
+        "using autodetection from the XML, you will win a very small amount of time "
+        "(less than 1 millisecond). "
+        "Possible values: order-x, factur-x or autodetect.")
+    parser.add_argument(
+        '-n', '--level', '--facturx-level', dest='level', default='autodetect',
+        help="Specify the Factur-X or Order-X level of the XML file. "
         "Default: autodetect. If you specify a particular level instead of "
         "using autodetection, you will win a very small amount of time "
         "(less than 1 millisecond). "
-        "Possible values: minimum, basicwl, basic, en16931, extended.")
+        "Possible values for Factur-X: minimum, basicwl, basic, en16931, extended."
+        "Possible values for Order-X: basic, comfort, extended."
+        )
+    parser.add_argument(
+        '-p', '--orderx-type', dest='orderx_type', default='autodetect',
+        help="When you generate an Order-X document, specify the order type. "
+        "Default: autodetect. If you specify a particular order type instead of "
+        "using autodetection, you will win a very small amount of time "
+        "(less than 1 millisecond). "
+        "Possible values: order, order_change, order_response.")
+    parser.add_argument(
+        '-g', '--lang', dest='lang',
+        help="Set the language identifier as RFC 3066 to specify the "
+        "natural language of the PDF document. Example: en-US.")
+    parser.add_argument(
+        '-r', '--afrelationship', dest='afrelationship', default='data',
+        help="Set the AFRelationship PDF property of the Factur-X/Order-X XML file. "
+        "Possible values: data, source, alternative. "
+        "Default value: data.")
     parser.add_argument(
         '-a', '--meta-author', dest='meta_author',
         help="Specify the author for PDF metadata. Default: use the vendor "
-        "name extracted from the Factur-X XML file.")
+        "name extracted from the XML file.")
     parser.add_argument(
         '-k', '--meta-keywords', dest='meta_keywords',
         help="Specify the keywords for PDF metadata. "
-        "Default: 'Invoice, Factur-X'.")
+        "Default for Factur-X: 'Invoice, Factur-X'."
+        "Default for Order-X: 'Order Change, Order-X' where 'Order Change' is "
+        "the order type.")
     parser.add_argument(
         '-t', '--meta-title', dest='meta_title',
         help="Specify the title of PDF metadata. "
         "Default: generic English title with information extracted from "
-        "the Factur-X XML file such as: 'Akretion: Invoice I1242'")
+        "the XML file such as: 'Akretion: Invoice I1242'")
     parser.add_argument(
         '-s', '--meta-subject', dest='meta_subject',
         help="Specify the subject of PDF metadata. "
         "Default: generic English subject with information extracted from the "
-        "Factur-X XML file such as: "
+        "XML file such as: "
         "'Factur-X invoice I1242 dated 2017-08-17 issued by Akretion'")
     parser.add_argument(
         '-w', '--overwrite', dest='overwrite', action='store_true',
-        help="Overwrite Factur-X invoice file if it already exists.")
+        help="Overwrite output PDF file if it already exists.")
     parser.add_argument("regular_pdf_file", help="Regular PDF invoice")
-    parser.add_argument("facturx_xml", help="Factur-X XML file")
-    parser.add_argument("facturx_pdf_file", help="Generated Factur-X PDF file")
+    parser.add_argument("xml_file", help="Factur-X or Order-X XML file")
+    parser.add_argument(
+        "facturx_orderx_pdf_file", help="Generated Factur-X or Order-X PDF file")
     parser.add_argument(
         "optional_attachments", nargs='*',
         help="Optional list of additionnal attachments")
