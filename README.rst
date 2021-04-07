@@ -89,6 +89,10 @@ Contributors
 Changelog
 =========
 
+* Version 2.1 dated 2021-04-07
+
+  * Update Order-X XSD to the latest version provided to me by FNFE-MPE
+
 * Version 2.0 dated 2021-04-04
 
   * Add support for **Order-X**. This implies several changes:

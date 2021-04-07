@@ -13,7 +13,7 @@
   <xsd:element name="SCRDMCCBDACIOMessageStructure" type="rsm:SCRDMCCBDACIOMessageStructureType"/>
   <xsd:complexType name="SCRDMCCBDACIOMessageStructureType">
     <xsd:annotation>
-      <xsd:documentation source="BN/BN">Order-X_Comfort Message Structure</xsd:documentation>
+      <xsd:documentation source="BN/BN">Order-X Comfort</xsd:documentation>
     </xsd:annotation>
     <xsd:sequence>
       <xsd:element name="ExchangedDocumentContext" type="ram:ExchangedDocumentContextType"/>

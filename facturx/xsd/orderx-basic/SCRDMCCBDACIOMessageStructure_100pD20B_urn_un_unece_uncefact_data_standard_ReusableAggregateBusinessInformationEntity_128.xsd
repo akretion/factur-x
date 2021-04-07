@@ -641,7 +641,7 @@
       <xsd:documentation source="BN/BN">Trade Product</xsd:documentation>
     </xsd:annotation>
     <xsd:sequence>
-      <xsd:element name="GlobalID" type="udt:IDType" minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="GlobalID" type="udt:IDType" minOccurs="0">
         <xsd:annotation>
           <xsd:documentation source="BN/BN">Global ID</xsd:documentation>
         </xsd:annotation>

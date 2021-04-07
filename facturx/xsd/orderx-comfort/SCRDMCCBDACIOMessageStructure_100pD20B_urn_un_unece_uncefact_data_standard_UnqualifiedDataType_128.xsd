@@ -63,7 +63,7 @@
   <xsd:complexType name="MeasureType">
     <xsd:simpleContent>
       <xsd:extension base="xsd:decimal">
-        <xsd:attribute name="unitCode" type="xsd:token"/>
+        <xsd:attribute name="unitCode" type="xsd:token" use="required"/>
       </xsd:extension>
     </xsd:simpleContent>
   </xsd:complexType>
