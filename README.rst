@@ -89,6 +89,10 @@ Contributors
 Changelog
 =========
 
+* Version 2.2 dated 2021-04-08
+
+  * Make method generate_from_binary() accessible via the lib
+
 * Version 2.1 dated 2021-04-07
 
   * Update Order-X XSD to the latest version provided to me by FNFE-MPE
