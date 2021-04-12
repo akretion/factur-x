@@ -89,6 +89,10 @@ Contributors
 Changelog
 =========
 
+* Version 2.3 dated 2021-04-12
+
+  * Fix wrong flavor argument passed by generate_facturx_from_file() to generate_from_file()
+
 * Version 2.2 dated 2021-04-08
 
   * Make method generate_from_binary() accessible via the lib

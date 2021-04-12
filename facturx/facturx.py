@@ -954,7 +954,7 @@ def generate_facturx_from_file(
             "The argument additional_attachments is not supported "
             "any more. Use the attachments arg instead.")
     return generate_from_file(
-        pdf_file, facturx_xml, flavor='order-x', level=facturx_level,
+        pdf_file, facturx_xml, flavor='factur-x', level=facturx_level,
         check_xsd=check_xsd, pdf_metadata=pdf_metadata,
         output_pdf_file=output_pdf_file,
         attachments=attachments, lang=lang)
