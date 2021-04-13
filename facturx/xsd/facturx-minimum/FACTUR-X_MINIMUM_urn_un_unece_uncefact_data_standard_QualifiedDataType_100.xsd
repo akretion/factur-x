@@ -109,6 +109,7 @@
       <xs:enumeration value="HR"/>
       <xs:enumeration value="HT"/>
       <xs:enumeration value="HU"/>
+      <xs:enumeration value="IC"/>
       <xs:enumeration value="ID"/>
       <xs:enumeration value="IE"/>
       <xs:enumeration value="IL"/>
