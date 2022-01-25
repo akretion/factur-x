@@ -649,7 +649,6 @@ def _facturx_update_metadata_add_attachment(
         flavor, level, orderx_type, pdf_metadata)
     metadata_file_entry = DecodedStreamObject()
     metadata_file_entry.setData(metadata_xml_bytes)
-    metadata_file_entry = metadata_file_entry.flateEncode()
     metadata_file_entry.update({
         NameObject('/Subtype'): NameObject('/XML'),
         NameObject('/Type'): NameObject('/Metadata'),
