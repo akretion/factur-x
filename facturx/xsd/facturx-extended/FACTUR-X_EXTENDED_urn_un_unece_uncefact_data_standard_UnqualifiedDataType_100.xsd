@@ -38,7 +38,6 @@
           </xs:simpleContent>
         </xs:complexType>
       </xs:element>
-      <xs:element name="DateTime" type="xs:dateTime"/>
     </xs:choice>
   </xs:complexType>
   <xs:complexType name="DateType">
@@ -69,7 +68,7 @@
   <xs:complexType name="MeasureType">
     <xs:simpleContent>
       <xs:extension base="xs:decimal">
-        <xs:attribute name="unitCode" type="xs:token" use="required"/>
+        <xs:attribute name="unitCode" type="xs:token" use="optional"/>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
@@ -86,7 +85,7 @@
   <xs:complexType name="QuantityType">
     <xs:simpleContent>
       <xs:extension base="xs:decimal">
-        <xs:attribute name="unitCode" type="xs:token" use="required"/>
+        <xs:attribute name="unitCode" type="xs:token" use="optional"/>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>

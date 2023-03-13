@@ -49,7 +49,7 @@
   <xs:complexType name="QuantityType">
     <xs:simpleContent>
       <xs:extension base="xs:decimal">
-        <xs:attribute name="unitCode" type="xs:token" use="required"/>
+        <xs:attribute name="unitCode" type="xs:token" use="optional"/>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>

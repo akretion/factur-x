@@ -9,7 +9,7 @@
   <xs:import namespace="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100" schemaLocation="FACTUR-X_MINIMUM_urn_un_unece_uncefact_data_standard_UnqualifiedDataType_100.xsd"/>
   <xs:complexType name="DocumentContextParameterType">
     <xs:sequence>
-      <xs:element name="ID" type="udt:IDType" minOccurs="0"/>
+      <xs:element name="ID" type="udt:IDType"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="ExchangedDocumentContextType">
@@ -64,13 +64,7 @@
   </xs:complexType>
   <xs:complexType name="TradeAddressType">
     <xs:sequence>
-      <xs:element name="PostcodeCode" type="udt:CodeType" minOccurs="0"/>
-      <xs:element name="LineOne" type="udt:TextType" minOccurs="0"/>
-      <xs:element name="LineTwo" type="udt:TextType" minOccurs="0"/>
-      <xs:element name="LineThree" type="udt:TextType" minOccurs="0"/>
-      <xs:element name="CityName" type="udt:TextType" minOccurs="0"/>
       <xs:element name="CountryID" type="qdt:CountryIDType"/>
-      <xs:element name="CountrySubDivisionName" type="udt:TextType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="TradePartyType">
@@ -78,7 +72,7 @@
       <xs:element name="Name" type="udt:TextType"/>
       <xs:element name="SpecifiedLegalOrganization" type="ram:LegalOrganizationType" minOccurs="0"/>
       <xs:element name="PostalTradeAddress" type="ram:TradeAddressType" minOccurs="0"/>
-      <xs:element name="SpecifiedTaxRegistration" type="ram:TaxRegistrationType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="SpecifiedTaxRegistration" type="ram:TaxRegistrationType" minOccurs="0" maxOccurs="2"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="TradeSettlementHeaderMonetarySummationType">

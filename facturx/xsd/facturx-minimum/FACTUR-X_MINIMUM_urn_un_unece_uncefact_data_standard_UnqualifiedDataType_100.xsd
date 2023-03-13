@@ -11,11 +11,6 @@
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
-  <xs:complexType name="CodeType">
-    <xs:simpleContent>
-      <xs:extension base="xs:token"/>
-    </xs:simpleContent>
-  </xs:complexType>
   <xs:complexType name="DateTimeType">
     <xs:choice>
       <xs:element name="DateTimeString">

@@ -89,6 +89,11 @@ Contributors
 Changelog
 =========
 
+* Version 2.4 dated 2023-03-13
+
+  * Update Factur-X XSD of all profiles to version 1.0.6
+  * Update Order-X XSD of all profiles to version 1.0.0
+
 * Version 2.3 dated 2021-04-12
 
   * Fix wrong flavor argument passed by generate_facturx_from_file() to generate_from_file()

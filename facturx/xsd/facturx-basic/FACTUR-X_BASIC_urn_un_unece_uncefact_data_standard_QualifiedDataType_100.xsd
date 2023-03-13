@@ -458,6 +458,7 @@
       <xs:enumeration value="VU"/>
       <xs:enumeration value="WF"/>
       <xs:enumeration value="WS"/>
+      <xs:enumeration value="XI"/>
       <xs:enumeration value="YE"/>
       <xs:enumeration value="YT"/>
       <xs:enumeration value="ZA"/>
@@ -701,6 +702,9 @@
       <xs:enumeration value="633"/>
       <xs:enumeration value="751"/>
       <xs:enumeration value="780"/>
+      <xs:enumeration value="875"/>
+      <xs:enumeration value="876"/>
+      <xs:enumeration value="877"/>
       <xs:enumeration value="935"/>
     </xs:restriction>
   </xs:simpleType>

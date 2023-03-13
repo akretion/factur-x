@@ -20,12 +20,13 @@
   </xs:complexType>
   <xs:complexType name="DocumentContextParameterType">
     <xs:sequence>
-      <xs:element name="ID" type="udt:IDType" minOccurs="0"/>
+      <xs:element name="ID" type="udt:IDType"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="DocumentLineDocumentType">
     <xs:sequence>
       <xs:element name="LineID" type="udt:IDType"/>
+      <xs:element name="IncludedNote" type="ram:NoteType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="ExchangedDocumentContextType">
@@ -63,9 +64,10 @@
     <xs:sequence>
       <xs:element name="CreditorReferenceID" type="udt:IDType" minOccurs="0"/>
       <xs:element name="PaymentReference" type="udt:TextType" minOccurs="0"/>
+      <xs:element name="TaxCurrencyCode" type="qdt:CurrencyCodeType" minOccurs="0"/>
       <xs:element name="InvoiceCurrencyCode" type="qdt:CurrencyCodeType"/>
       <xs:element name="PayeeTradeParty" type="ram:TradePartyType" minOccurs="0"/>
-      <xs:element name="SpecifiedTradeSettlementPaymentMeans" type="ram:TradeSettlementPaymentMeansType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="SpecifiedTradeSettlementPaymentMeans" type="ram:TradeSettlementPaymentMeansType" minOccurs="0"/>
       <xs:element name="ApplicableTradeTax" type="ram:TradeTaxType" maxOccurs="unbounded"/>
       <xs:element name="BillingSpecifiedPeriod" type="ram:SpecifiedPeriodType" minOccurs="0"/>
       <xs:element name="SpecifiedTradeAllowanceCharge" type="ram:TradeAllowanceChargeType" minOccurs="0" maxOccurs="unbounded"/>
@@ -83,6 +85,7 @@
   </xs:complexType>
   <xs:complexType name="LineTradeAgreementType">
     <xs:sequence>
+      <xs:element name="GrossPriceProductTradePrice" type="ram:TradePriceType" minOccurs="0"/>
       <xs:element name="NetPriceProductTradePrice" type="ram:TradePriceType"/>
     </xs:sequence>
   </xs:complexType>
@@ -94,6 +97,7 @@
   <xs:complexType name="LineTradeSettlementType">
     <xs:sequence>
       <xs:element name="ApplicableTradeTax" type="ram:TradeTaxType"/>
+      <xs:element name="BillingSpecifiedPeriod" type="ram:SpecifiedPeriodType" minOccurs="0"/>
       <xs:element name="SpecifiedTradeAllowanceCharge" type="ram:TradeAllowanceChargeType" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="SpecifiedTradeSettlementLineMonetarySummation" type="ram:TradeSettlementLineMonetarySummationType"/>
     </xs:sequence>
@@ -118,7 +122,7 @@
   </xs:complexType>
   <xs:complexType name="SupplyChainEventType">
     <xs:sequence>
-      <xs:element name="OccurrenceDateTime" type="udt:DateTimeType" minOccurs="0"/>
+      <xs:element name="OccurrenceDateTime" type="udt:DateTimeType"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="SupplyChainTradeLineItemType">
@@ -126,7 +130,7 @@
       <xs:element name="AssociatedDocumentLineDocument" type="ram:DocumentLineDocumentType"/>
       <xs:element name="SpecifiedTradeProduct" type="ram:TradeProductType"/>
       <xs:element name="SpecifiedLineTradeAgreement" type="ram:LineTradeAgreementType"/>
-      <xs:element name="SpecifiedLineTradeDelivery" type="ram:LineTradeDeliveryType" minOccurs="0"/>
+      <xs:element name="SpecifiedLineTradeDelivery" type="ram:LineTradeDeliveryType"/>
       <xs:element name="SpecifiedLineTradeSettlement" type="ram:LineTradeSettlementType"/>
     </xs:sequence>
   </xs:complexType>
@@ -156,11 +160,12 @@
       <xs:element name="LineThree" type="udt:TextType" minOccurs="0"/>
       <xs:element name="CityName" type="udt:TextType" minOccurs="0"/>
       <xs:element name="CountryID" type="qdt:CountryIDType"/>
+      <xs:element name="CountrySubDivisionName" type="udt:TextType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="TradeAllowanceChargeType">
     <xs:sequence>
-      <xs:element name="ChargeIndicator" type="udt:IndicatorType" minOccurs="0"/>
+      <xs:element name="ChargeIndicator" type="udt:IndicatorType"/>
       <xs:element name="CalculationPercent" type="udt:PercentType" minOccurs="0"/>
       <xs:element name="BasisAmount" type="udt:AmountType" minOccurs="0"/>
       <xs:element name="ActualAmount" type="udt:AmountType"/>
@@ -177,11 +182,12 @@
       <xs:element name="SpecifiedLegalOrganization" type="ram:LegalOrganizationType" minOccurs="0"/>
       <xs:element name="PostalTradeAddress" type="ram:TradeAddressType" minOccurs="0"/>
       <xs:element name="URIUniversalCommunication" type="ram:UniversalCommunicationType" minOccurs="0"/>
-      <xs:element name="SpecifiedTaxRegistration" type="ram:TaxRegistrationType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="SpecifiedTaxRegistration" type="ram:TaxRegistrationType" minOccurs="0" maxOccurs="2"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="TradePaymentTermsType">
     <xs:sequence>
+      <xs:element name="Description" type="udt:TextType" minOccurs="0"/>
       <xs:element name="DueDateDateTime" type="udt:DateTimeType" minOccurs="0"/>
       <xs:element name="DirectDebitMandateID" type="udt:IDType" minOccurs="0"/>
     </xs:sequence>
@@ -190,6 +196,7 @@
     <xs:sequence>
       <xs:element name="ChargeAmount" type="udt:AmountType"/>
       <xs:element name="BasisQuantity" type="udt:QuantityType" minOccurs="0"/>
+      <xs:element name="AppliedTradeAllowanceCharge" type="ram:TradeAllowanceChargeType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="TradeProductType">
@@ -204,7 +211,7 @@
       <xs:element name="ChargeTotalAmount" type="udt:AmountType" minOccurs="0"/>
       <xs:element name="AllowanceTotalAmount" type="udt:AmountType" minOccurs="0"/>
       <xs:element name="TaxBasisTotalAmount" type="udt:AmountType"/>
-      <xs:element name="TaxTotalAmount" type="udt:AmountType" minOccurs="0"/>
+      <xs:element name="TaxTotalAmount" type="udt:AmountType" minOccurs="0" maxOccurs="2"/>
       <xs:element name="GrandTotalAmount" type="udt:AmountType"/>
       <xs:element name="TotalPrepaidAmount" type="udt:AmountType" minOccurs="0"/>
       <xs:element name="DuePayableAmount" type="udt:AmountType"/>

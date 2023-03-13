@@ -227,6 +227,14 @@
       <xs:extension base="qdt:AllowanceChargeReasonCodeContentType"/>
     </xs:simpleContent>
   </xs:complexType>
+  <xs:simpleType name="ContactTypeCodeContentType">
+    <xs:restriction base="xs:token"/>
+  </xs:simpleType>
+  <xs:complexType name="ContactTypeCodeType">
+    <xs:simpleContent>
+      <xs:extension base="qdt:ContactTypeCodeContentType"/>
+    </xs:simpleContent>
+  </xs:complexType>
   <xs:simpleType name="CountryIDContentType">
     <xs:restriction base="xs:token">
       <xs:enumeration value="1A"/>
@@ -474,6 +482,7 @@
       <xs:enumeration value="VU"/>
       <xs:enumeration value="WF"/>
       <xs:enumeration value="WS"/>
+      <xs:enumeration value="XI"/>
       <xs:enumeration value="YE"/>
       <xs:enumeration value="YT"/>
       <xs:enumeration value="ZA"/>
@@ -1318,14 +1327,34 @@
       <xs:enumeration value="749"/>
       <xs:enumeration value="750"/>
       <xs:enumeration value="751"/>
+      <xs:enumeration value="752"/>
+      <xs:enumeration value="753"/>
+      <xs:enumeration value="754"/>
+      <xs:enumeration value="755"/>
+      <xs:enumeration value="756"/>
+      <xs:enumeration value="757"/>
+      <xs:enumeration value="758"/>
+      <xs:enumeration value="759"/>
       <xs:enumeration value="760"/>
       <xs:enumeration value="761"/>
+      <xs:enumeration value="762"/>
       <xs:enumeration value="763"/>
       <xs:enumeration value="764"/>
       <xs:enumeration value="765"/>
       <xs:enumeration value="766"/>
+      <xs:enumeration value="767"/>
+      <xs:enumeration value="768"/>
+      <xs:enumeration value="769"/>
       <xs:enumeration value="770"/>
+      <xs:enumeration value="771"/>
+      <xs:enumeration value="772"/>
+      <xs:enumeration value="773"/>
+      <xs:enumeration value="774"/>
       <xs:enumeration value="775"/>
+      <xs:enumeration value="776"/>
+      <xs:enumeration value="777"/>
+      <xs:enumeration value="778"/>
+      <xs:enumeration value="779"/>
       <xs:enumeration value="780"/>
       <xs:enumeration value="781"/>
       <xs:enumeration value="782"/>
@@ -1349,30 +1378,78 @@
       <xs:enumeration value="810"/>
       <xs:enumeration value="811"/>
       <xs:enumeration value="812"/>
+      <xs:enumeration value="813"/>
+      <xs:enumeration value="814"/>
+      <xs:enumeration value="815"/>
+      <xs:enumeration value="816"/>
+      <xs:enumeration value="817"/>
+      <xs:enumeration value="818"/>
+      <xs:enumeration value="819"/>
       <xs:enumeration value="820"/>
       <xs:enumeration value="821"/>
       <xs:enumeration value="822"/>
       <xs:enumeration value="823"/>
       <xs:enumeration value="824"/>
       <xs:enumeration value="825"/>
+      <xs:enumeration value="826"/>
+      <xs:enumeration value="827"/>
+      <xs:enumeration value="828"/>
+      <xs:enumeration value="829"/>
       <xs:enumeration value="830"/>
+      <xs:enumeration value="831"/>
+      <xs:enumeration value="832"/>
       <xs:enumeration value="833"/>
+      <xs:enumeration value="834"/>
+      <xs:enumeration value="835"/>
+      <xs:enumeration value="836"/>
+      <xs:enumeration value="837"/>
+      <xs:enumeration value="838"/>
+      <xs:enumeration value="839"/>
       <xs:enumeration value="840"/>
       <xs:enumeration value="841"/>
+      <xs:enumeration value="842"/>
+      <xs:enumeration value="843"/>
+      <xs:enumeration value="844"/>
+      <xs:enumeration value="845"/>
+      <xs:enumeration value="846"/>
+      <xs:enumeration value="847"/>
+      <xs:enumeration value="848"/>
+      <xs:enumeration value="849"/>
       <xs:enumeration value="850"/>
       <xs:enumeration value="851"/>
       <xs:enumeration value="852"/>
       <xs:enumeration value="853"/>
+      <xs:enumeration value="854"/>
       <xs:enumeration value="855"/>
       <xs:enumeration value="856"/>
+      <xs:enumeration value="857"/>
+      <xs:enumeration value="858"/>
+      <xs:enumeration value="859"/>
       <xs:enumeration value="860"/>
       <xs:enumeration value="861"/>
       <xs:enumeration value="862"/>
       <xs:enumeration value="863"/>
       <xs:enumeration value="864"/>
       <xs:enumeration value="865"/>
+      <xs:enumeration value="866"/>
+      <xs:enumeration value="867"/>
+      <xs:enumeration value="868"/>
+      <xs:enumeration value="869"/>
       <xs:enumeration value="870"/>
+      <xs:enumeration value="871"/>
+      <xs:enumeration value="872"/>
+      <xs:enumeration value="873"/>
+      <xs:enumeration value="874"/>
+      <xs:enumeration value="875"/>
+      <xs:enumeration value="876"/>
+      <xs:enumeration value="877"/>
+      <xs:enumeration value="878"/>
+      <xs:enumeration value="879"/>
       <xs:enumeration value="890"/>
+      <xs:enumeration value="891"/>
+      <xs:enumeration value="892"/>
+      <xs:enumeration value="893"/>
+      <xs:enumeration value="894"/>
       <xs:enumeration value="895"/>
       <xs:enumeration value="896"/>
       <xs:enumeration value="901"/>
@@ -1454,6 +1531,14 @@
   <xs:complexType name="LineStatusCodeType">
     <xs:simpleContent>
       <xs:extension base="qdt:LineStatusCodeContentType"/>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:simpleType name="PartyRoleCodeContentType">
+    <xs:restriction base="xs:token"/>
+  </xs:simpleType>
+  <xs:complexType name="PartyRoleCodeType">
+    <xs:simpleContent>
+      <xs:extension base="qdt:PartyRoleCodeContentType"/>
     </xs:simpleContent>
   </xs:complexType>
   <xs:simpleType name="PaymentMeansCodeContentType">
