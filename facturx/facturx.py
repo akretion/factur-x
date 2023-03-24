@@ -112,8 +112,6 @@ def xml_check_xsd(xml, flavor='autodetect', level='autodetect'):
     """
     logger.debug(
         'xml_check_xsd with factur-x lib %s', __version__)
-    if not xml:
-        raise ValueError('Missing xml argument')
     if not isinstance(flavor, (str, unicode)):
         raise ValueError('Wrong type for flavor argument')
     if not isinstance(level, (type(None), str, unicode)):
@@ -132,6 +130,11 @@ def xml_check_xsd(xml, flavor='autodetect', level='autodetect'):
         xml.seek(0)
         xml_bytes = xml.read()
         xml.close()
+    else:
+        raise ValueError('Wrong type for xml argument')
+
+    if not xml_bytes:
+        raise ValueError('xml argument is empty')
 
     # autodetect
     if flavor not in ('factur-x', 'facturx', 'zugferd', 'order-x', 'orderx'):
@@ -764,19 +767,30 @@ def get_level(xml_etree):
     if not isinstance(xml_etree, type(etree.Element('pouet'))):
         raise ValueError('xml_etree must be an etree.Element() object')
     namespaces = xml_etree.nsmap
+    # Factur-X and Order-X
     doc_id_xpath = xml_etree.xpath(
         "//rsm:ExchangedDocumentContext"
         "/ram:GuidelineSpecifiedDocumentContextParameter"
         "/ram:ID", namespaces=namespaces)
     if not doc_id_xpath:
+        # ZUGFeRD 1.0
+        doc_id_xpath = xml_etree.xpath(
+            "//rsm:SpecifiedExchangedDocumentContext"
+            "/ram:GuidelineSpecifiedDocumentContextParameter"
+            "/ram:ID", namespaces=namespaces)
+    if not doc_id_xpath:
         raise ValueError(
             "This XML is not a Factur-X nor Order-X XML because it misses the XML tag "
             "ExchangedDocumentContext/"
+            "GuidelineSpecifiedDocumentContextParameter/ID. It is not a ZUGFeRD 1.0 "
+            "XML either because it misses the XML tag "
+            "SpecifiedExchangedDocumentContext/"
             "GuidelineSpecifiedDocumentContextParameter/ID.")
     doc_id = doc_id_xpath[0].text
     level = doc_id.split(':')[-1]
     possible_values = dict(FACTURX_LEVEL2xsd)
     possible_values.update(ORDERX_LEVEL2xsd)
+    # ZUGFeRD 1.0 levels are the same as orderx
     if level not in possible_values:
         level = doc_id.split(':')[-2]
     if level not in possible_values:
