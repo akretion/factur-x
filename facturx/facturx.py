@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-# Copyright 2016-2021, Alexis de Lattre <alexis.delattre@akretion.com>
+# Copyright 2016-2023, Alexis de Lattre <alexis.delattre@akretion.com>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -29,24 +28,18 @@
 # - keep original metadata by copy of pdf_tailer[/Info] ?
 
 from ._version import __version__
-from io import BytesIO
+from io import BytesIO, IOBase
 from lxml import etree
 from tempfile import NamedTemporaryFile
 from datetime import datetime
-from PyPDF4 import PdfFileWriter, PdfFileReader
-from PyPDF4.generic import DictionaryObject, DecodedStreamObject,\
-    NameObject, createStringObject, ArrayObject, IndirectObject
-from PyPDF4.utils import b_
+from pypdf import PdfWriter, PdfReader
+from pypdf.generic import DictionaryObject, DecodedStreamObject, \
+    NameObject, NumberObject, ArrayObject, IndirectObject, create_string_object
 from pkg_resources import resource_filename
 import os.path
 import mimetypes
 import hashlib
 import logging
-import sys
-if sys.version_info[0] == 3:
-    unicode = str
-    from io import IOBase
-    file = IOBase
 
 
 FORMAT = '%(asctime)s [%(levelname)s] %(message)s'
@@ -112,21 +105,21 @@ def xml_check_xsd(xml, flavor='autodetect', level='autodetect'):
     """
     logger.debug(
         'xml_check_xsd with factur-x lib %s', __version__)
-    if not isinstance(flavor, (str, unicode)):
+    if not isinstance(flavor, str):
         raise ValueError('Wrong type for flavor argument')
-    if not isinstance(level, (type(None), str, unicode)):
+    if not isinstance(level, (type(None), str)):
         raise ValueError('Wrong type for level argument')
     xml_etree = None
     if isinstance(xml, (str, bytes)):
         xml_bytes = xml
-    elif isinstance(xml, unicode):
+    elif isinstance(xml, str):
         xml_bytes = xml.encode('utf8')
     elif isinstance(xml, type(etree.Element('pouet'))):
         xml_etree = xml
         xml_bytes = etree.tostring(
             xml, pretty_print=True, encoding='UTF-8',
             xml_declaration=True)
-    elif isinstance(xml, file):
+    elif isinstance(xml, IOBase):
         xml.seek(0)
         xml_bytes = xml.read()
         xml.close()
@@ -143,7 +136,7 @@ def xml_check_xsd(xml, flavor='autodetect', level='autodetect'):
                 xml_etree = etree.fromstring(xml_bytes)
             except Exception as e:
                 raise Exception(
-                    "The XML syntax is invalid: %s." % unicode(e))
+                    "The XML syntax is invalid: %s." % str(e))
         flavor = get_flavor(xml_etree)
     if flavor in ('factur-x', 'facturx'):
         if level not in FACTURX_LEVEL2xsd:
@@ -152,7 +145,7 @@ def xml_check_xsd(xml, flavor='autodetect', level='autodetect'):
                     xml_etree = etree.fromstring(xml_bytes)
                 except Exception as e:
                     raise Exception(
-                        "The XML syntax is invalid: %s." % unicode(e))
+                        "The XML syntax is invalid: %s." % str(e))
             level = get_level(xml_etree)
         if level not in FACTURX_LEVEL2xsd:
             raise ValueError(
@@ -169,7 +162,7 @@ def xml_check_xsd(xml, flavor='autodetect', level='autodetect'):
                     xml_etree = etree.fromstring(xml_bytes)
                 except Exception as e:
                     raise Exception(
-                        "The XML syntax is invalid: %s." % unicode(e))
+                        "The XML syntax is invalid: %s." % str(e))
             level = get_level(xml_etree)
         if level not in ORDERX_LEVEL2xsd:
             raise ValueError(
@@ -193,7 +186,7 @@ def xml_check_xsd(xml, flavor='autodetect', level='autodetect'):
             "The %s XML file is not valid against the official "
             "XML Schema Definition. "
             "Here is the error, which may give you an idea on the "
-            "cause of the problem: %s." % (flavor.capitalize(), unicode(e)))
+            "cause of the problem: %s." % (flavor.capitalize(), str(e)))
     return True
 
 
@@ -204,7 +197,7 @@ def _get_dict_entry(node, entry):
     if isinstance(dict_entry, dict):
         return dict_entry
     elif isinstance(dict_entry, IndirectObject):
-        res_dict_entry = dict_entry.getObject()
+        res_dict_entry = dict_entry.get_object()
         if isinstance(res_dict_entry, dict):
             return res_dict_entry
         else:
@@ -228,7 +221,7 @@ def _parse_embeddedfiles_kids_node(kids_node, level, res):
                 'The /Kids entry of the EmbeddedFiles name tree '
                 'must be a list of IndirectObjects')
             return False
-        kids_node = kid_entry.getObject()
+        kids_node = kid_entry.get_object()
         logger.debug('kids_node=%s', kids_node)
         if not isinstance(kids_node, dict):
             logger.error(
@@ -301,7 +294,7 @@ def get_xml_from_pdf(pdf_file, check_xsd=True, filenames=[]):
         raise ValueError('Bad type for filenames argument')
     if isinstance(pdf_file, (str, bytes)):
         pdf_file_in = BytesIO(pdf_file)
-    elif isinstance(pdf_file, file):
+    elif isinstance(pdf_file, IOBase):
         pdf_file_in = pdf_file
     else:
         raise TypeError(
@@ -311,7 +304,7 @@ def get_xml_from_pdf(pdf_file, check_xsd=True, filenames=[]):
         filenames = ALL_FILENAMES
     logger.debug('Searching for filenames %s', filenames)
     xml_bytes = xml_filename = False
-    pdf = PdfFileReader(pdf_file_in)
+    pdf = PdfReader(pdf_file_in)
     pdf_root = pdf.trailer['/Root']  # = Catalog
     logger.debug('pdf_root=%s', pdf_root)
     catalog_name = _get_dict_entry(pdf_root, '/Names')
@@ -332,9 +325,9 @@ def get_xml_from_pdf(pdf_file, check_xsd=True, filenames=[]):
         for (filename, file_obj) in embeddedfiles_by_two:
             logger.debug('found filename=%s', filename)
             if filename in filenames:
-                xml_file_dict = file_obj.getObject()
+                xml_file_dict = file_obj.get_object()
                 logger.debug('xml_file_dict=%s', xml_file_dict)
-                tmp_xml_bytes = xml_file_dict['/EF']['/F'].getData()
+                tmp_xml_bytes = xml_file_dict['/EF']['/F'].get_data()
                 xml_root = etree.fromstring(tmp_xml_bytes)
                 logger.info(
                     'A valid XML file %s has been found in the PDF file',
@@ -393,7 +386,7 @@ def _prepare_pdf_metadata_txt(pdf_metadata):
 
 
 def _prepare_pdf_metadata_xml(flavor, level, orderx_type, pdf_metadata):
-    xml_str = u"""
+    xml_str = """
 <?xpacket begin="\ufeff" id="W5M0MpCehiHzreSzNTczkc9d"?>
 <x:xmpmeta xmlns:x="adobe:ns:meta/">
   <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
@@ -474,7 +467,7 @@ def _prepare_pdf_metadata_xml(flavor, level, orderx_type, pdf_metadata):
   </rdf:RDF>
 </x:xmpmeta>
 <?xpacket end="w"?>
-"""
+"""  # noqa: E501
     if flavor == 'order-x':
         documenttype = orderx_type.upper()
         xml_filename = ORDERX_FILENAME
@@ -489,7 +482,7 @@ def _prepare_pdf_metadata_xml(flavor, level, orderx_type, pdf_metadata):
         title=pdf_metadata.get('title', ''),
         author=pdf_metadata.get('author', ''),
         subject=pdf_metadata.get('subject', ''),
-        producer='PyPDF4',
+        producer='pypdf',
         creator_tool='factur-x python lib v%s by Alexis de Lattre' % __version__,
         timestamp=_get_metadata_timestamp(),
         urn=urn,
@@ -513,47 +506,47 @@ def _filespec_additional_attachments(
         pdf_filestream, name_arrayobj_cdict, file_dict, filename):
     logger.debug('_filespec_additional_attachments filename=%s', filename)
     md5sum = hashlib.md5(file_dict['filedata']).hexdigest()
-    md5sum_obj = createStringObject(md5sum)
+    md5sum_obj = create_string_object(md5sum)
     params_dict = DictionaryObject({
         NameObject('/CheckSum'): md5sum_obj,
-        NameObject('/Size'): NameObject(str(len(file_dict['filedata']))),
+        NameObject('/Size'): NumberObject(len(file_dict['filedata'])),
         })
     # creation date and modification date are optional
     if isinstance(file_dict.get('modification_datetime'), datetime):
         mod_date_pdf = _get_pdf_timestamp(file_dict['modification_datetime'])
-        params_dict[NameObject('/ModDate')] = createStringObject(mod_date_pdf)
+        params_dict[NameObject('/ModDate')] = create_string_object(mod_date_pdf)
     if isinstance(file_dict.get('creation_datetime'), datetime):
         creation_date_pdf = _get_pdf_timestamp(file_dict['creation_datetime'])
-        params_dict[NameObject('/CreationDate')] = createStringObject(creation_date_pdf)
+        params_dict[NameObject('/CreationDate')] = create_string_object(
+            creation_date_pdf)
     file_entry = DecodedStreamObject()
-    file_entry.setData(file_dict['filedata'])
-    file_entry = file_entry.flateEncode()
+    file_entry.set_data(file_dict['filedata'])
+    file_entry = file_entry.flate_encode()
     file_mimetype = mimetypes.guess_type(filename)[0]
     if not file_mimetype:
         file_mimetype = 'application/octet-stream'
-    file_mimetype_insert = '/' + file_mimetype.replace('/', '#2f')
     file_entry.update({
         NameObject("/Type"): NameObject("/EmbeddedFile"),
         NameObject("/Params"): params_dict,
-        NameObject("/Subtype"): NameObject(file_mimetype_insert),
+        NameObject("/Subtype"): NameObject('/%s' % file_mimetype),
         })
-    file_entry_obj = pdf_filestream._addObject(file_entry)
+    file_entry_obj = pdf_filestream._add_object(file_entry)
     ef_dict = DictionaryObject({
         NameObject("/F"): file_entry_obj,
         })
-    fname_obj = createStringObject(filename)
+    fname_obj = create_string_object(filename)
     afrelationship = file_dict.get('afrelationship')
     if afrelationship not in ATTACHMENTS_AFRelationship:
         afrelationship = 'unspecified'
     filespec_dict = DictionaryObject({
         NameObject("/AFRelationship"): NameObject("/%s" % afrelationship.capitalize()),
-        NameObject("/Desc"): createStringObject(file_dict.get('description', '')),
+        NameObject("/Desc"): create_string_object(file_dict.get('description', '')),
         NameObject("/Type"): NameObject("/Filespec"),
         NameObject("/F"): fname_obj,
         NameObject("/EF"): ef_dict,
         NameObject("/UF"): fname_obj,
         })
-    filespec_obj = pdf_filestream._addObject(filespec_dict)
+    filespec_obj = pdf_filestream._add_object(filespec_dict)
     name_arrayobj_cdict[fname_obj] = filespec_obj
 
 
@@ -575,22 +568,21 @@ def _facturx_update_metadata_add_attachment(
             "Wrong value for afrelationship (%s). Possible values: %s."
             % (afrelationship, XML_AFRelationship))
     md5sum = hashlib.md5(xml_bytes).hexdigest()
-    md5sum_obj = createStringObject(md5sum)
+    md5sum_obj = create_string_object(md5sum)
     params_dict = DictionaryObject({
         NameObject('/CheckSum'): md5sum_obj,
-        NameObject('/ModDate'): createStringObject(_get_pdf_timestamp()),
-        NameObject('/Size'): NameObject(str(len(xml_bytes))),
+        NameObject('/ModDate'): create_string_object(_get_pdf_timestamp()),
+        NameObject('/Size'): NumberObject(len(xml_bytes)),
         })
     file_entry = DecodedStreamObject()
-    file_entry.setData(xml_bytes)  # here we integrate the file itself
-    file_entry = file_entry.flateEncode()
+    file_entry.set_data(xml_bytes)  # here we integrate the file itself
+    file_entry = file_entry.flate_encode()
     file_entry.update({
         NameObject("/Type"): NameObject("/EmbeddedFile"),
         NameObject("/Params"): params_dict,
-        # 2F is '/' in hexadecimal
-        NameObject("/Subtype"): NameObject("/text#2Fxml"),
+        NameObject("/Subtype"): NameObject("/text/xml"),
         })
-    file_entry_obj = pdf_filestream._addObject(file_entry)
+    file_entry_obj = pdf_filestream._add_object(file_entry)
     # The Filespec entry
     ef_dict = DictionaryObject({
         NameObject("/F"): file_entry_obj,
@@ -604,16 +596,16 @@ def _facturx_update_metadata_add_attachment(
         xml_filename = FACTURX_FILENAME
         desc = 'Factur-X XML file'
 
-    fname_obj = createStringObject(xml_filename)
+    fname_obj = create_string_object(xml_filename)
     filespec_dict = DictionaryObject({
         NameObject("/AFRelationship"): NameObject("/%s" % afrelationship.capitalize()),
-        NameObject("/Desc"): createStringObject(desc),
+        NameObject("/Desc"): create_string_object(desc),
         NameObject("/Type"): NameObject("/Filespec"),
         NameObject("/F"): fname_obj,
         NameObject("/EF"): ef_dict,
         NameObject("/UF"): fname_obj,
         })
-    filespec_obj = pdf_filestream._addObject(filespec_dict)
+    filespec_obj = pdf_filestream._add_object(filespec_dict)
     name_arrayobj_cdict = {fname_obj: filespec_obj}
     for attach_filename, attach_dict in additional_attachments.items():
         _filespec_additional_attachments(
@@ -638,27 +630,27 @@ def _facturx_update_metadata_add_attachment(
     res_output_intents = []
     logger.debug('output_intents=%s', output_intents)
     for output_intent_dict, dest_output_profile_dict in output_intents:
-        dest_output_profile_obj = pdf_filestream._addObject(
+        dest_output_profile_obj = pdf_filestream._add_object(
             dest_output_profile_dict)
         # TODO detect if there are no other objects in output_intent_dest_obj
         # than /DestOutputProfile
         output_intent_dict.update({
             NameObject("/DestOutputProfile"): dest_output_profile_obj,
             })
-        output_intent_obj = pdf_filestream._addObject(output_intent_dict)
+        output_intent_obj = pdf_filestream._add_object(output_intent_dict)
         res_output_intents.append(output_intent_obj)
     # Update the root
     metadata_xml_bytes = _prepare_pdf_metadata_xml(
         flavor, level, orderx_type, pdf_metadata)
     metadata_file_entry = DecodedStreamObject()
-    metadata_file_entry.setData(metadata_xml_bytes)
-    metadata_file_entry = metadata_file_entry.flateEncode()
+    metadata_file_entry.set_data(metadata_xml_bytes)
+    metadata_file_entry = metadata_file_entry.flate_encode()
     metadata_file_entry.update({
         NameObject('/Subtype'): NameObject('/XML'),
         NameObject('/Type'): NameObject('/Metadata'),
         })
-    metadata_obj = pdf_filestream._addObject(metadata_file_entry)
-    af_value_obj = pdf_filestream._addObject(ArrayObject(af_list))
+    metadata_obj = pdf_filestream._add_object(metadata_file_entry)
+    af_value_obj = pdf_filestream._add_object(ArrayObject(af_list))
     pdf_filestream._root_object.update({
         NameObject("/AF"): af_value_obj,
         NameObject("/Metadata"): metadata_obj,
@@ -668,7 +660,7 @@ def _facturx_update_metadata_add_attachment(
         })
     if lang:
         pdf_filestream._root_object.update({
-            NameObject("/Lang"): createStringObject(lang.replace('_', '-')),
+            NameObject("/Lang"): create_string_object(lang.replace('_', '-')),
             })
     logger.debug('res_output_intents=%s', res_output_intents)
     if res_output_intents:
@@ -676,7 +668,7 @@ def _facturx_update_metadata_add_attachment(
             NameObject("/OutputIntents"): ArrayObject(res_output_intents),
         })
     metadata_txt_dict = _prepare_pdf_metadata_txt(pdf_metadata)
-    pdf_filestream.addMetadata(metadata_txt_dict)
+    pdf_filestream.add_metadata(metadata_txt_dict)
     logger.info('%s file added to PDF document', xml_filename)
 
 
@@ -848,13 +840,14 @@ def _get_original_output_intents(original_pdf):
         ori_output_intents = pdf_root['/OutputIntents']
         logger.debug('output_intents_list=%s', ori_output_intents)
         for ori_output_intent in ori_output_intents:
-            ori_output_intent_dict = ori_output_intent.getObject()
+            ori_output_intent_dict = ori_output_intent.get_object()
             logger.debug('ori_output_intents_dict=%s', ori_output_intent_dict)
             dest_output_profile_dict =\
-                ori_output_intent_dict['/DestOutputProfile'].getObject()
+                ori_output_intent_dict['/DestOutputProfile'].get_object()
             output_intents.append(
                 (ori_output_intent_dict, dest_output_profile_dict))
     except Exception:
+        logger.debug('Failed to extract output intents from input PDF')
         pass
     return output_intents
 
@@ -909,8 +902,7 @@ def generate_from_binary(
         'author': 'Akretion',
         'keywords': 'Factur-X, Invoice',
         'title': 'Akretion: Invoice I1242',
-        'subject':
-          'Factur-X invoice I1242 dated 2017-08-17 issued by Akretion',
+        'subject': 'Factur-X invoice I1242 dated 2017-08-17 issued by Akretion',
         }
     If you pass the pdf_metadata argument, you will not use the automatic
     generation based on the extraction of the Factur-X/Order-X XML file, which will
@@ -1063,11 +1055,11 @@ def generate_from_file(
         raise ValueError('Missing pdf_file argument')
     if not xml:
         raise ValueError('Missing xml argument')
-    if not isinstance(flavor, (str, unicode)):
+    if not isinstance(flavor, str):
         raise ValueError('flavor argument is a %s, must be a string' % type(flavor))
-    if not isinstance(level, (str, unicode)):
+    if not isinstance(level, str):
         raise ValueError('level argument is a %s, must be a string' % type(level))
-    if not isinstance(orderx_type, (str, unicode, type(None))):
+    if not isinstance(orderx_type, (str, type(None))):
         raise ValueError(
             'orderx_type argument is a %s, must be a string or None'
             % type(orderx_type))
@@ -1078,17 +1070,17 @@ def generate_from_file(
         raise ValueError(
             'pdf_metadata argument is a %s, must be a dict or None'
             % type(pdf_metadata))
-    if not isinstance(lang, (type(None), str, unicode)):
+    if not isinstance(lang, (type(None), str)):
         raise ValueError(
             'lang argument is a %s, must be a string or None' % type(lang))
-    if not isinstance(output_pdf_file, (type(None), str, unicode)):
+    if not isinstance(output_pdf_file, (type(None), str)):
         raise ValueError(
             'output_pdf_file argument is a %s, must be a string or None'
             % type(output_pdf_file))
     if not isinstance(attachments, (dict, type(None))):
         raise ValueError(
             'attachments argument is a %s, must be a dict or None' % type(attachments))
-    if not isinstance(afrelationship, (str, unicode, type(None))):
+    if not isinstance(afrelationship, (str, type(None))):
         raise ValueError(
             'afrelationship argument is a %s, must be a string or None'
             % type(afrelationship))
@@ -1112,21 +1104,21 @@ def generate_from_file(
             afrelationship)
         afrelationship = 'data'
 
-    if isinstance(pdf_file, (str, unicode)):
+    if isinstance(pdf_file, str):
         file_type = 'path'
     else:
         file_type = 'file'
     xml_root = None
     if isinstance(xml, (str, bytes)):
         xml_bytes = xml
-    elif isinstance(xml, unicode):
+    elif isinstance(xml, str):
         xml_bytes = xml.encode('utf8')
     elif isinstance(xml, type(etree.Element('pouet'))):
         xml_root = xml
         xml_bytes = etree.tostring(
             xml_root, pretty_print=True, encoding='UTF-8',
             xml_declaration=True)
-    elif isinstance(xml, file):
+    elif isinstance(xml, IOBase):
         xml.seek(0)
         xml_bytes = xml.read()
         # xml.close()
@@ -1203,14 +1195,14 @@ def generate_from_file(
     else:
         # clean-up pdf_metadata dict
         for key, value in pdf_metadata.items():
-            if not isinstance(value, (str, unicode)):
+            if not isinstance(value, str):
                 pdf_metadata[key] = ''
-    original_pdf = PdfFileReader(pdf_file)
+    original_pdf = PdfReader(pdf_file)
     # Extract /OutputIntents obj from original invoice
     output_intents = _get_original_output_intents(original_pdf)
-    new_pdf_filestream = PdfFileWriter()
-    new_pdf_filestream._header = b_("%PDF-1.6")
-    new_pdf_filestream.appendPagesFromReader(original_pdf)
+    new_pdf_filestream = PdfWriter()
+    new_pdf_filestream._header = b"%PDF-1.6"
+    new_pdf_filestream.append_pages_from_reader(original_pdf)
 
     original_pdf_id = original_pdf.trailer.get('/ID')
     logger.debug('original_pdf_id=%s', original_pdf_id)

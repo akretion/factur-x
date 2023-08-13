@@ -1,9 +1,9 @@
 Factur-X and Order-X Python library
 ===================================
 
-Factur-X is the e-invoicing standard for France and Germany. The Factur-X specifications are available on the `FNFE-MPE website <http://fnfe-mpe.org/factur-x/>`_ in English and French. The Factur-X standard is also called `ZUGFeRD 2.1 in Germany <https://www.ferd-net.de/standards/zugferd-2.1.1/index.html>`_.
+Factur-X is a Franco-German e-invoicing standard which complies with the European e-invoicing standard `EN 16931 <https://ec.europa.eu/digital-building-blocks/wikis/display/DIGITAL/Obtaining+a+copy+of+the+European+standard+on+eInvoicing>`_. The Factur-X specifications are available on the `FNFE-MPE website <http://fnfe-mpe.org/factur-x/>`_ in English and French. The Factur-X standard is also called `ZUGFeRD 2.2 in Germany <https://www.ferd-net.de/standards/zugferd-2.2/zugferd-2.2.html>`_.
 
-Order-X is the equivalent of Factur-X for purchase orders. The Order-X specifications are available on `the FNFE-MPE website <https://fnfe-mpe.org/factur-x/order-x/>`_ in English. The Order-X standard is also the fruit of a collaboration between France and Germany and you can find information about it in German on the `FeRD website <https://www.ferd-net.de/aktuelles/meldungen/order-x-ein-gemeinsamer-standard-fuer-elektronische-bestellungen-in-deutschland-und-frankreich.html>`_.
+Order-X is the equivalent of Factur-X for purchase orders. The Order-X specifications are available in English on `the FNFE-MPE website <https://fnfe-mpe.org/factur-x/order-x/>`_ and on the `FeRD website <https://www.ferd-net.de/standards/order-x/index.html>`_.
 
 The main feature of this Python library is to generate Factur-X invoices and Order-X orders from a regular PDF document and a Factur-X or Order-X compliant XML file.
 
@@ -17,19 +17,11 @@ Some of the features provided by this lib also work for ZUGFeRD 1.0 (the ancesto
 Installation
 ============
 
-This library works both on python 2.7 and python 3.
-
-To install it for python 3, run:
+To install it, run:
 
 .. code::
 
   sudo pip3 install --upgrade factur-x
-
-To install it for python 2.7, run:
-
-.. code::
-
-  sudo pip2 install --upgrade factur-x
 
 Usage
 =====
@@ -53,12 +45,12 @@ Several command line tools are provided with this lib:
 * **facturx-pdfextractxml**: extract the XML file from a Factur-X or Order-X PDF file
 * **facturx-xmlcheck**: check a Factur-X or Order-X XML file against the official XML Schema Definition
 
-All these commande line tools have a **-h** option that explains how to use them and shows all the available options.
+All these commande line tools have a **--help** option that explains how to use them and shows all the available options.
 
 Webservice
 ==========
 
-This project also provides a webservice to generate a Factur-X or Order-X PDF file from a regular PDF file, the XML file and additional attachments (if any). This webservice runs on Python3 and uses `Flask <https://www.palletsprojects.com/p/flask/>`_. To run the webservice, run **facturx-webservice** available in the *bin* subdirectory of the project. To query the webservice, you must send an **HTTP POST** request in **multipart/form-data** using the following keys:
+This project also provides a webservice to generate a Factur-X or Order-X PDF file from a regular PDF file, the XML file and additional attachments (if any). This webservice uses `Flask <https://www.palletsprojects.com/p/flask/>`_. To run the webservice, run **facturx-webservice** available in the *bin* subdirectory of the project. To query the webservice, you must send an **HTTP POST** request in **multipart/form-data** using the following keys:
 
 * **pdf** -> PDF file (required)
 * **xml** -> Factur-X or Order-X file (any profile, required)
@@ -66,7 +58,9 @@ This project also provides a webservice to generate a Factur-X or Order-X PDF fi
 * **attachment2** -> Second attachment (optional)
 * ...
 
-It is recommended to run the webservice behind an HTTPS/HTTP proxy such as `Nginx <https://www.nginx.com/>`_ or `Apache <https://httpd.apache.org/>`_. You will certainly have to increase the default maximum upload size (default value is only 1MB under Nginx!): use the parameter **client_max_body_size** for Nginx and **LimitRequestBody** for Apache.
+To deploy this webservice in production, follow the `guidelines <https://flask.palletsprojects.com/en/2.3.x/deploying/>`_ of the official Flask documentation: you should use a WSGI server (such as `Gunicorn <https://gunicorn.org/>`_) and a reverse proxy (such as `Nginx <https://www.nginx.com/>`_ or `Apache <https://httpd.apache.org/>`_). You will certainly have to increase the default maximum upload size (default value is only 1MB under Nginx!): use the parameter **client_max_body_size** for Nginx and **LimitRequestBody** for Apache.
+
+I recommend this `tutorial <https://www.digitalocean.com/community/tutorials/how-to-serve-flask-applications-with-gunicorn-and-nginx-on-ubuntu-20-04-fr>`_ (in French) which explains how to deploy a Flask application with Gunicorn and Nginx on Ubuntu.
 
 You can use `curl <https://curl.haxx.se/>`_, a command line tool to send HTTP requests (on Linux Ubuntu/Debian, just install the **curl** package) to generate the request:
 
@@ -79,7 +73,7 @@ A public instance of this webservice is available on a server of `FNFE-MPE <http
 Licence
 =======
 
-This library is published under the BSD licence (same licence as `PyPDF4 <https://github.com/claird/PyPDF4/>`_ on which this lib depends).
+This library is published under the BSD licence (same licence as `pypdf <https://github.com/py-pdf/pypdf/>`_ on which this lib depends).
 
 Contributors
 ============
@@ -88,6 +82,12 @@ Contributors
 
 Changelog
 =========
+
+* Version 3.0 dated 2023-08-13
+
+  * Replace dependency on PyPDF4 by pypdf. The development focus is back on **pypdf** and the forks PyPDF2, PyPDF3 and PyPDF4 are not maintained any more, cf this `article <https://martinthoma.medium.com/pypdf-the-2022-review-8925dea750d9>`_.
+  * Remove support for Python 2.7
+  * In the scripts, replace /usr/bin/python3 by /usr/bin/env python
 
 * Version 2.5 dated 2023-03-24
 

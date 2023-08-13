@@ -1,6 +1,5 @@
-#! /usr/bin/python
-# -*- coding: utf-8 -*-
-# Copyright 2017-2020 Alexis de Lattre <alexis.delattre@akretion.com>
+#! /usr/bin/env python
+# Copyright 2017-2023 Alexis de Lattre <alexis.delattre@akretion.com>
 
 import argparse
 import sys

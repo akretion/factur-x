@@ -1,2 +1,2 @@
-PyPDF4
+pypdf>=3.15.0
 lxml

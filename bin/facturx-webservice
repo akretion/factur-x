@@ -1,7 +1,14 @@
-#!/usr/bin/python3
-# Copyright 2020, Alexis de Lattre <alexis.delattre@akretion.com>
+#! /usr/bin/env python
+# Copyright 2020-2023 Alexis de Lattre <alexis.delattre@akretion.com>
 # Published under the BSD licence
 # REST webservice to generated Factur-X invoice
+#
+# If you deploy it in production, follow these instructions:
+# https://flask.palletsprojects.com/en/2.3.x/deploying/
+# Here is a good tutorial (in French) about the deployment of a Flask
+# application in production with Gunicorn + Nginx:
+# https://www.digitalocean.com/community/tutorials/how-to-serve-flask-applications-with-gunicorn-and-nginx-on-ubuntu-20-04-fr
+#
 # Sample client request:
 #   curl -X POST -F 'pdf=@/home/alexis/invoice_test.pdf'
 #        -F 'xml=@/home/alexis/factur-x.xml' -o result_facturx.pdf
