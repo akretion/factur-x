@@ -110,7 +110,7 @@ def xml_check_xsd(xml, flavor='autodetect', level='autodetect'):
     if not isinstance(level, (type(None), str)):
         raise ValueError('Wrong type for level argument')
     xml_etree = None
-    if isinstance(xml, (str, bytes)):
+    if isinstance(xml, bytes):
         xml_bytes = xml
     elif isinstance(xml, str):
         xml_bytes = xml.encode('utf8')
@@ -1109,7 +1109,7 @@ def generate_from_file(
     else:
         file_type = 'file'
     xml_root = None
-    if isinstance(xml, (str, bytes)):
+    if isinstance(xml, bytes):
         xml_bytes = xml
     elif isinstance(xml, str):
         xml_bytes = xml.encode('utf8')
