@@ -17,7 +17,7 @@ Some of the features provided by this lib also work for ZUGFeRD 1.0 (the ancesto
 Installation
 ============
 
-To install it, run:
+To install it on Linux, run:
 
 .. code::
 
@@ -46,6 +46,41 @@ Several command line tools are provided with this lib:
 * **facturx-xmlcheck**: check a Factur-X or Order-X XML file against the official XML Schema Definition
 
 All these commande line tools have a **--help** option that explains how to use them and shows all the available options.
+
+Tutorial: generate a Factur-X invoice under Windows
+===================================================
+
+Download the last version of Python for Windows from `python.org/downloads <https://www.python.org/downloads/>`_.
+
+Launch the installer. On the first screen of the installer, enable the option **Add python.exe to PATH**. At the end of the installation process, the installer displays a screen with the message **Setup was successful** ; at that step, it may propose you **Disable path length limit** with a help message that says *Changes your machine configuration to allow programs, including Python, to bypass the 260 character "MAX_PATH" limitation*. You must accept this proposal (otherwise the installation of the factur-x library will fail): click on the label **Disable path length limit** and follow the instructions.
+
+Open a Windows command prompt as Administrator and enter the following command to download and install the factur-x library:
+
+.. code::
+
+  pip3 install --upgrade factur-x
+
+Look at the installation logs and make sure there are no error messages. Close the Windows command prompt.
+
+Open a new Windows command prompt (not as Administrator) and enter the following command (adapt the path to your filesystem):
+
+.. code::
+
+  python C:\Users\Alexis\AppData\Local\Programs\Python\Python311\Scripts\facturx-pdfgen --help
+
+It should display the help of the command *facturx-pdfgen*.
+
+Enter the following command to generate a Factur-X invoice:
+
+.. code::
+
+  python C:\Users\Alexis\AppData\Local\Programs\Python\Python311\Scripts\facturx-pdfgen C:\Users\Alexis\Documents\invoice.pdf C:\Users\Alexis\Documents\fx.xml C:\Users\Alexis\Documents\invoice-facturx.pdf
+
+where:
+
+* *C:\\Users\\Alexis\\Documents\\invoice.pdf* is the original PDF invoice,
+* *C:\\Users\\Alexis\\Documents\\fx.xml* is the Factur-X XML file,
+* *C:\\Users\\Alexis\\Documents\\invoice-facturx.pdf* is the Factur-X PDF invoice that will be generated.
 
 Webservice
 ==========
