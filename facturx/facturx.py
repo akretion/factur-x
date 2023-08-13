@@ -503,7 +503,7 @@ def _prepare_pdf_metadata_xml(flavor, level, orderx_type, pdf_metadata):
 
 
 def _filespec_additional_attachments(
-        pdf_filestream, name_arrayobj_cdict, file_dict, filename):
+        pdf_writer, name_arrayobj_cdict, file_dict, filename):
     logger.debug('_filespec_additional_attachments filename=%s', filename)
     md5sum = hashlib.md5(file_dict['filedata']).hexdigest()
     md5sum_obj = create_string_object(md5sum)
@@ -530,7 +530,7 @@ def _filespec_additional_attachments(
         NameObject("/Params"): params_dict,
         NameObject("/Subtype"): NameObject('/%s' % file_mimetype),
         })
-    file_entry_obj = pdf_filestream._add_object(file_entry)
+    file_entry_obj = pdf_writer._add_object(file_entry)
     ef_dict = DictionaryObject({
         NameObject("/F"): file_entry_obj,
         })
@@ -546,17 +546,15 @@ def _filespec_additional_attachments(
         NameObject("/EF"): ef_dict,
         NameObject("/UF"): fname_obj,
         })
-    filespec_obj = pdf_filestream._add_object(filespec_dict)
+    filespec_obj = pdf_writer._add_object(filespec_dict)
     name_arrayobj_cdict[fname_obj] = filespec_obj
 
 
 def _facturx_update_metadata_add_attachment(
-        pdf_filestream, xml_bytes, pdf_metadata, flavor, level,
-        orderx_type=None, lang=None,
-        output_intents=[], additional_attachments={},
-        afrelationship='data'):
-    '''This method is inspired from the code of the addAttachment()
-    method of the PyPDF2 lib'''
+        pdf_writer, xml_bytes, pdf_metadata, flavor, level, orderx_type=None,
+        lang=None, additional_attachments={}, afrelationship='data'):
+    '''This method is inspired from the code of the add_attachment()
+    method of the pypdf lib'''
     # The entry for the file
     # facturx_xml_str = facturx_xml_str.encode('utf-8')
     if flavor == 'order-x' and orderx_type not in ORDERX_TYPES:
@@ -582,7 +580,7 @@ def _facturx_update_metadata_add_attachment(
         NameObject("/Params"): params_dict,
         NameObject("/Subtype"): NameObject("/text/xml"),
         })
-    file_entry_obj = pdf_filestream._add_object(file_entry)
+    file_entry_obj = pdf_writer._add_object(file_entry)
     # The Filespec entry
     ef_dict = DictionaryObject({
         NameObject("/F"): file_entry_obj,
@@ -605,11 +603,11 @@ def _facturx_update_metadata_add_attachment(
         NameObject("/EF"): ef_dict,
         NameObject("/UF"): fname_obj,
         })
-    filespec_obj = pdf_filestream._add_object(filespec_dict)
+    filespec_obj = pdf_writer._add_object(filespec_dict)
     name_arrayobj_cdict = {fname_obj: filespec_obj}
     for attach_filename, attach_dict in additional_attachments.items():
         _filespec_additional_attachments(
-            pdf_filestream, name_arrayobj_cdict, attach_dict, attach_filename)
+            pdf_writer, name_arrayobj_cdict, attach_dict, attach_filename)
     logger.debug('name_arrayobj_cdict=%s', name_arrayobj_cdict)
     name_arrayobj_content_sort = list(
         sorted(name_arrayobj_cdict.items(), key=lambda x: x[0]))
@@ -627,48 +625,39 @@ def _facturx_update_metadata_add_attachment(
     embedded_files_dict = DictionaryObject({
         NameObject("/EmbeddedFiles"): embedded_files_names_dict,
         })
-    res_output_intents = []
-    logger.debug('output_intents=%s', output_intents)
-    for output_intent_dict, dest_output_profile_dict in output_intents:
-        dest_output_profile_obj = pdf_filestream._add_object(
-            dest_output_profile_dict)
-        # TODO detect if there are no other objects in output_intent_dest_obj
-        # than /DestOutputProfile
-        output_intent_dict.update({
-            NameObject("/DestOutputProfile"): dest_output_profile_obj,
-            })
-        output_intent_obj = pdf_filestream._add_object(output_intent_dict)
-        res_output_intents.append(output_intent_obj)
     # Update the root
+    af_value_obj = pdf_writer._add_object(ArrayObject(af_list))
+    update_root_dict = {
+        NameObject("/AF"): af_value_obj,
+        NameObject("/Names"): embedded_files_dict,
+        # show attachments when opening PDF
+        NameObject("/PageMode"): NameObject("/UseAttachments"),
+        }
     metadata_xml_bytes = _prepare_pdf_metadata_xml(
         flavor, level, orderx_type, pdf_metadata)
     metadata_file_entry = DecodedStreamObject()
-    metadata_file_entry.set_data(metadata_xml_bytes)
-    metadata_file_entry = metadata_file_entry.flate_encode()
     metadata_file_entry.update({
         NameObject('/Subtype'): NameObject('/XML'),
         NameObject('/Type'): NameObject('/Metadata'),
         })
-    metadata_obj = pdf_filestream._add_object(metadata_file_entry)
-    af_value_obj = pdf_filestream._add_object(ArrayObject(af_list))
-    pdf_filestream._root_object.update({
-        NameObject("/AF"): af_value_obj,
-        NameObject("/Metadata"): metadata_obj,
-        NameObject("/Names"): embedded_files_dict,
-        # show attachments when opening PDF
-        NameObject("/PageMode"): NameObject("/UseAttachments"),
-        })
+    metadata_file_entry.set_data(metadata_xml_bytes)
+    metadata_file_entry = metadata_file_entry.flate_encode()
+
+    existing_metadata_obj = pdf_writer._root_object.get('/Metadata')
+    if existing_metadata_obj:
+        logger.debug('Found existing /Metadata entry in catalog: replacing it.')
+        pdf_writer._replace_object(existing_metadata_obj, metadata_file_entry)
+    else:
+        logger.debug('No existing /Metadata entry in catalog: creating one.')
+        metadata_obj = pdf_writer._add_object(metadata_file_entry)
+        update_root_dict[NameObject("/Metadata")] = metadata_obj
+    pdf_writer._root_object.update(update_root_dict)
     if lang:
-        pdf_filestream._root_object.update({
+        pdf_writer._root_object.update({
             NameObject("/Lang"): create_string_object(lang.replace('_', '-')),
             })
-    logger.debug('res_output_intents=%s', res_output_intents)
-    if res_output_intents:
-        pdf_filestream._root_object.update({
-            NameObject("/OutputIntents"): ArrayObject(res_output_intents),
-        })
     metadata_txt_dict = _prepare_pdf_metadata_txt(pdf_metadata)
-    pdf_filestream.add_metadata(metadata_txt_dict)
+    pdf_writer.add_metadata(metadata_txt_dict)
     logger.info('%s file added to PDF document', xml_filename)
 
 
@@ -831,25 +820,6 @@ def get_orderx_type(xml_etree):
     logger.info(
         'Order-X type is %s code %s (autodetected)', ORDERX_code2type[code], code)
     return ORDERX_code2type[code]
-
-
-def _get_original_output_intents(original_pdf):
-    output_intents = []
-    try:
-        pdf_root = original_pdf.trailer['/Root']
-        ori_output_intents = pdf_root['/OutputIntents']
-        logger.debug('output_intents_list=%s', ori_output_intents)
-        for ori_output_intent in ori_output_intents:
-            ori_output_intent_dict = ori_output_intent.get_object()
-            logger.debug('ori_output_intents_dict=%s', ori_output_intent_dict)
-            dest_output_profile_dict =\
-                ori_output_intent_dict['/DestOutputProfile'].get_object()
-            output_intents.append(
-                (ori_output_intent_dict, dest_output_profile_dict))
-    except Exception:
-        logger.debug('Failed to extract output intents from input PDF')
-        pass
-    return output_intents
 
 
 def generate_facturx_from_binary(
@@ -1201,35 +1171,27 @@ def generate_from_file(
         for key, value in pdf_metadata.items():
             if not isinstance(value, str):
                 pdf_metadata[key] = ''
-    original_pdf = PdfReader(pdf_file)
-    # Extract /OutputIntents obj from original invoice
-    output_intents = _get_original_output_intents(original_pdf)
-    new_pdf_filestream = PdfWriter()
-    new_pdf_filestream._header = b"%PDF-1.6"
-    new_pdf_filestream.append_pages_from_reader(original_pdf)
+    pdf_reader = PdfReader(pdf_file)
+    pdf_writer = PdfWriter()
+    pdf_writer._header = b"%PDF-1.6"
+    pdf_writer.clone_document_from_reader(pdf_reader)
 
-    original_pdf_id = original_pdf.trailer.get('/ID')
-    logger.debug('original_pdf_id=%s', original_pdf_id)
-    if original_pdf_id:
-        new_pdf_filestream._ID = original_pdf_id
-        # else : generate some ?
     _facturx_update_metadata_add_attachment(
-        new_pdf_filestream, xml_bytes, pdf_metadata, flavor, level,
+        pdf_writer, xml_bytes, pdf_metadata, flavor, level,
         orderx_type=orderx_type, lang=lang,
-        output_intents=output_intents,
         additional_attachments=attachments,
         afrelationship=afrelationship)
     if output_pdf_file:
         with open(output_pdf_file, 'wb') as output_f:
-            new_pdf_filestream.write(output_f)
+            pdf_writer.write(output_f)
             output_f.close()
     else:
         if file_type == 'path':
             with open(pdf_file, 'wb') as f:
-                new_pdf_filestream.write(f)
+                pdf_writer.write(f)
                 f.close()
         elif file_type == 'file':
-            new_pdf_filestream.write(pdf_file)
+            pdf_writer.write(pdf_file)
     end_chrono = datetime.now()
     logger.info(
         '%s PDF generated in %s seconds',

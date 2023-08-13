@@ -118,6 +118,12 @@ Contributors
 Changelog
 =========
 
+* Version 3.1 dated 2023-08-13
+
+  * Keep bookmarks, annotations, etc. from input PDF file. For that, we use the method clone_document_from_reader() of pypdf instead of append_pages_from_reader()
+  * Fix bug on xml type parsing (bug introduced in version 3.0)
+  * raise explicit error when trying to generate a ZUGFeRD 1.x PDF invoice
+
 * Version 3.0 dated 2023-08-13
 
   * Replace dependency on PyPDF4 by pypdf. The development focus is back on **pypdf** and the forks PyPDF2, PyPDF3 and PyPDF4 are not maintained any more, cf this `article <https://martinthoma.medium.com/pypdf-the-2022-review-8925dea750d9>`_.
