@@ -1165,6 +1165,10 @@ def generate_from_file(
             xml_root = etree.fromstring(xml_bytes)
         logger.debug('Flavor will be autodetected')
         flavor = get_flavor(xml_root)
+        if flavor == 'zugferd':
+            raise ValueError(
+                "XML is ZUGFeRD 1.x. Generating ZUGFeRD 1.x PDF is not supported. "
+                "You should update the XML to ZUGFeRD 2.x.")
     if (
             (flavor == 'factur-x' and level not in FACTURX_LEVEL2xsd) or
             (flavor == 'order-x' and level not in ORDERX_LEVEL2xsd)):
