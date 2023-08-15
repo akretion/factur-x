@@ -304,52 +304,34 @@ def get_xml_from_pdf(pdf_file, check_xsd=True, filenames=[]):
         filenames = ALL_FILENAMES
     logger.debug('Searching for filenames %s', filenames)
     xml_bytes = xml_filename = False
-    pdf = PdfReader(pdf_file_in)
-    pdf_root = pdf.trailer['/Root']  # = Catalog
-    logger.debug('pdf_root=%s', pdf_root)
-    catalog_name = _get_dict_entry(pdf_root, '/Names')
-    if not catalog_name:
-        logger.info('No Names entry in Catalog')
-        return (None, None)
-    embeddedfiles_node = _get_dict_entry(catalog_name, '/EmbeddedFiles')
-    if not embeddedfiles_node:
-        logger.info('No EmbeddedFiles entry in the /Names of the Catalog')
-        return (None, None)
-    embeddedfiles = _get_embeddedfiles(embeddedfiles_node)
-    logger.debug('embeddedfiles=%s', embeddedfiles)
-    if not embeddedfiles:
-        return (None, None)
-    embeddedfiles_by_two = list(zip(embeddedfiles, embeddedfiles[1:]))[::2]
-    logger.debug('embeddedfiles_by_two=%s', embeddedfiles_by_two)
-    try:
-        for (filename, file_obj) in embeddedfiles_by_two:
-            logger.debug('found filename=%s', filename)
-            if filename in filenames:
-                xml_file_dict = file_obj.get_object()
-                logger.debug('xml_file_dict=%s', xml_file_dict)
-                tmp_xml_bytes = xml_file_dict['/EF']['/F'].get_data()
+    pdf_reader = PdfReader(pdf_file_in)
+    attach_dict = pdf_reader.attachments
+    for filename_obj, file_list in attach_dict.items():
+        filename = str(filename_obj)
+        logger.debug('Found filename=%s', filename)
+        if filename in filenames and file_list:
+            tmp_xml_bytes = file_list[0]
+            try:
                 xml_root = etree.fromstring(tmp_xml_bytes)
                 logger.info(
                     'A valid XML file %s has been found in the PDF file',
                     filename)
-                if check_xsd:
-                    flavor = 'autodetect'
-                    if filename == ORDERX_FILENAME:
-                        flavor = 'order-x'
-                    elif filename == FACTURX_FILENAME:
-                        flavor = 'factur-x'
-                    elif filename in ZUGFERD_FILENAMES:
-                        flavor = 'zugferd'
-                    xml_check_xsd(xml_root, flavor=flavor)
-                    xml_bytes = tmp_xml_bytes
-                    xml_filename = filename
-                else:
-                    xml_bytes = tmp_xml_bytes
-                    xml_filename = filename
-                break
-    except Exception as e:
-        logger.error('No valid XML file found in the PDF: %s', e)
-        return (None, None)
+            except Exception as e:
+                logger.warning(
+                    'The file %s is not a valid XML file: %s', filename, str(e))
+                continue
+            if check_xsd:
+                flavor = 'autodetect'
+                if filename == ORDERX_FILENAME:
+                    flavor = 'order-x'
+                elif filename == FACTURX_FILENAME:
+                    flavor = 'factur-x'
+                elif filename in ZUGFERD_FILENAMES:
+                    flavor = 'zugferd'
+                xml_check_xsd(xml_root, flavor=flavor)
+            xml_bytes = tmp_xml_bytes
+            xml_filename = filename
+            break
     logger.info('Returning an XML file %s', xml_filename)
     logger.debug('Content of the XML file: %s', xml_bytes)
     return (xml_filename, xml_bytes)
