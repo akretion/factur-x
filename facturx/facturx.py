@@ -211,89 +211,6 @@ def xml_check_xsd(xml, flavor='autodetect', level='autodetect'):
     return True
 
 
-def _get_dict_entry(node, entry):
-    if not isinstance(node, dict):
-        raise ValueError('The node must be a dict')
-    dict_entry = node.get(entry)
-    if isinstance(dict_entry, dict):
-        return dict_entry
-    elif isinstance(dict_entry, IndirectObject):
-        res_dict_entry = dict_entry.get_object()
-        if isinstance(res_dict_entry, dict):
-            return res_dict_entry
-        else:
-            return False
-    else:
-        return False
-
-
-def _parse_embeddedfiles_kids_node(kids_node, level, res):
-    if level not in [1, 2]:
-        raise ValueError('Level argument should be 1 or 2')
-    if not isinstance(kids_node, list):
-        logger.error(
-            'The /Kids entry of the EmbeddedFiles name tree must '
-            'be an array')
-        return False
-    logger.debug("kids_node=%s", kids_node)
-    for kid_entry in kids_node:
-        if not isinstance(kid_entry, IndirectObject):
-            logger.error(
-                'The /Kids entry of the EmbeddedFiles name tree '
-                'must be a list of IndirectObjects')
-            return False
-        kids_node = kid_entry.get_object()
-        logger.debug('kids_node=%s', kids_node)
-        if not isinstance(kids_node, dict):
-            logger.error(
-                'The /Kids entry of the EmbeddedFiles name tree '
-                'must be a list of IndirectObjects that point to '
-                'dict objects')
-            return False
-        if '/Names' in kids_node:
-            if not isinstance(kids_node['/Names'], list):
-                logger.error(
-                    'The /Names entry in EmbeddedFiles must be an array')
-                return False
-            res += kids_node['/Names']
-        elif '/Kids' in kids_node and level == 1:
-            kids_node_l2 = kids_node['/Kids']
-            _parse_embeddedfiles_kids_node(kids_node_l2, 2, res)
-        else:
-            logger.error('/Kids node should have a /Names or /Kids entry')
-            return False
-    return True
-
-
-def _get_embeddedfiles(embeddedfiles_node):
-    if not isinstance(embeddedfiles_node, dict):
-        raise ValueError('The EmbeddedFiles node must be a dict')
-    res = []
-    if '/Names' in embeddedfiles_node:
-        if not isinstance(embeddedfiles_node['/Names'], list):
-            logger.error(
-                'The /Names entry of the EmbeddedFiles name tree must '
-                'be an array')
-            return False
-        res = embeddedfiles_node['/Names']
-    elif '/Kids' in embeddedfiles_node:
-        kids_node = embeddedfiles_node['/Kids']
-        parse_result = _parse_embeddedfiles_kids_node(kids_node, 1, res)
-        if parse_result is False:
-            return False
-    else:
-        logger.error(
-            'The EmbeddedFiles name tree should have either a /Names '
-            'or a /Kids entry')
-        return False
-    if len(res) % 2 != 0:
-        logger.error(
-            'The EmbeddedFiles name tree should point to an even number of '
-            'elements')
-        return False
-    return res
-
-
 def get_facturx_xml_from_pdf(pdf_file, check_xsd=True):
     filenames = [FACTURX_FILENAME] + ZUGFERD_FILENAMES
     return get_xml_from_pdf(pdf_file, check_xsd=check_xsd, filenames=filenames)
@@ -325,53 +242,34 @@ def get_xml_from_pdf(pdf_file, check_xsd=True, filenames=[]):
         filenames = ALL_FILENAMES
     logger.debug('Searching for filenames %s', filenames)
     xml_bytes = xml_filename = False
-    pdf = PdfReader(pdf_file_in)
-    pdf_root = pdf.trailer['/Root']  # = Catalog
-    logger.debug('pdf_root=%s', pdf_root)
-    catalog_name = _get_dict_entry(pdf_root, '/Names')
-    if not catalog_name:
-        logger.info('No Names entry in Catalog')
-        return (None, None)
-    embeddedfiles_node = _get_dict_entry(catalog_name, '/EmbeddedFiles')
-    if not embeddedfiles_node:
-        logger.info('No EmbeddedFiles entry in the /Names of the Catalog')
-        return (None, None)
-    embeddedfiles = _get_embeddedfiles(embeddedfiles_node)
-    logger.debug('embeddedfiles=%s', embeddedfiles)
-    if not embeddedfiles:
-        return (None, None)
-    embeddedfiles_by_two = list(zip(embeddedfiles, embeddedfiles[1:]))[::2]
-    logger.debug('embeddedfiles_by_two=%s', embeddedfiles_by_two)
-    try:
-        for (filename, file_obj) in embeddedfiles_by_two:
-            logger.debug('found filename=%s', filename)
-            if filename in filenames:
-                xml_file_dict = file_obj.get_object()
-                logger.debug('xml_file_dict=%s', xml_file_dict)
-                tmp_xml_bytes = xml_file_dict['/EF']['/F'].get_data()
+    pdf_reader = PdfReader(pdf_file_in)
+    for filename_obj, file_list in pdf_reader.attachments.items():
+        filename = str(filename_obj)
+        logger.debug('Found filename=%s', filename)
+        if filename in filenames and file_list:
+            tmp_xml_bytes = file_list[0]
+            try:
                 xml_root = etree.fromstring(tmp_xml_bytes)
                 logger.info(
                     'A valid XML file %s has been found in the PDF file',
                     filename)
-                if check_xsd:
-                    flavor = 'autodetect'
-                    if filename == ORDERX_FILENAME:
-                        flavor = 'order-x'
-                    elif filename == FACTURX_FILENAME:
-                        flavor = 'factur-x'
-                    # Don't set flavor when filename is zugferd-invoice.xml
-                    # because it can be either zugferd (ie zugferd 1.0)
-                    # or 'factur-x' i.e. zugferd 2.0, see bug #41
-                    xml_check_xsd(xml_root, flavor=flavor)
-                    xml_bytes = tmp_xml_bytes
-                    xml_filename = filename
-                else:
-                    xml_bytes = tmp_xml_bytes
-                    xml_filename = filename
-                break
-    except Exception as e:
-        logger.error('No valid XML file found in the PDF: %s', e)
-        return (None, None)
+            except Exception as e:
+                logger.warning(
+                    'The file %s is not a valid XML file: %s', filename, str(e))
+                continue
+            if check_xsd:
+                flavor = 'autodetect'
+                if filename == ORDERX_FILENAME:
+                    flavor = 'order-x'
+                elif filename == FACTURX_FILENAME:
+                    flavor = 'factur-x'
+                # Don't set flavor when filename is zugferd-invoice.xml
+                # because it can be either zugferd (ie zugferd 1.0)
+                # or 'factur-x' i.e. zugferd 2.0, see bug #41
+                xml_check_xsd(xml_root, flavor=flavor)
+            xml_bytes = tmp_xml_bytes
+            xml_filename = filename
+            break
     logger.info('Returning an XML file %s', xml_filename)
     logger.debug('Content of the XML file: %s', xml_bytes)
     return (xml_filename, xml_bytes)
