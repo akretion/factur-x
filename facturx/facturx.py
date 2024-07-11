@@ -333,14 +333,7 @@ def get_xml_from_pdf(pdf_file, check_xsd=True, filenames=[]):
                     'A valid XML file %s has been found in the PDF file',
                     filename)
                 if check_xsd:
-                    flavor = 'autodetect'
-                    if filename == ORDERX_FILENAME:
-                        flavor = 'order-x'
-                    elif filename == FACTURX_FILENAME:
-                        flavor = 'factur-x'
-                    elif filename in ZUGFERD_FILENAMES:
-                        flavor = 'zugferd'
-                    xml_check_xsd(xml_root, flavor=flavor)
+                    xml_check_xsd(xml_root, flavor='autodetect')
                     xml_bytes = tmp_xml_bytes
                     xml_filename = filename
                 else:
