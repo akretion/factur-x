@@ -35,7 +35,7 @@ from datetime import datetime
 from pypdf import PdfWriter, PdfReader
 from pypdf.generic import DictionaryObject, DecodedStreamObject, \
     NameObject, NumberObject, ArrayObject, IndirectObject, create_string_object
-from pkg_resources import resource_filename
+import importlib.resources
 import os.path
 import mimetypes
 import hashlib
@@ -150,11 +150,9 @@ def xml_check_xsd(xml, flavor='autodetect', level='autodetect'):
         if level not in FACTURX_LEVEL2xsd:
             raise ValueError(
                 "Wrong level '%s' for Factur-X invoice." % level)
-        xsd_file = resource_filename(
-            __name__, 'xsd/%s' % FACTURX_LEVEL2xsd[level])
+        xsd_file = 'xsd/%s' % FACTURX_LEVEL2xsd[level]
     elif flavor == 'zugferd':
-        xsd_file = resource_filename(
-            __name__, 'xsd/zugferd/ZUGFeRD1p0.xsd')
+        xsd_file = 'xsd/zugferd/ZUGFeRD1p0.xsd'
     elif flavor in ('order-x', 'orderx'):
         if level not in ORDERX_LEVEL2xsd:
             if xml_etree is None:
@@ -167,11 +165,11 @@ def xml_check_xsd(xml, flavor='autodetect', level='autodetect'):
         if level not in ORDERX_LEVEL2xsd:
             raise ValueError(
                 "Wrong level '%s' for Order-X document." % level)
-        xsd_file = resource_filename(
-            __name__, 'xsd/%s' % ORDERX_LEVEL2xsd[level])
+        xsd_file = 'xsd/%s' % ORDERX_LEVEL2xsd[level]
 
     logger.debug('Using XSD file %s', xsd_file)
-    xsd_etree_obj = etree.parse(open(xsd_file))
+    xsd_etree_obj = etree.parse(importlib.resources.files(__package__)
+        .joinpath(xsd_file).open())
     official_schema = etree.XMLSchema(xsd_etree_obj)
     try:
         t = etree.parse(BytesIO(xml_bytes))
