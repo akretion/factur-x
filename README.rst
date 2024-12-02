@@ -118,6 +118,11 @@ Contributors
 Changelog
 =========
 
+* Version 3.3 dated 2024-12-02
+
+  * Migrate packaging from setup.py to pyproject.toml
+  * Version is now stored in pyproject.toml and python code use it
+
 * Version 3.2 dated 2024-12-02
 
   * Update to Factur-X XSD version 1.0.7.2 (equivalent to ZUGFeRD 2.3)

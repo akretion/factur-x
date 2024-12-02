@@ -27,7 +27,6 @@
 # - add automated tests (currently, we only have tests at odoo module level)
 # - keep original metadata by copy of pdf_tailer[/Info] ?
 
-from ._version import __version__
 from io import BytesIO, IOBase
 from lxml import etree
 from tempfile import NamedTemporaryFile
@@ -36,12 +35,14 @@ from pypdf import PdfWriter, PdfReader
 from pypdf.generic import DictionaryObject, DecodedStreamObject, \
     NameObject, NumberObject, ArrayObject, IndirectObject, create_string_object
 import importlib.resources
+import importlib.metadata
 import os.path
 import mimetypes
 import hashlib
 import logging
 
 
+VERSION = importlib.metadata.version("factur-x")
 FORMAT = '%(asctime)s [%(levelname)s] %(message)s'
 logging.basicConfig(format=FORMAT)
 logger = logging.getLogger('factur-x')
@@ -104,7 +105,7 @@ def xml_check_xsd(xml, flavor='autodetect', level='autodetect'):
     raise an error if it is not valid against the XSD
     """
     logger.debug(
-        'xml_check_xsd with factur-x lib %s', __version__)
+        'xml_check_xsd with factur-x lib %s', VERSION)
     if not isinstance(flavor, str):
         raise ValueError('Wrong type for flavor argument')
     if not isinstance(level, (type(None), str)):
@@ -283,7 +284,7 @@ def get_orderx_xml_from_pdf(pdf_file, check_xsd=True):
 
 def get_xml_from_pdf(pdf_file, check_xsd=True, filenames=[]):
     logger.debug(
-        'get_xml_from_pdf with factur-x lib %s', __version__)
+        'get_xml_from_pdf with factur-x lib %s', VERSION)
     if not pdf_file:
         raise ValueError('Missing pdf_invoice argument')
     if not isinstance(check_xsd, bool):
@@ -375,7 +376,7 @@ def _prepare_pdf_metadata_txt(pdf_metadata):
         '/Author': pdf_metadata.get('author', ''),
         '/CreationDate': pdf_date,
         '/Creator':
-        'factur-x Python lib v%s by Alexis de Lattre' % __version__,
+        'factur-x Python lib v%s by Alexis de Lattre' % VERSION,
         '/Keywords': pdf_metadata.get('keywords', ''),
         '/ModDate': pdf_date,
         '/Subject': pdf_metadata.get('subject', ''),
@@ -482,7 +483,7 @@ def _prepare_pdf_metadata_xml(flavor, level, orderx_type, pdf_metadata):
         author=pdf_metadata.get('author', ''),
         subject=pdf_metadata.get('subject', ''),
         producer='pypdf',
-        creator_tool='factur-x python lib v%s by Alexis de Lattre' % __version__,
+        creator_tool='factur-x python lib v%s by Alexis de Lattre' % VERSION,
         timestamp=_get_metadata_timestamp(),
         urn=urn,
         documenttype=documenttype,
@@ -1008,7 +1009,7 @@ def generate_from_file(
     """
     start_chrono = datetime.now()
     logger.debug(
-        'generate_from_file with factur-x lib %s', __version__)
+        'generate_from_file with factur-x lib %s', VERSION)
     logger.debug('1st arg pdf_file type=%s', type(pdf_file))
     logger.debug('2nd arg xml type=%s', type(xml))
     logger.debug('optional arg flavor=%s', flavor)

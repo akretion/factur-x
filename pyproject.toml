@@ -1,0 +1,40 @@
+[project]
+name = "factur-x"
+version = "3.3"
+description = "Factur-X and Order-X: electronic invoicing and ordering standards"
+authors = [{name = "Alexis de Lattre", email = "alexis.delattre@akretion.com"}]
+readme = "README.rst"
+classifiers = [
+    "Programming Language :: Python",
+    "Topic :: Office/Business :: Financial :: Accounting",
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+]
+keywords = ["e-invoice", "ZUGFeRD", "Factur-X", "Order-X", "e-procurement"]
+license = {file = "LICENSE"}
+requires-python = ">=3.6"
+dynamic = ["dependencies"]
+
+[project.urls]
+Homepage = "https://github.com/akretion/factur-x"
+Source = "https://github.com/akretion/factur-x"
+Issues = "https://github.com/akretion/factur-x/issues"
+
+# TODO discover how to make scripts work again
+#[project.scripts]
+#facturx-pdfgen = "bin.facturx-pdfgen:main"
+#facturx-pdfextractxml = "bin.facturx-pdfextractxml:main"
+#facturx-xmlcheck = "bin.facturx-xmlcheck:main"
+#facturx-webservice = "bin.facturx-webservice:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[tool.hatch.build.targets.wheel]
+packages = ["facturx"]
