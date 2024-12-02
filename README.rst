@@ -118,6 +118,11 @@ Contributors
 Changelog
 =========
 
+* Version 3.2 dated 2024-12-02
+
+  * Update to Factur-X XSD version 1.0.7.2 (equivalent to ZUGFeRD 2.3)
+  * Don't set flavor autodetection when file is zugferd-invoice.xml (fixes bug #41)
+
 * Version 3.1 dated 2023-08-13
 
   * Keep bookmarks, annotations, etc. from input PDF file. For that, we use the method clone_document_from_reader() of pypdf instead of append_pages_from_reader()

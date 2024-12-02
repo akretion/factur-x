@@ -52,11 +52,11 @@ ZUGFERD_FILENAMES = ['zugferd-invoice.xml', 'ZUGFeRD-invoice.xml']
 ORDERX_FILENAME = 'order-x.xml'
 ALL_FILENAMES = [FACTURX_FILENAME] + ZUGFERD_FILENAMES + [ORDERX_FILENAME]
 FACTURX_LEVEL2xsd = {
-    'minimum': 'facturx-minimum/FACTUR-X_MINIMUM.xsd',
-    'basicwl': 'facturx-basicwl/FACTUR-X_BASIC-WL.xsd',
-    'basic': 'facturx-basic/FACTUR-X_BASIC.xsd',
-    'en16931': 'facturx-en16931/FACTUR-X_EN16931.xsd',
-    'extended': 'facturx-extended/FACTUR-X_EXTENDED.xsd',
+    'minimum': 'facturx-minimum/Factur-X_1.07.2_MINIMUM.xsd',
+    'basicwl': 'facturx-basicwl/Factur-X_1.07.2_BASICWL.xsd',
+    'basic': 'facturx-basic/Factur-X_1.07.2_BASIC.xsd',
+    'en16931': 'facturx-en16931/Factur-X_1.07.2_EN16931.xsd',
+    'extended': 'facturx-extended/Factur-X_1.07.2_EXTENDED.xsd',
 }
 ORDERX_LEVEL2xsd = {
     'basic': 'orderx-basic/SCRDMCCBDACIOMessageStructure_100pD20B.xsd',
@@ -336,8 +336,9 @@ def get_xml_from_pdf(pdf_file, check_xsd=True, filenames=[]):
                         flavor = 'order-x'
                     elif filename == FACTURX_FILENAME:
                         flavor = 'factur-x'
-                    elif filename in ZUGFERD_FILENAMES:
-                        flavor = 'zugferd'
+                    # Don't set flavor when filename is zugferd-invoice.xml
+                    # because it can be either zugferd (ie zugferd 1.0)
+                    # or 'factur-x' i.e. zugferd 2.0, see bug #41
                     xml_check_xsd(xml_root, flavor=flavor)
                     xml_bytes = tmp_xml_bytes
                     xml_filename = filename
