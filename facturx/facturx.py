@@ -80,6 +80,13 @@ ORDERX_code2type = {
 XML_AFRelationship = ('data', 'source', 'alternative')
 ATTACHMENTS_AFRelationship = ('supplement', 'unspecified')
 
+XML_NAMESPACES = {
+    'qdt': 'urn:un:unece:uncefact:data:standard:QualifiedDataType:100',
+    'ram': 'urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100',
+    'rsm': 'urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100',
+    'udt': 'urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100',
+    'xsi': 'http://www.w3.org/2001/XMLSchema-instance'
+}
 
 def check_facturx_xsd(
         facturx_xml, flavor='autodetect', facturx_level='autodetect'):
@@ -662,10 +669,9 @@ def _facturx_update_metadata_add_attachment(
 
 
 def _extract_base_info(facturx_xml_etree):
-    namespaces = facturx_xml_etree.nsmap
     date_xpath = facturx_xml_etree.xpath(
         '//rsm:ExchangedDocument/ram:IssueDateTime/udt:DateTimeString',
-        namespaces=namespaces)
+        namespaces=XML_NAMESPACES)
     date = date_xpath[0].text
     date_format = date_xpath[0].attrib and date_xpath[0].attrib.get('format') or '102'
     format_map = {
@@ -674,19 +680,19 @@ def _extract_base_info(facturx_xml_etree):
         }
     date_dt = datetime.strptime(date, format_map.get(date_format, format_map['102']))
     number_xpath = facturx_xml_etree.xpath(
-        '//rsm:ExchangedDocument/ram:ID', namespaces=namespaces)
+        '//rsm:ExchangedDocument/ram:ID', namespaces=XML_NAMESPACES)
     number = number_xpath[0].text
     seller_xpath = facturx_xml_etree.xpath(
         '//ram:ApplicableHeaderTradeAgreement/ram:SellerTradeParty/ram:Name',
-        namespaces=namespaces)
+        namespaces=XML_NAMESPACES)
     seller = seller_xpath[0].text
     buyer_xpath = facturx_xml_etree.xpath(
         '//ram:ApplicableHeaderTradeAgreement/ram:BuyerTradeParty/ram:Name',
-        namespaces=namespaces)
+        namespaces=XML_NAMESPACES)
     buyer = buyer_xpath[0].text
 
     doc_type_xpath = facturx_xml_etree.xpath(
-        '//rsm:ExchangedDocument/ram:TypeCode', namespaces=namespaces)
+        '//rsm:ExchangedDocument/ram:TypeCode', namespaces=XML_NAMESPACES)
     doc_type = doc_type_xpath[0].text
     base_info = {
         'seller': seller,
@@ -747,18 +753,17 @@ def get_facturx_level(facturx_xml_etree):
 def get_level(xml_etree):
     if not isinstance(xml_etree, type(etree.Element('pouet'))):
         raise ValueError('xml_etree must be an etree.Element() object')
-    namespaces = xml_etree.nsmap
     # Factur-X and Order-X
     doc_id_xpath = xml_etree.xpath(
         "//rsm:ExchangedDocumentContext"
         "/ram:GuidelineSpecifiedDocumentContextParameter"
-        "/ram:ID", namespaces=namespaces)
+        "/ram:ID", namespaces=XML_NAMESPACES)
     if not doc_id_xpath:
         # ZUGFeRD 1.0
         doc_id_xpath = xml_etree.xpath(
             "//rsm:SpecifiedExchangedDocumentContext"
             "/ram:GuidelineSpecifiedDocumentContextParameter"
-            "/ram:ID", namespaces=namespaces)
+            "/ram:ID", namespaces=XML_NAMESPACES)
     if not doc_id_xpath:
         raise ValueError(
             "This XML is not a Factur-X nor Order-X XML because it misses the XML tag "
@@ -808,10 +813,9 @@ def get_flavor(xml_etree):
 def get_orderx_type(xml_etree):
     if not isinstance(xml_etree, type(etree.Element('pouet'))):
         raise ValueError('xml_etree must be an etree.Element() object')
-    namespaces = xml_etree.nsmap
     type_code_xpath = \
         "/rsm:SCRDMCCBDACIOMessageStructure/rsm:ExchangedDocument/ram:TypeCode"
-    xpath_res = xml_etree.xpath(type_code_xpath, namespaces=namespaces)
+    xpath_res = xml_etree.xpath(type_code_xpath, namespaces=XML_NAMESPACES)
     code = xpath_res and xpath_res[0].text and xpath_res[0].text.strip() or None
     if code not in ORDERX_code2type:
         raise Exception(
