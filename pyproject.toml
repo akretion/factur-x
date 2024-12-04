@@ -1,6 +1,6 @@
 [project]
 name = "factur-x"
-version = "3.3"
+version = "3.4"
 description = "Factur-X and Order-X: electronic invoicing and ordering standards"
 authors = [{name = "Alexis de Lattre", email = "alexis.delattre@akretion.com"}]
 readme = "README.rst"
@@ -14,7 +14,7 @@ classifiers = [
 ]
 keywords = ["e-invoice", "ZUGFeRD", "Factur-X", "Order-X", "e-procurement"]
 license = {file = "LICENSE"}
-requires-python = ">=3.6"
+requires-python = ">=3.7"
 dynamic = ["dependencies"]
 
 [project.urls]

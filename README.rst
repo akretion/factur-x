@@ -118,6 +118,12 @@ Contributors
 Changelog
 =========
 
+**WARNING** Since release 3.2/3.3, the command line tools (facturx-pdfextractxml, facturx-pdfgen, facturx-xmlcheck, facturx-webservice) are not packaged with the lib any more, because I haven't found how to make it work with pyproject.toml. Help appreciated.
+
+* Version 3.4 dated 2024-12-04
+
+  * Fix minimum python version: 3.7 (was 3.6) because importlib.resources was added in python 3.7
+
 * Version 3.3 dated 2024-12-02
 
   * Migrate packaging from setup.py to pyproject.toml
