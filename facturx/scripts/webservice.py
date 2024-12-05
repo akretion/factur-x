@@ -20,6 +20,7 @@ from facturx import generate_from_file
 from facturx.facturx import logger as fxlogger
 import argparse
 import logging
+import sys
 from logging.handlers import RotatingFileHandler
 
 MAX_ATTACHMENTS = 3  # TODO make it a cmd line option
@@ -67,7 +68,9 @@ def generate_facturx():
     return res
 
 
-if __name__ == '__main__':
+def main(args=None):
+    if args is None:
+        args = sys.argv[1:]
     usage = "facturx_webservice.py [options]"
     epilog = "Script written by Alexis de Lattre. "\
         "Published under the BSD licence."
@@ -119,3 +122,11 @@ if __name__ == '__main__':
         app.logger.addHandler(handler)
         app.logger.info('Start webservice to generate Factur-X invoices')
     app.run(debug=args.debug, port=args.port, host=args.host)
+
+
+def run():
+    if __name__ == '__main__':
+        main()
+
+
+run()

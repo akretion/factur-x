@@ -17,17 +17,21 @@ license = {file = "LICENSE"}
 requires-python = ">=3.7"
 dynamic = ["dependencies"]
 
+[project.optional-dependencies]
+web = [
+    "flask"
+]
+
 [project.urls]
 Homepage = "https://github.com/akretion/factur-x"
 Source = "https://github.com/akretion/factur-x"
 Issues = "https://github.com/akretion/factur-x/issues"
 
-# TODO discover how to make scripts work again
-#[project.scripts]
-#facturx-pdfgen = "bin.facturx-pdfgen:main"
-#facturx-pdfextractxml = "bin.facturx-pdfextractxml:main"
-#facturx-xmlcheck = "bin.facturx-xmlcheck:main"
-#facturx-webservice = "bin.facturx-webservice:main"
+[project.scripts]
+facturx-pdfgen = "facturx.scripts.pdfgen:main"
+facturx-pdfextractxml = "facturx.scripts.pdfextractxml:main"
+facturx-xmlcheck = "facturx.scripts.xmlcheck:main"
+facturx-webservice = "facturx.scripts.webservice:main"
 
 [build-system]
 requires = ["hatchling"]

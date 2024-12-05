@@ -13,7 +13,7 @@ __date__ = "March 2021"
 __version__ = "0.3"
 
 
-def main(args):
+def xmlcheck(args):
     if args.log_level:
         log_level = args.log_level.lower()
         log_map = {
@@ -43,7 +43,9 @@ def main(args):
         sys.exit(1)
 
 
-if __name__ == '__main__':
+def main(args=None):
+    if args is None:
+        args = sys.argv[1:]
     usage = "facturx-xmlcheck <xml_file>"
     epilog = "Author: %s - Version: %s" % (__author__, __version__)
     description = "This script checks the Factur-X or Order-XML XML against the XML "\
@@ -70,4 +72,12 @@ if __name__ == '__main__':
     parser.add_argument(
         "xml_file", help="Factur-X or Order-X XML file to check")
     args = parser.parse_args()
-    main(args)
+    xmlcheck(args)
+
+
+def run():
+    if __name__ == '__main__':
+        main()
+
+
+run()
