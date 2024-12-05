@@ -13,7 +13,7 @@ __date__ = "March 2021"
 __version__ = "0.6"
 
 
-def main(args):
+def pdfgen(args):
     if args.log_level:
         log_level = args.log_level.lower()
         log_map = {
@@ -85,7 +85,9 @@ def main(args):
         sys.exit(1)
 
 
-if __name__ == '__main__':
+def main(args=None):
+    if args is None:
+        args = sys.argv[1:]
     usage = "facturx-pdfgen <regular_pdf_file> <xml_file> "\
             "<facturx_orderx_pdf_file> <optional_attachments>"
     epilog = "Author: %s - Version: %s" % (__author__, __version__)
@@ -173,4 +175,12 @@ if __name__ == '__main__':
         "optional_attachments", nargs='*',
         help="Optional list of additionnal attachments")
     args = parser.parse_args()
-    main(args)
+    pdfgen(args)
+
+
+def run():
+    if __name__ == '__main__':
+        main()
+
+
+run()
