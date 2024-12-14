@@ -13,7 +13,7 @@ __date__ = "March 2021"
 __version__ = "0.2"
 
 
-def main(args):
+def pdfextractxml(args):
     if args.log_level:
         log_level = args.log_level.lower()
         log_map = {
@@ -64,7 +64,9 @@ def main(args):
         sys.exit(1)
 
 
-if __name__ == '__main__':
+def main(args=None):
+    if args is None:
+        args = sys.argv[1:]
     usage = "facturx-pdfextractxml <facturx_orderx_file> <xml_file_to_create>"
     epilog = "Author: %s - Version: %s" % (__author__, __version__)
     description = "This extracts the XML file from a Factur-X or Order-X PDF file."
@@ -85,4 +87,12 @@ if __name__ == '__main__':
         "xml_file_to_create",
         help="Filename of the XML file that will be extracted from the PDF")
     args = parser.parse_args()
-    main(args)
+    pdfextractxml(args)
+
+
+def run():
+    if __name__ == '__main__':
+        main()
+
+
+run()
