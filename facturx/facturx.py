@@ -79,14 +79,29 @@ ORDERX_code2type = {
     }
 XML_AFRelationship = ('data', 'source', 'alternative')
 ATTACHMENTS_AFRelationship = ('supplement', 'unspecified')
-
 XML_NAMESPACES = {
-    'qdt': 'urn:un:unece:uncefact:data:standard:QualifiedDataType:100',
-    'ram': 'urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100',
-    'rsm': 'urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100',
-    'udt': 'urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100',
-    'xsi': 'http://www.w3.org/2001/XMLSchema-instance'
+    'factur-x': {
+        'qdt': 'urn:un:unece:uncefact:data:standard:QualifiedDataType:100',
+        'ram': 'urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100',
+        'rsm': 'urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100',
+        'udt': 'urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100',
+        'xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+    },
+    'order-x': {
+        'qdt': 'urn:un:unece:uncefact:data:standard:QualifiedDataType:128',
+        'ram': 'urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:128',
+        'rsm': 'urn:un:unece:uncefact:data:SCRDMCCBDACIOMessageStructure:100',
+        'udt': 'urn:un:unece:uncefact:data:standard:UnqualifiedDataType:128',
+        'xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+        },
+    'zugferd': {
+        'ram': 'urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:12',
+        'rsm': 'urn:ferd:CrossIndustryDocument:invoice:1p0',
+        'udt': 'urn:un:unece:uncefact:data:standard:UnqualifiedDataType:15',
+        'xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+    },
 }
+
 
 def check_facturx_xsd(
         facturx_xml, flavor='autodetect', facturx_level='autodetect'):
@@ -154,7 +169,7 @@ def xml_check_xsd(xml, flavor='autodetect', level='autodetect'):
                 except Exception as e:
                     raise Exception(
                         "The XML syntax is invalid: %s." % str(e))
-            level = get_level(xml_etree)
+            level = get_level(xml_etree, flavor)
         if level not in FACTURX_LEVEL2xsd:
             raise ValueError(
                 "Wrong level '%s' for Factur-X invoice." % level)
@@ -169,7 +184,7 @@ def xml_check_xsd(xml, flavor='autodetect', level='autodetect'):
                 except Exception as e:
                     raise Exception(
                         "The XML syntax is invalid: %s." % str(e))
-            level = get_level(xml_etree)
+            level = get_level(xml_etree, flavor)
         if level not in ORDERX_LEVEL2xsd:
             raise ValueError(
                 "Wrong level '%s' for Order-X document." % level)
@@ -668,10 +683,13 @@ def _facturx_update_metadata_add_attachment(
     logger.info('%s file added to PDF document', xml_filename)
 
 
-def _extract_base_info(facturx_xml_etree):
+def _extract_base_info(facturx_xml_etree, flavor):
+    if flavor not in ('factur-x', 'facturx', 'order-x', 'orderx', 'zugferd'):
+        raise ValueError("Wrong value for flavor argument.")
+    namespaces = get_xml_namespaces(flavor)
     date_xpath = facturx_xml_etree.xpath(
         '//rsm:ExchangedDocument/ram:IssueDateTime/udt:DateTimeString',
-        namespaces=XML_NAMESPACES)
+        namespaces=namespaces)
     date = date_xpath[0].text
     date_format = date_xpath[0].attrib and date_xpath[0].attrib.get('format') or '102'
     format_map = {
@@ -680,19 +698,19 @@ def _extract_base_info(facturx_xml_etree):
         }
     date_dt = datetime.strptime(date, format_map.get(date_format, format_map['102']))
     number_xpath = facturx_xml_etree.xpath(
-        '//rsm:ExchangedDocument/ram:ID', namespaces=XML_NAMESPACES)
+        '//rsm:ExchangedDocument/ram:ID', namespaces=namespaces)
     number = number_xpath[0].text
     seller_xpath = facturx_xml_etree.xpath(
         '//ram:ApplicableHeaderTradeAgreement/ram:SellerTradeParty/ram:Name',
-        namespaces=XML_NAMESPACES)
+        namespaces=namespaces)
     seller = seller_xpath[0].text
     buyer_xpath = facturx_xml_etree.xpath(
         '//ram:ApplicableHeaderTradeAgreement/ram:BuyerTradeParty/ram:Name',
-        namespaces=XML_NAMESPACES)
+        namespaces=namespaces)
     buyer = buyer_xpath[0].text
 
     doc_type_xpath = facturx_xml_etree.xpath(
-        '//rsm:ExchangedDocument/ram:TypeCode', namespaces=XML_NAMESPACES)
+        '//rsm:ExchangedDocument/ram:TypeCode', namespaces=namespaces)
     doc_type = doc_type_xpath[0].text
     base_info = {
         'seller': seller,
@@ -746,24 +764,39 @@ def _base_info2pdf_metadata(base_info):
     return pdf_metadata
 
 
+def get_xml_namespaces(flavor):
+    if flavor not in ('factur-x', 'facturx', 'order-x', 'orderx', 'zugferd'):
+        raise ValueError("Wrong value for flavor argument.")
+    if flavor == 'facturx':
+        flavor = 'factur-x'
+    elif flavor == 'orderx':
+        flavor = 'order-x'
+    return XML_NAMESPACES[flavor]
+
+
 def get_facturx_level(facturx_xml_etree):
     return get_level(facturx_xml_etree)
 
 
-def get_level(xml_etree):
+def get_level(xml_etree, flavor='autodetect'):
     if not isinstance(xml_etree, type(etree.Element('pouet'))):
         raise ValueError('xml_etree must be an etree.Element() object')
+    if flavor not in ('autodetect', 'factur-x', 'facturx', 'order-x', 'orderx', 'zugferd'):
+        raise ValueError('Wrong value for flavor argument.')
+    if flavor == 'autodetect':
+        flavor = get_flavor(xml_etree)
+    namespaces = get_xml_namespaces(flavor)
     # Factur-X and Order-X
     doc_id_xpath = xml_etree.xpath(
         "//rsm:ExchangedDocumentContext"
         "/ram:GuidelineSpecifiedDocumentContextParameter"
-        "/ram:ID", namespaces=XML_NAMESPACES)
+        "/ram:ID", namespaces=namespaces)
     if not doc_id_xpath:
         # ZUGFeRD 1.0
         doc_id_xpath = xml_etree.xpath(
             "//rsm:SpecifiedExchangedDocumentContext"
             "/ram:GuidelineSpecifiedDocumentContextParameter"
-            "/ram:ID", namespaces=XML_NAMESPACES)
+            "/ram:ID", namespaces=namespaces)
     if not doc_id_xpath:
         raise ValueError(
             "This XML is not a Factur-X nor Order-X XML because it misses the XML tag "
@@ -815,7 +848,7 @@ def get_orderx_type(xml_etree):
         raise ValueError('xml_etree must be an etree.Element() object')
     type_code_xpath = \
         "/rsm:SCRDMCCBDACIOMessageStructure/rsm:ExchangedDocument/ram:TypeCode"
-    xpath_res = xml_etree.xpath(type_code_xpath, namespaces=XML_NAMESPACES)
+    xpath_res = xml_etree.xpath(type_code_xpath, namespaces=XML_NAMESPACES['order-x'])
     code = xpath_res and xpath_res[0].text and xpath_res[0].text.strip() or None
     if code not in ORDERX_code2type:
         raise Exception(
@@ -1149,7 +1182,7 @@ def generate_from_file(
         if xml_root is None:
             xml_root = etree.fromstring(xml_bytes)
         logger.debug('level will be autodetected')
-        level = get_level(xml_root)
+        level = get_level(xml_root, flavor)
     if (
             flavor == 'factur-x' and
             level in ('minimum', 'basicwl') and
@@ -1168,7 +1201,7 @@ def generate_from_file(
     if pdf_metadata is None:
         if xml_root is None:
             xml_root = etree.fromstring(xml_bytes)
-        base_info = _extract_base_info(xml_root)
+        base_info = _extract_base_info(xml_root, flavor)
         pdf_metadata = _base_info2pdf_metadata(base_info)
     else:
         # clean-up pdf_metadata dict

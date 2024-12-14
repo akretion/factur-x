@@ -1,9 +1,9 @@
 Factur-X and Order-X Python library
 ===================================
 
-Factur-X is a Franco-German e-invoicing standard which complies with the European e-invoicing standard `EN 16931 <https://ec.europa.eu/digital-building-blocks/wikis/display/DIGITAL/Obtaining+a+copy+of+the+European+standard+on+eInvoicing>`_. The Factur-X specifications are available on the `FNFE-MPE website <http://fnfe-mpe.org/factur-x/>`_ in English and French. The Factur-X standard is also called `ZUGFeRD 2.2 in Germany <https://www.ferd-net.de/standards/zugferd-2.2/zugferd-2.2.html>`_.
+Factur-X is a Franco-German e-invoicing standard which complies with the European e-invoicing standard `EN 16931 <https://ec.europa.eu/digital-building-blocks/wikis/display/DIGITAL/Obtaining+a+copy+of+the+European+standard+on+eInvoicing>`_. The Factur-X specifications are available on the `FNFE-MPE website <http://fnfe-mpe.org/factur-x/>`_ in English and French. The Factur-X standard is also called `ZUGFeRD 2.2 in Germany <https://www.ferd-net.de/standards/zugferd>`_.
 
-Order-X is the equivalent of Factur-X for purchase orders. The Order-X specifications are available in English on `the FNFE-MPE website <https://fnfe-mpe.org/factur-x/order-x/>`_ and on the `FeRD website <https://www.ferd-net.de/standards/order-x/index.html>`_.
+Order-X is the equivalent of Factur-X for purchase orders. The Order-X specifications are available in English on `the FNFE-MPE website <https://fnfe-mpe.org/factur-x/order-x/>`_ and on the `FeRD website <https://www.ferd-net.de/standards/order-x>`_.
 
 The main feature of this Python library is to generate Factur-X invoices and Order-X orders from a regular PDF document and a Factur-X or Order-X compliant XML file.
 
@@ -119,6 +119,17 @@ Changelog
 =========
 
 **WARNING** Since release 3.2/3.3, the command line tools (facturx-pdfextractxml, facturx-pdfgen, facturx-xmlcheck, facturx-webservice) are not packaged with the lib any more, because I haven't found how to make it work with pyproject.toml. Help appreciated.
+
+* Version 3.6 dated 2024-12-14
+
+  * Fix regression for order-x and zugferd caused by change to support absolute namespace declaration
+  * Add new method get_xml_namespaces(flavor)
+
+* Version 3.5 dated 2024-12-14
+
+  * Fix dependency declaration in python package
+  * Fix packaging of scripts (was broken since the move from setup.py to pyproject.toml)
+  * Add support for absolute namespace declaration in XML file
 
 * Version 3.4 dated 2024-12-04
 

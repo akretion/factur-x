@@ -2,6 +2,7 @@ from .facturx import generate_from_file, \
     generate_facturx_from_file, \
     generate_from_binary, \
     generate_facturx_from_binary, \
+    get_xml_namespaces, \
     get_facturx_flavor, \
     get_flavor, \
     get_facturx_level, \
