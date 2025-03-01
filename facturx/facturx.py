@@ -806,12 +806,12 @@ def get_level(xml_etree, flavor='autodetect'):
             "SpecifiedExchangedDocumentContext/"
             "GuidelineSpecifiedDocumentContextParameter/ID.")
     doc_id = doc_id_xpath[0].text
-    level = doc_id.split(':')[-1]
+    level = doc_id.split(':')[3]
     possible_values = dict(FACTURX_LEVEL2xsd)
     possible_values.update(ORDERX_LEVEL2xsd)
     # ZUGFeRD 1.0 levels are the same as orderx
     if level not in possible_values:
-        level = doc_id.split(':')[-2]
+        level = doc_id.split(':')[2]
     if level not in possible_values:
         raise ValueError(
             "Invalid Factur-X/Order-X URN: '%s'" % doc_id)
