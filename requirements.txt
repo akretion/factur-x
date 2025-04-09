@@ -1,2 +1,4 @@
 pypdf>=3.15.0
 lxml
+
+importlib-resources; python_version<'3.9'

@@ -34,7 +34,11 @@ from datetime import datetime
 from pypdf import PdfWriter, PdfReader
 from pypdf.generic import DictionaryObject, DecodedStreamObject, \
     NameObject, NumberObject, ArrayObject, IndirectObject, create_string_object
-import importlib.resources
+import importlib.resources as importlib_resources
+try:
+    importlib_resources.files  # added in py3.9
+except AttributeError:
+    import importlib_resources  # py3.8 compat: pip install importlib-resources
 import importlib.metadata
 import os.path
 import mimetypes
@@ -191,7 +195,7 @@ def xml_check_xsd(xml, flavor='autodetect', level='autodetect'):
         xsd_file = 'xsd/%s' % ORDERX_LEVEL2xsd[level]
 
     logger.debug('Using XSD file %s', xsd_file)
-    xsd_etree_obj = etree.parse(importlib.resources.files(__package__)
+    xsd_etree_obj = etree.parse(importlib_resources.files(__package__)
         .joinpath(xsd_file).open())
     official_schema = etree.XMLSchema(xsd_etree_obj)
     try:

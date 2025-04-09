@@ -114,11 +114,17 @@ Contributors
 ============
 
 * Alexis de Lattre <alexis.delattre@akretion.com>
+* Houzéfa Abbasbhay <houzefa.abba@xcg-consulting.fr>
 
 Changelog
 =========
 
 **WARNING** Since release 3.2/3.3, the command line tools (facturx-pdfextractxml, facturx-pdfgen, facturx-xmlcheck, facturx-webservice) are not packaged with the lib any more, because I haven't found how to make it work with pyproject.toml. Help appreciated.
+
+* NEXT
+
+  * Import fallback for compatibility with Python 3.8.
+    Requires `importlib-resources backport <https://pypi.org/project/importlib-resources/>`_ on Python 3.8.
 
 * Version 3.6 dated 2024-12-14
 
