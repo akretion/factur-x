@@ -114,9 +114,15 @@ Contributors
 ============
 
 * Alexis de Lattre <alexis.delattre@akretion.com>
+* Houzéfa Abbasbhay <houzefa.abba@xcg-consulting.fr>
 
 Changelog
 =========
+
+* Version 3.8 dated 2025-07-27
+
+  * Import fallback for compatibility with Python 3.8.
+    Requires `importlib-resources backport <https://pypi.org/project/importlib-resources/>`_ on Python 3.8.
 
 * Version 3.7 dated 2025-07-27
 
