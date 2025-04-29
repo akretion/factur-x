@@ -502,9 +502,9 @@ def _prepare_pdf_metadata_xml(flavor, level, orderx_type, pdf_metadata):
         xmp_level = FACTURX_LEVEL2xmp[level]
         urn = 'urn:factur-x:pdfa:CrossIndustryDocument:invoice:1p0#'
     xml_str = xml_str.format(
-        title=_ensure_correct_metadata(pdf_metadata.get('title', '')),
-        author=_ensure_correct_metadata(pdf_metadata.get('author', '')),
-        subject=_ensure_correct_metadata(pdf_metadata.get('subject', '')),
+        title=_escape_metadata(pdf_metadata.get('title', '')),
+        author=_escape_metadata(pdf_metadata.get('author', '')),
+        subject=_escape_metadata(pdf_metadata.get('subject', '')),
         producer='pypdf',
         creator_tool='factur-x python lib v%s by Alexis de Lattre' % VERSION,
         timestamp=_get_metadata_timestamp(),
@@ -518,9 +518,10 @@ def _prepare_pdf_metadata_xml(flavor, level, orderx_type, pdf_metadata):
     logger.debug(xml_byte)
     return xml_byte
 
-def _ensure_correct_metadata(data):
+def _escape_metadata(data):
     data = html.unescape(data)
-    return data.replace("&", "&amp;")
+    data = html.escape(data, quote=True)
+    return data.replace('&#x27;', '&apos;')
 
 # def createByteObject(string):
 #    string_to_encode = '\ufeff' + string
