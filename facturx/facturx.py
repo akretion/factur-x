@@ -506,7 +506,7 @@ def _prepare_pdf_metadata_xml(flavor, level, orderx_type, pdf_metadata):
         author=_escape_metadata(pdf_metadata.get('author', '')),
         subject=_escape_metadata(pdf_metadata.get('subject', '')),
         producer='pypdf',
-        creator_tool='factur-x python lib v%s by Alexis de Lattre' % VERSION,
+        creator_tool='factur-x Python lib v%s by Alexis de Lattre' % VERSION,
         timestamp=_get_metadata_timestamp(),
         urn=urn,
         documenttype=documenttype,
