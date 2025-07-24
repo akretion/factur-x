@@ -118,8 +118,6 @@ Contributors
 Changelog
 =========
 
-**WARNING** Since release 3.2/3.3, the command line tools (facturx-pdfextractxml, facturx-pdfgen, facturx-xmlcheck, facturx-webservice) are not packaged with the lib any more, because I haven't found how to make it work with pyproject.toml. Help appreciated.
-
 * Version 3.6 dated 2024-12-14
 
   * Fix regression for order-x and zugferd caused by change to support absolute namespace declaration
