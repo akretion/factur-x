@@ -3,17 +3,18 @@
 
 import argparse
 import sys
-from facturx import get_xml_from_pdf
+from facturx import get_xml_from_pdf, __version__ as fxversion
 from facturx.facturx import logger
 import logging
 from os.path import isfile, isdir
 
 __author__ = "Alexis de Lattre <alexis.delattre@akretion.com>"
-__date__ = "March 2021"
-__version__ = "0.2"
+__date__ = "July 2025"
+__version__ = "0.3"
 
 
 def pdfextractxml(args):
+    logger.info('pdfextractxml version %s using factur-x lib version %s', __version__, fxversion)
     if args.log_level:
         log_level = args.log_level.lower()
         log_map = {

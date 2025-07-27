@@ -118,6 +118,13 @@ Contributors
 Changelog
 =========
 
+* Version 3.7 dated 2025-07-27
+
+  * Require pypdf 5.3.0, to have the support for /Kids when listing attachments, cf my `issue 2087 <https://github.com/py-pdf/pypdf/issues/2087>`_ which has been fixed by `pull request 3108 <https://github.com/py-pdf/pypdf/pull/3108`_. So we now use the high-level API of pypdf to get the attachments instead of our own implementation using the low-level API of pypdf.
+  * Add property __version__ on the lib
+  * When executing the scripts provided by the lib, log the version of the script and the version of the lib
+  * Remove outdated warning in README
+
 * Version 3.6 dated 2024-12-14
 
   * Fix regression for order-x and zugferd caused by change to support absolute namespace declaration
