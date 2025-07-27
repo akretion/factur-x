@@ -16,7 +16,7 @@
 
 from flask import Flask, request, send_file
 from tempfile import NamedTemporaryFile
-from facturx import generate_from_file
+from facturx import generate_from_file, __version__ as fxversion
 from facturx.facturx import logger as fxlogger
 import argparse
 import logging
@@ -24,6 +24,9 @@ import sys
 from logging.handlers import RotatingFileHandler
 
 MAX_ATTACHMENTS = 3  # TODO make it a cmd line option
+__author__ = "Alexis de Lattre <alexis.delattre@akretion.com>"
+__date__ = "July 2025"
+__version__ = "0.2"
 app = Flask(__name__)
 
 
@@ -121,6 +124,7 @@ def main(args=None):
         fxlogger.addHandler(handler)
         app.logger.addHandler(handler)
         app.logger.info('Start webservice to generate Factur-X invoices')
+    fxlogger.info('webservice version %s using factur-x lib version %s', __version__, fxversion)
     app.run(debug=args.debug, port=args.port, host=args.host)
 
 

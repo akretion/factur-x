@@ -33,7 +33,7 @@ from tempfile import NamedTemporaryFile
 from datetime import datetime
 from pypdf import PdfWriter, PdfReader
 from pypdf.generic import DictionaryObject, DecodedStreamObject, \
-    NameObject, NumberObject, ArrayObject, IndirectObject, create_string_object
+    NameObject, NumberObject, ArrayObject, create_string_object
 import importlib.resources
 import importlib.metadata
 import os.path
@@ -191,8 +191,8 @@ def xml_check_xsd(xml, flavor='autodetect', level='autodetect'):
         xsd_file = 'xsd/%s' % ORDERX_LEVEL2xsd[level]
 
     logger.debug('Using XSD file %s', xsd_file)
-    xsd_etree_obj = etree.parse(importlib.resources.files(__package__)
-        .joinpath(xsd_file).open())
+    xsd_etree_obj = etree.parse(
+        importlib.resources.files(__package__).joinpath(xsd_file).open())
     official_schema = etree.XMLSchema(xsd_etree_obj)
     try:
         t = etree.parse(BytesIO(xml_bytes))
@@ -243,13 +243,12 @@ def get_xml_from_pdf(pdf_file, check_xsd=True, filenames=[]):
     logger.debug('Searching for filenames %s', filenames)
     xml_bytes = xml_filename = False
     pdf_reader = PdfReader(pdf_file_in)
-    for filename_obj, file_list in pdf_reader.attachments.items():
-        filename = str(filename_obj)
+    for attach_obj in pdf_reader.attachment_list:
+        filename = attach_obj.name
         logger.debug('Found filename=%s', filename)
-        if filename in filenames and file_list:
-            tmp_xml_bytes = file_list[0]
+        if filename in filenames and attach_obj.content:
             try:
-                xml_root = etree.fromstring(tmp_xml_bytes)
+                xml_root = etree.fromstring(attach_obj.content)
                 logger.info(
                     'A valid XML file %s has been found in the PDF file',
                     filename)
@@ -267,7 +266,7 @@ def get_xml_from_pdf(pdf_file, check_xsd=True, filenames=[]):
                 # because it can be either zugferd (ie zugferd 1.0)
                 # or 'factur-x' i.e. zugferd 2.0, see bug #41
                 xml_check_xsd(xml_root, flavor=flavor)
-            xml_bytes = tmp_xml_bytes
+            xml_bytes = attach_obj.content
             xml_filename = filename
             break
     logger.info('Returning an XML file %s', xml_filename)
