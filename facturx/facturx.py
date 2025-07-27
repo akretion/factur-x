@@ -44,6 +44,7 @@ import os.path
 import mimetypes
 import hashlib
 import logging
+import html
 
 
 VERSION = importlib.metadata.version("factur-x")
@@ -402,11 +403,11 @@ def _prepare_pdf_metadata_xml(flavor, level, orderx_type, pdf_metadata):
         xmp_level = FACTURX_LEVEL2xmp[level]
         urn = 'urn:factur-x:pdfa:CrossIndustryDocument:invoice:1p0#'
     xml_str = xml_str.format(
-        title=pdf_metadata.get('title', ''),
-        author=pdf_metadata.get('author', ''),
-        subject=pdf_metadata.get('subject', ''),
+        title=_escape_metadata(pdf_metadata.get('title', '')),
+        author=_escape_metadata(pdf_metadata.get('author', '')),
+        subject=_escape_metadata(pdf_metadata.get('subject', '')),
         producer='pypdf',
-        creator_tool='factur-x python lib v%s by Alexis de Lattre' % VERSION,
+        creator_tool='factur-x Python lib v%s by Alexis de Lattre' % VERSION,
         timestamp=_get_metadata_timestamp(),
         urn=urn,
         documenttype=documenttype,
@@ -418,6 +419,10 @@ def _prepare_pdf_metadata_xml(flavor, level, orderx_type, pdf_metadata):
     logger.debug(xml_byte)
     return xml_byte
 
+def _escape_metadata(data):
+    data = html.unescape(data)
+    data = html.escape(data, quote=True)
+    return data.replace('&#x27;', '&apos;')
 
 # def createByteObject(string):
 #    string_to_encode = '\ufeff' + string
