@@ -53,6 +53,7 @@ logger = logging.getLogger('factur-x')
 logger.setLevel(logging.INFO)
 
 FACTURX_FILENAME = 'factur-x.xml'
+XRECHNUNG_FILENAME = 'xrechnung.xml'
 ZUGFERD_FILENAMES = ['zugferd-invoice.xml', 'ZUGFeRD-invoice.xml']
 ORDERX_FILENAME = 'order-x.xml'
 ALL_FILENAMES = [FACTURX_FILENAME] + ZUGFERD_FILENAMES + [ORDERX_FILENAME]
@@ -61,6 +62,7 @@ FACTURX_LEVEL2xsd = {
     'basicwl': 'facturx-basicwl/Factur-X_1.07.2_BASICWL.xsd',
     'basic': 'facturx-basic/Factur-X_1.07.2_BASIC.xsd',
     'en16931': 'facturx-en16931/Factur-X_1.07.2_EN16931.xsd',
+    'xrechnung': 'facturx-en16931/Factur-X_1.07.2_EN16931.xsd',
     'extended': 'facturx-extended/Factur-X_1.07.2_EXTENDED.xsd',
 }
 ORDERX_LEVEL2xsd = {
@@ -73,6 +75,7 @@ FACTURX_LEVEL2xmp = {
     'basicwl': 'BASIC WL',
     'basic': 'BASIC',
     'en16931': 'EN 16931',
+    'xrechnung': 'XRECHNUNG',
     'extended': 'EXTENDED',
     }
 ORDERX_TYPES = ('order', 'order_change', 'order_response')
@@ -398,7 +401,10 @@ def _prepare_pdf_metadata_xml(flavor, level, orderx_type, pdf_metadata):
         urn = 'urn:factur-x:pdfa:CrossIndustryDocument:1p0#'
     else:
         documenttype = 'INVOICE'
-        xml_filename = FACTURX_FILENAME
+        if level == 'xrechnung':
+            xml_filename = XRECHNUNG_FILENAME
+        else:
+            xml_filename = FACTURX_FILENAME
         xmp_level = FACTURX_LEVEL2xmp[level]
         urn = 'urn:factur-x:pdfa:CrossIndustryDocument:invoice:1p0#'
     xml_str = xml_str.format(
@@ -513,10 +519,12 @@ def _facturx_update_metadata_add_attachment(
     if flavor == 'order-x':
         xml_filename = ORDERX_FILENAME
         desc = 'Order-X XML file'
+    elif level == 'xrechnung':
+        xml_filename = XRECHNUNG_FILENAME
+        desc = 'Factur-X/ZUGFeRD-Rechnung'
     else:
         xml_filename = FACTURX_FILENAME
         desc = 'Factur-X XML file'
-
     fname_obj = create_string_object(xml_filename)
     filespec_dict = DictionaryObject({
         NameObject("/AFRelationship"): NameObject("/%s" % afrelationship.capitalize()),
@@ -708,11 +716,15 @@ def get_level(xml_etree, flavor='autodetect'):
             "GuidelineSpecifiedDocumentContextParameter/ID.")
     doc_id = doc_id_xpath[0].text
     level = doc_id.split(':')[-1]
+    if level[:10] == 'xrechnung_':
+        level = level.split('_')[-2]
     possible_values = dict(FACTURX_LEVEL2xsd)
     possible_values.update(ORDERX_LEVEL2xsd)
     # ZUGFeRD 1.0 levels are the same as orderx
     if level not in possible_values:
         level = doc_id.split(':')[-2]
+    if level not in possible_values:
+         level = doc_id.split(':')[-1]
     if level not in possible_values:
         raise ValueError(
             "Invalid Factur-X/Order-X URN: '%s'" % doc_id)
