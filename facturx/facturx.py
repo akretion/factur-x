@@ -309,8 +309,8 @@ def _prepare_pdf_metadata_txt(pdf_metadata):
 
 
 def _prepare_pdf_metadata_xml(flavor, level, orderx_type, pdf_metadata):
+    head = """<?xpacket begin="\ufeff" id="W5M0MpCehiHzreSzNTczkc9d"?>"""
     xml_str = """
-<?xpacket begin="\ufeff" id="W5M0MpCehiHzreSzNTczkc9d"?>
 <x:xmpmeta xmlns:x="adobe:ns:meta/">
   <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
     <rdf:Description xmlns:pdfaid="http://www.aiim.org/pdfa/ns/id/" rdf:about="">
@@ -320,27 +320,27 @@ def _prepare_pdf_metadata_xml(flavor, level, orderx_type, pdf_metadata):
     <rdf:Description xmlns:dc="http://purl.org/dc/elements/1.1/" rdf:about="">
       <dc:title>
         <rdf:Alt>
-          <rdf:li xml:lang="x-default">{title}</rdf:li>
+          <rdf:li xml:lang="x-default">##title</rdf:li>
         </rdf:Alt>
       </dc:title>
       <dc:creator>
         <rdf:Seq>
-          <rdf:li>{author}</rdf:li>
+          <rdf:li>##author</rdf:li>
         </rdf:Seq>
       </dc:creator>
       <dc:description>
         <rdf:Alt>
-          <rdf:li xml:lang="x-default">{subject}</rdf:li>
+          <rdf:li xml:lang="x-default">##subject</rdf:li>
         </rdf:Alt>
       </dc:description>
     </rdf:Description>
     <rdf:Description xmlns:pdf="http://ns.adobe.com/pdf/1.3/" rdf:about="">
-      <pdf:Producer>{producer}</pdf:Producer>
+      <pdf:Producer>##producer</pdf:Producer>
     </rdf:Description>
     <rdf:Description xmlns:xmp="http://ns.adobe.com/xap/1.0/" rdf:about="">
-      <xmp:CreatorTool>{creator_tool}</xmp:CreatorTool>
-      <xmp:CreateDate>{timestamp}</xmp:CreateDate>
-      <xmp:ModifyDate>{timestamp}</xmp:ModifyDate>
+      <xmp:CreatorTool>##creator_tool</xmp:CreatorTool>
+      <xmp:CreateDate>##timestamp</xmp:CreateDate>
+      <xmp:ModifyDate>##timestamp</xmp:ModifyDate>
     </rdf:Description>
     <rdf:Description xmlns:pdfaExtension="http://www.aiim.org/pdfa/ns/extension/" xmlns:pdfaSchema="http://www.aiim.org/pdfa/ns/schema#" xmlns:pdfaProperty="http://www.aiim.org/pdfa/ns/property#" rdf:about="">
       <pdfaExtension:schemas>
@@ -382,47 +382,82 @@ def _prepare_pdf_metadata_xml(flavor, level, orderx_type, pdf_metadata):
       </pdfaExtension:schemas>
     </rdf:Description>
     <rdf:Description xmlns:fx="{urn}" rdf:about="">
-      <fx:DocumentType>{documenttype}</fx:DocumentType>
-      <fx:DocumentFileName>{xml_filename}</fx:DocumentFileName>
-      <fx:Version>{version}</fx:Version>
-      <fx:ConformanceLevel>{xmp_level}</fx:ConformanceLevel>
+      <fx:DocumentType>##documenttype</fx:DocumentType>
+      <fx:DocumentFileName>##xml_filename</fx:DocumentFileName>
+      <fx:Version>##version</fx:Version>
+      <fx:ConformanceLevel>##xmp_level</fx:ConformanceLevel>
     </rdf:Description>
   </rdf:RDF>
 </x:xmpmeta>
-<?xpacket end="w"?>
 """  # noqa: E501
+    tail = """<?xpacket end="w"?>"""
+    key2value = {
+        "title": pdf_metadata.get('title', ''),
+        "author": pdf_metadata.get('author', ''),
+        "subject": pdf_metadata.get('subject', ''),
+        "producer": 'pypdf',
+        "creator_tool": CREATOR,
+        "timestamp": _get_metadata_timestamp(),
+        "version": '1.0',
+        }
+
     if flavor == 'order-x':
-        documenttype = orderx_type.upper()
-        xml_filename = ORDERX_FILENAME
-        xmp_level = level.upper()
+        key2value.update({
+            "documenttype": orderx_type.upper(),
+            "xml_filename": ORDERX_FILENAME,
+            "xmp_level": level.upper(),
+            })
         urn = 'urn:factur-x:pdfa:CrossIndustryDocument:1p0#'
     else:
-        documenttype = 'INVOICE'
-        xml_filename = FACTURX_FILENAME
-        xmp_level = FACTURX_LEVEL2xmp[level]
+        key2value.update({
+            "documenttype": 'INVOICE',
+            "xml_filename": FACTURX_FILENAME,
+            "xmp_level": FACTURX_LEVEL2xmp[level],
+            })
         urn = 'urn:factur-x:pdfa:CrossIndustryDocument:invoice:1p0#'
-    xml_str = xml_str.format(
-        title=pdf_metadata.get('title', ''),
-        author=pdf_metadata.get('author', ''),
-        subject=pdf_metadata.get('subject', ''),
-        producer='pypdf',
-        creator_tool=CREATOR,
-        timestamp=_get_metadata_timestamp(),
-        urn=urn,
-        documenttype=documenttype,
-        xml_filename=xml_filename,
-        version='1.0',
-        xmp_level=xmp_level)
-    xml_byte = xml_str.encode('utf-8')
+    xml_str = xml_str.format(urn=urn)
+    xml_root = etree.fromstring(xml_str)
+    namespaces = xml_root.nsmap
+    namespaces.update({
+        'rdf': "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+        "dc": "http://purl.org/dc/elements/1.1/",
+        "fx": "urn:factur-x:pdfa:CrossIndustryDocument:invoice:1p0#",
+        "pdf": "http://ns.adobe.com/pdf/1.3/",
+        "xmp": "http://ns.adobe.com/xap/1.0/",
+        })
+    xpath2key = {
+        "/x:xmpmeta/rdf:RDF/rdf:Description/dc:title//rdf:li": "title",
+        "/x:xmpmeta/rdf:RDF/rdf:Description/dc:creator//rdf:li": "author",
+        "/x:xmpmeta/rdf:RDF/rdf:Description/dc:description//rdf:li": "subject",
+        "/x:xmpmeta/rdf:RDF/rdf:Description/pdf:Producer": "producer",
+        "/x:xmpmeta/rdf:RDF/rdf:Description/xmp:CreatorTool": "creator_tool",
+        "/x:xmpmeta/rdf:RDF/rdf:Description/xmp:CreateDate": "timestamp",
+        "/x:xmpmeta/rdf:RDF/rdf:Description/xmp:ModifyDate": "timestamp",
+        "/x:xmpmeta/rdf:RDF/rdf:Description/fx:DocumentType": "documenttype",
+        "/x:xmpmeta/rdf:RDF/rdf:Description/fx:DocumentFileName": "xml_filename",
+        "/x:xmpmeta/rdf:RDF/rdf:Description/fx:Version": "version",
+        "/x:xmpmeta/rdf:RDF/rdf:Description/fx:ConformanceLevel": "xmp_level",
+        }
+    for xpath, key in xpath2key.items():
+        xml_nodes = xml_root.xpath(xpath, namespaces=namespaces)
+        if len(xml_nodes) != 1:
+            raise Exception(
+                f"XMP generation: wrong xpath {xpath} for {key}. Please report it as a bug.")
+        xml_node = xml_nodes[0]
+        expected_node_text = f"##{key}"
+        if xml_node.text != expected_node_text:
+            raise Exception(
+                f"XMP generation: xpath {xpath} contains {xml_node.text} "
+                f"instead of {expected_node_text}. Please report it as a bug.")
+        value = key2value[key]
+        xml_node.text = value
+
+    xml_bytes = etree.tostring(xml_root)
+    xml_str_final = "\n".join([head, xml_bytes.decode('utf-8'), tail])
+    xml_bytes_final = xml_str_final.encode('utf-8')
     logger.debug('metadata XML:')
-    logger.debug(xml_byte)
-    return xml_byte
-
-
-# def createByteObject(string):
-#    string_to_encode = '\ufeff' + string
-#    x = string_to_encode.encode('utf-16be')
-#    return ByteStringObject(x)
+    logger.debug(xml_bytes_final)
+    return xml_bytes_final
 
 
 def _filespec_additional_attachments(

@@ -119,6 +119,11 @@ Contributors
 Changelog
 =========
 
+* Version 3.10 dated 2025-10-29
+
+  * Fix parsing of the ID tag of the XML file that contains "#" (example:  urn:cen.eu:en16931:2017#conformant#urn.cpro.gouv.fr:1p0:extended-ctc-fr). Fixes bug #55.
+  * Fix generation of XMP metadata: change the implementation used since version 1.6 and come back to generation via lxml to avoid issues with special caracters that need special treatment in XML. Fixes bug #57.
+
 * Version 3.9 dated 2025-10-29
 
   * Update XSD files to Factur-X 1.07.3
