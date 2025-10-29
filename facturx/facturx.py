@@ -105,6 +105,7 @@ XML_NAMESPACES = {
         'xsi': 'http://www.w3.org/2001/XMLSchema-instance',
     },
 }
+CREATOR = f'factur-x Python lib v{VERSION} by Alexis de Lattre'
 
 
 def check_facturx_xsd(
@@ -298,8 +299,7 @@ def _prepare_pdf_metadata_txt(pdf_metadata):
     info_dict = {
         '/Author': pdf_metadata.get('author', ''),
         '/CreationDate': pdf_date,
-        '/Creator':
-        'factur-x Python lib v%s by Alexis de Lattre' % VERSION,
+        '/Creator': CREATOR,
         '/Keywords': pdf_metadata.get('keywords', ''),
         '/ModDate': pdf_date,
         '/Subject': pdf_metadata.get('subject', ''),
@@ -406,7 +406,7 @@ def _prepare_pdf_metadata_xml(flavor, level, orderx_type, pdf_metadata):
         author=pdf_metadata.get('author', ''),
         subject=pdf_metadata.get('subject', ''),
         producer='pypdf',
-        creator_tool='factur-x python lib v%s by Alexis de Lattre' % VERSION,
+        creator_tool=CREATOR,
         timestamp=_get_metadata_timestamp(),
         urn=urn,
         documenttype=documenttype,
