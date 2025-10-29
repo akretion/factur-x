@@ -9,8 +9,8 @@ import logging
 from os.path import isfile, isdir, basename
 
 __author__ = "Alexis de Lattre <alexis.delattre@akretion.com>"
-__date__ = "July 2025"
-__version__ = "0.7"
+__date__ = "October 2025"
+__version__ = "0.8"
 
 
 def pdfgen(args):
@@ -74,13 +74,15 @@ def pdfgen(args):
         attachments[basename(additional_attachment_filename)] = {
             'filepath': additional_attachment_filename}
     lang = args.lang or None
+    xmp_compression = not args.disable_xmp_compression
     try:
         # The important line of code is below !
         generate_from_file(
             pdf_filename, xml_file, check_xsd=check_xsd,
             flavor=args.flavor, level=args.level, orderx_type=args.orderx_type,
             pdf_metadata=pdf_metadata, lang=lang, output_pdf_file=output_pdf_filename,
-            attachments=attachments, afrelationship=args.afrelationship)
+            attachments=attachments, afrelationship=args.afrelationship,
+            xmp_compression=xmp_compression)
     except Exception as e:
         logger.error('factur-x lib call failed. Error: %s', e)
         sys.exit(1)
@@ -165,6 +167,12 @@ def main(args=None):
         "Default: generic English subject with information extracted from the "
         "XML file such as: "
         "'Factur-X invoice I1242 dated 2017-08-17 issued by Akretion'")
+    parser.add_argument(
+        '-nz', '--disable-xmp-compression', dest="disable_xmp_compression",
+        action='store_true', help="Disable flate compression of the XMP metadata "
+        "(compression is enabled by default). You should disable compression of "
+        "the XMP metadata if you plan to later add a PAdES signature "
+        "on the generated PDF file.")
     parser.add_argument(
         '-w', '--overwrite', dest='overwrite', action='store_true',
         help="Overwrite output PDF file if it already exists.")

@@ -119,6 +119,10 @@ Contributors
 Changelog
 =========
 
+* Version 3.11 dated 2025-10-29
+
+  * Add an option to disable XMP compression. This is useful if you plan to later add a PAdES signature to the generated PDF file. New named boolean argument **xmp_compression** on generate_from_binary() and generate_from_file(). Option also added to the facturx-pdfgen script (see --help).
+
 * Version 3.10 dated 2025-10-29
 
   * Fix parsing of the ID tag of the XML file that contains "#" (example:  urn:cen.eu:en16931:2017#conformant#urn.cpro.gouv.fr:1p0:extended-ctc-fr). Fixes bug #55.

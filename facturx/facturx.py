@@ -510,7 +510,8 @@ def _filespec_additional_attachments(
 
 def _facturx_update_metadata_add_attachment(
         pdf_writer, xml_bytes, pdf_metadata, flavor, level, orderx_type=None,
-        lang=None, additional_attachments={}, afrelationship='data'):
+        lang=None, additional_attachments={}, afrelationship='data',
+        xmp_compression=True):
     '''This method is inspired from the code of the add_attachment()
     method of the pypdf lib'''
     # The entry for the file
@@ -599,7 +600,8 @@ def _facturx_update_metadata_add_attachment(
         NameObject('/Type'): NameObject('/Metadata'),
         })
     metadata_file_entry.set_data(metadata_xml_bytes)
-    metadata_file_entry = metadata_file_entry.flate_encode()
+    if xmp_compression:
+        metadata_file_entry = metadata_file_entry.flate_encode()
 
     existing_metadata_obj = pdf_writer._root_object.get('/Metadata')
     if existing_metadata_obj:
@@ -813,7 +815,7 @@ def generate_from_binary(
         pdf_file, xml, flavor='autodetect', level='autodetect',
         orderx_type='autodetect',
         check_xsd=True, pdf_metadata=None, lang=None, attachments=None,
-        afrelationship='data'):
+        afrelationship='data', xmp_compression=True):
     """
     Generate a Factur-X or Order-X PDF from a regular PDF and a factur-X
     or Order-X XML file. The method uses a binary as input (the regular PDF)
@@ -874,6 +876,10 @@ def generate_from_binary(
     Factur-X/Order-X XML file.
     Possible value: data, source, alternative. Default value: data.
     :type afrelationship: string
+    :param xmp_compression: Enable flate compression of the XMP metadata.
+    Default value: True. Set this option to False if you plan to later add a
+    PAdES signature to the generated PDF file.
+    :type xmp_compression: bool
     :return: The Factur-X or Order-X PDF file as bytes
     :rtype: bytes
     """
@@ -886,7 +892,8 @@ def generate_from_binary(
         generate_from_file(
             f, xml, flavor=flavor, level=level, orderx_type=orderx_type,
             check_xsd=check_xsd, pdf_metadata=pdf_metadata, lang=lang,
-            attachments=attachments, afrelationship=afrelationship)
+            attachments=attachments, afrelationship=afrelationship,
+            xmp_compression=xmp_compression)
         f.seek(0)
         result_pdf = f.read()
         f.close()
@@ -915,7 +922,7 @@ def generate_from_file(
         pdf_file, xml, flavor='autodetect', level='autodetect',
         orderx_type='autodetect',
         check_xsd=True, pdf_metadata=None, lang=None, output_pdf_file=None,
-        attachments=None, afrelationship='data'):
+        attachments=None, afrelationship='data', xmp_compression=True):
     """
     Generate a Factur-X or Order-X PDF file from a regular PDF and a Factur-X
     or Order-X XML file. The method uses a file as input (regular PDF file)
@@ -978,6 +985,10 @@ def generate_from_file(
     Factur-X/Order-X XML file.
     Possible value: data, source, alternative. Default value: data.
     :type afrelationship: string
+    :param xmp_compression: Enable flate compression of the XMP metadata.
+    Default value: True. Set this option to False if you plan to later add a
+    PAdES signature to the generated PDF file.
+    :type xmp_compression: bool
     :return: Returns True. This method re-writes the input PDF file,
     unless if the argument output_pdf_file is set.
     :rtype: bool
@@ -1155,7 +1166,8 @@ def generate_from_file(
         pdf_writer, xml_bytes, pdf_metadata, flavor, level,
         orderx_type=orderx_type, lang=lang,
         additional_attachments=attachments,
-        afrelationship=afrelationship)
+        afrelationship=afrelationship,
+        xmp_compression=xmp_compression)
     if output_pdf_file:
         with open(output_pdf_file, 'wb') as output_f:
             pdf_writer.write(output_f)
