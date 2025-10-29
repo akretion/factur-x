@@ -119,6 +119,10 @@ Contributors
 Changelog
 =========
 
+* Version 3.9 dated 2025-10-29
+
+  * Update XSD files to Factur-X 1.07.3
+
 * Version 3.8 dated 2025-07-27
 
   * Import fallback for compatibility with Python 3.8.
