@@ -119,6 +119,13 @@ Contributors
 Changelog
 =========
 
+* Version 3.12 dated 2025-10-29
+
+  * In the method generate_from_file(), if the second argument (xml) is provided as a string, we now accept
+    either a file path as string (like for the first argument) or the XML itself as a string. It was
+    difficult for users to admit that, for the first argument, the lib accepted a file path as string but
+    not for the second argument.
+
 * Version 3.11 dated 2025-10-29
 
   * Add an option to disable XMP compression. This is useful if you plan to later add a PAdES signature to the generated PDF file. New named boolean argument **xmp_compression** on generate_from_binary() and generate_from_file(). Option also added to the facturx-pdfgen script (see --help).

@@ -10,7 +10,7 @@ from os.path import isfile, isdir, basename
 
 __author__ = "Alexis de Lattre <alexis.delattre@akretion.com>"
 __date__ = "October 2025"
-__version__ = "0.8"
+__version__ = "0.9"
 
 
 def pdfgen(args):
@@ -32,10 +32,9 @@ def pdfgen(args):
             sys.exit(1)
 
     pdf_filename = args.regular_pdf_file
-    xml_filename = args.xml_file
     output_pdf_filename = args.facturx_orderx_pdf_file
     additional_attachment_filenames = args.optional_attachments
-    for filename in [pdf_filename, xml_filename] + additional_attachment_filenames:
+    for filename in [pdf_filename, args.xml_file] + additional_attachment_filenames:
         if not isfile(filename):
             logger.error('Argument %s is not a filename', filename)
             sys.exit(1)
@@ -44,7 +43,6 @@ def pdfgen(args):
             '3rd argument %s is a directory name (should be a the '
             'Factur-X or Order-X PDF filename)', output_pdf_filename)
         sys.exit(1)
-    xml_file = open(xml_filename, 'rb')
     check_xsd = True
     if args.disable_xsd_check:
         check_xsd = False
@@ -78,7 +76,7 @@ def pdfgen(args):
     try:
         # The important line of code is below !
         generate_from_file(
-            pdf_filename, xml_file, check_xsd=check_xsd,
+            pdf_filename, args.xml_file, check_xsd=check_xsd,
             flavor=args.flavor, level=args.level, orderx_type=args.orderx_type,
             pdf_metadata=pdf_metadata, lang=lang, output_pdf_file=output_pdf_filename,
             attachments=attachments, afrelationship=args.afrelationship,

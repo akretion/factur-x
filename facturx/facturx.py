@@ -822,7 +822,9 @@ def generate_from_binary(
     and returns a binary as output (the Factur-X or Order-X PDF document).
     :param pdf_file: the regular PDF document as bytes
     :type pdf_file: bytes
-    :param xml: the Factur-X or Order-X XML
+    :param xml: the Factur-X or Order-X XML. If xml is a bytes, it must be
+    the XML itself encoded as UTF-8. If xml is a string, it can be either
+    a file path or the XML itself.
     :type xml: bytes, string, file or etree object
     :param flavor: possible values: 'factur-x', 'order-x' or 'autodetect'
     :type flavor: string
@@ -930,7 +932,9 @@ def generate_from_file(
     :param pdf_file: the regular PDF file as file path
     (type string) or as file object
     :type pdf_file: string or file
-    :param xml: the Factur-X or Order-X XML
+    :param xml: the Factur-X or Order-X XML. If xml is a bytes, it must be
+    the XML itself encoded as UTF-8. If xml is a string, it can be either
+    a file path or the XML itself.
     :type xml: bytes, string, file or etree object
     :param flavor: possible values: 'factur-x', 'order-x' or 'autodetect'
     :type flavor: string
@@ -1068,7 +1072,12 @@ def generate_from_file(
     if isinstance(xml, bytes):
         xml_bytes = xml
     elif isinstance(xml, str):
-        xml_bytes = xml.encode('utf8')
+        # we accept both a file path or the XML string itself
+        if os.path.isfile(xml):
+            with open(xml, "rb") as xml_file:
+                xml_bytes = xml_file.read()
+        else:
+            xml_bytes = xml.encode('utf8')
     elif isinstance(xml, type(etree.Element('pouet'))):
         xml_root = xml
         xml_bytes = etree.tostring(
