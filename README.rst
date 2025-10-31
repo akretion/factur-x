@@ -119,6 +119,10 @@ Contributors
 Changelog
 =========
 
+* Version 3.13 dated 2025-10-31
+
+  * Add support for XRechnung in get_xml_from_pdf(). get_xml_from_pdf() now accepts filenames that don't strictly follow the standard.
+
 * Version 3.12 dated 2025-10-29
 
   * In the method generate_from_file(), if the second argument (xml) is provided as a string, we now accept

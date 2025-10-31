@@ -251,31 +251,46 @@ def get_xml_from_pdf(pdf_file, check_xsd=True, filenames=[]):
     for attach_obj in pdf_reader.attachment_list:
         filename = attach_obj.name
         logger.debug('Found filename=%s', filename)
-        if filename in filenames and attach_obj.content:
+        if filename.lower().endswith('.xml') and attach_obj.content:
             try:
                 xml_root = etree.fromstring(attach_obj.content)
                 logger.info(
-                    'A valid XML file %s has been found in the PDF file',
+                    'A valid XML file %s has been found in the PDF',
                     filename)
             except Exception as e:
                 logger.warning(
-                    'The file %s is not a valid XML file: %s', filename, str(e))
+                    'File %s is not a valid XML file: %s', filename, str(e))
                 continue
-            if check_xsd:
-                flavor = 'autodetect'
-                if filename == ORDERX_FILENAME:
-                    flavor = 'order-x'
-                elif filename == FACTURX_FILENAME:
-                    flavor = 'factur-x'
-                # Don't set flavor when filename is zugferd-invoice.xml
+            try:
+                flavor = get_flavor(xml_root)
+            except Exception as e:
+                logger.warning(
+                    "File %s is not a factur-x/order-x/zugferd/xrechnung file. Error: %s",
+                    filename, e)
+                continue
+            if (
+                    (filename == ORDERX_FILENAME and flavor != 'order-x') or
+                    (filename == FACTURX_FILENAME and flavor != "factur-x")):
+                # Don't do that when filename is zugferd-invoice.xml
                 # because it can be either zugferd (ie zugferd 1.0)
                 # or 'factur-x' i.e. zugferd 2.0, see bug #41
-                xml_check_xsd(xml_root, flavor=flavor)
+                logger.warning(
+                    "Filename is %s but detected flavor is %s. "
+                    "This is very weird: skipping file.", filename, flavor)
+                continue
+            if check_xsd:
+                try:
+                    xml_check_xsd(xml_root, flavor=flavor)
+                except Exception:
+                    # Logs are already present in xml_check_xsd()
+                    continue
             xml_bytes = attach_obj.content
             xml_filename = filename
+            logger.info('XML file %s extracted from PDF', xml_filename)
+            logger.debug('Content of the XML file: %s', xml_bytes)
             break
-    logger.info('Returning an XML file %s', xml_filename)
-    logger.debug('Content of the XML file: %s', xml_bytes)
+    if not xml_filename:
+        logger.warning("No valid factur-x/order-x/zugferd/xrechnung XML file found in this PDF")
     return (xml_filename, xml_bytes)
 
 
