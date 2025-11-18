@@ -759,14 +759,29 @@ def get_level(xml_etree, flavor='autodetect'):
             "SpecifiedExchangedDocumentContext/"
             "GuidelineSpecifiedDocumentContextParameter/ID.")
     doc_id = doc_id_xpath[0].text
-    # Ignore what is after "#"
-    doc_id_cut = doc_id.split('#')[0]
-    level = doc_id_cut.split(':')[-1]
+    # Content of the ID field per level for Factur-X:
+    # minimum: urn:factur-x.eu:1p0:minimum
+    # basicwl: urn:factur-x.eu:1p0:basicwl
+    # basic: urn:cen.eu:en16931:2017#compliant#urn:factur-x.eu:1p0:basic
+    # en16931: urn:cen.eu:en16931:2017
+    # extended: urn:cen.eu:en16931:2017#conformant#urn:factur-x.eu:1p0:extended
+    # We also want to support variants such as:
+    # urn:cen.eu:en16931:2017#conformant#urn.cpro.gouv.fr:1p0:extended-ctc-fr
+    # Content of the ID field per level for Order-X:
+    # basic: urn:order-x.eu:1p0:basic
+    # comfort: urn:order-x.eu:1p0:comfort
+    # extended: urn:order-x.eu:1p0:extended
+    # ZUGFeRD 1.0 levels are the same as orderx
     possible_values = dict(FACTURX_LEVEL2xsd)
     possible_values.update(ORDERX_LEVEL2xsd)
-    # ZUGFeRD 1.0 levels are the same as orderx
+    level = doc_id.split(':')[-1]
+    if level == "extended-ctc-fr":
+        level = "extended"
     if level not in possible_values:
-        level = doc_id_cut.split(':')[-2]
+        # Ignore what is after the first "#"
+        doc_id_cut = doc_id.split('#')[0]
+        if len(doc_id_cut) > 1:
+            level = doc_id_cut.split(':')[-2]
     if level not in possible_values:
         raise ValueError(
             "Invalid Factur-X/Order-X URN: '%s'" % doc_id)

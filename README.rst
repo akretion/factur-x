@@ -119,6 +119,10 @@ Contributors
 Changelog
 =========
 
+* Version 3.14 dated 2025-11-18
+
+  * Fix regression in get_level() since release 3.10 caused by a bad understanding of extended-ctc-fr
+
 * Version 3.13 dated 2025-10-31
 
   * Add support for XRechnung in get_xml_from_pdf(). get_xml_from_pdf() now accepts filenames that don't strictly follow the standard.

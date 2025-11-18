@@ -1,4 +1,4 @@
-__version__ = "3.13"
+__version__ = "3.14"
 from .facturx import generate_from_file, \
     generate_facturx_from_file, \
     generate_from_binary, \
