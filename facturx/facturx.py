@@ -57,11 +57,11 @@ ZUGFERD_FILENAMES = ['zugferd-invoice.xml', 'ZUGFeRD-invoice.xml']
 ORDERX_FILENAME = 'order-x.xml'
 ALL_FILENAMES = [FACTURX_FILENAME] + ZUGFERD_FILENAMES + [ORDERX_FILENAME]
 FACTURX_LEVEL2xsd = {
-    'minimum': 'facturx-minimum/Factur-X_1.07.3_MINIMUM.xsd',
-    'basicwl': 'facturx-basicwl/Factur-X_1.07.3_BASICWL.xsd',
-    'basic': 'facturx-basic/Factur-X_1.07.3_BASIC.xsd',
-    'en16931': 'facturx-en16931/Factur-X_1.07.3_EN16931.xsd',
-    'extended': 'facturx-extended/Factur-X_1.07.3_EXTENDED.xsd',
+    'minimum': 'facturx-minimum/Factur-X_1.08_MINIMUM.xsd',
+    'basicwl': 'facturx-basicwl/Factur-X_1.08_BASICWL.xsd',
+    'basic': 'facturx-basic/Factur-X_1.08_BASIC.xsd',
+    'en16931': 'facturx-en16931/Factur-X_1.08_EN16931.xsd',
+    'extended': 'facturx-extended/Factur-X_1.08_EXTENDED.xsd',
 }
 ORDERX_LEVEL2xsd = {
     'basic': 'orderx-basic/SCRDMCCBDACIOMessageStructure_100pD20B.xsd',

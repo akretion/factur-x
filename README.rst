@@ -119,6 +119,10 @@ Contributors
 Changelog
 =========
 
+* Version 3.15 dated 2025-12-05
+
+  * Update XSD files to Factur-X 1.0.8
+
 * Version 3.14 dated 2025-11-18
 
   * Fix regression in get_level() since release 3.10 caused by a bad understanding of extended-ctc-fr
