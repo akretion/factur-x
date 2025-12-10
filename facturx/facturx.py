@@ -55,7 +55,8 @@ logger.setLevel(logging.INFO)
 FACTURX_FILENAME = 'factur-x.xml'
 ZUGFERD_FILENAMES = ['zugferd-invoice.xml', 'ZUGFeRD-invoice.xml']
 ORDERX_FILENAME = 'order-x.xml'
-ALL_FILENAMES = [FACTURX_FILENAME] + ZUGFERD_FILENAMES + [ORDERX_FILENAME]
+XRECHNUNG_FILENAME = 'xrechnung.xml'
+ALL_FILENAMES = [FACTURX_FILENAME] + ZUGFERD_FILENAMES + [ORDERX_FILENAME] + [XRECHNUNG_FILENAME]
 FACTURX_LEVEL2xsd = {
     'minimum': 'facturx-minimum/Factur-X_1.08_MINIMUM.xsd',
     'basicwl': 'facturx-basicwl/Factur-X_1.08_BASICWL.xsd',
@@ -217,7 +218,7 @@ def xml_check_xsd(xml, flavor='autodetect', level='autodetect'):
 
 
 def get_facturx_xml_from_pdf(pdf_file, check_xsd=True):
-    filenames = [FACTURX_FILENAME] + ZUGFERD_FILENAMES
+    filenames = [FACTURX_FILENAME] + ZUGFERD_FILENAMES + [XRECHNUNG_FILENAME]
     return get_xml_from_pdf(pdf_file, check_xsd=check_xsd, filenames=filenames)
 
 
@@ -816,9 +817,10 @@ def get_flavor(xml_etree):
 def get_orderx_type(xml_etree):
     if not isinstance(xml_etree, type(etree.Element('pouet'))):
         raise ValueError('xml_etree must be an etree.Element() object')
+    namespaces = get_xml_namespaces('order-x')
     type_code_xpath = \
         "/rsm:SCRDMCCBDACIOMessageStructure/rsm:ExchangedDocument/ram:TypeCode"
-    xpath_res = xml_etree.xpath(type_code_xpath, namespaces=XML_NAMESPACES['order-x'])
+    xpath_res = xml_etree.xpath(type_code_xpath, namespaces=namespaces)
     code = xpath_res and xpath_res[0].text and xpath_res[0].text.strip() or None
     if code not in ORDERX_code2type:
         raise Exception(
