@@ -549,6 +549,10 @@ def _facturx_update_metadata_add_attachment(
         raise ValueError(
             'Wrong value for orderx_type (%s), must be in %s'
             % (orderx_type, ORDERX_TYPES))
+    if level == 'xrechnung':
+        if afrelationship != 'alternative':
+            raise ValueError(
+                "Wrong value for afrelationship (%s). XRECHNUNG requires: alternative." % afrelationship)
     if afrelationship not in XML_AFRelationship:
         raise ValueError(
             "Wrong value for afrelationship (%s). Possible values: %s."
@@ -1212,6 +1216,14 @@ def generate_from_file(
             "afrelationship switched from '%s' to 'data' because it must be 'data' "
             "for Factur-X profile '%s'.", afrelationship, level)
         afrelationship = 'data'
+    if (
+            flavor == 'factur-x' and
+            level == 'xrechnung' and
+            afrelationship != 'alternative'):
+        logger.warning(
+            "afrelationship switched from '%s' to 'alternative' because it must be 'alternative' "
+            "for Factur-X profile '%s'.", afrelationship, level)
+        afrelationship = 'alternative'
     if flavor == 'order-x' and orderx_type not in ORDERX_TYPES:
         if xml_root is None:
             xml_root = etree.fromstring(xml_bytes)
