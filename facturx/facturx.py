@@ -699,8 +699,14 @@ def _base_info2pdf_metadata(base_info):
         '220': 'Order',
         '230': 'Order Change',
         '231': 'Order Response',
+        '326': 'Partial Invoice',
         '380': 'Invoice',
-        '381': 'Refund',
+        '381': 'Credit Note',
+        '384': 'Corrected Invoice',
+        '389': 'Self-billed Invoice',
+        '875': 'Partial Construction Invoice',
+        '876': 'Partial Final Construction Invoice',
+        '877': 'Final Construction Invoice',
         }
     doc_type_name = doc_type_map.get(base_info['doc_type'], 'Invoice')
     date_str = datetime.strftime(base_info['date'], '%Y-%m-%d')
