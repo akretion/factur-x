@@ -64,7 +64,7 @@ FACTURX_LEVEL2xsd = {
     'basic': 'facturx-basic/Factur-X_1.08_BASIC.xsd',
     'en16931': 'facturx-en16931/Factur-X_1.08_EN16931.xsd',
     'extended': 'facturx-extended/Factur-X_1.08_EXTENDED.xsd',
-    'xrechnung': 'facturx-en16931/Factur-X_1.08_EN16931.xsd',
+    'xrechnung': 'facturx-xrechnung/CrossIndustryInvoice_100pD16B.xsd'
 }
 ORDERX_LEVEL2xsd = {
     'basic': 'orderx-basic/SCRDMCCBDACIOMessageStructure_100pD20B.xsd',
