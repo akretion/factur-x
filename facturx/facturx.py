@@ -52,16 +52,19 @@ logging.basicConfig(format=FORMAT)
 logger = logging.getLogger('factur-x')
 logger.setLevel(logging.INFO)
 
+XRECHUNG_FILEVERSION = '3.0'
 FACTURX_FILENAME = 'factur-x.xml'
+XRECHNUNG_FILENAME = 'xrechnung.xml'
 ZUGFERD_FILENAMES = ['zugferd-invoice.xml', 'ZUGFeRD-invoice.xml']
 ORDERX_FILENAME = 'order-x.xml'
-ALL_FILENAMES = [FACTURX_FILENAME] + ZUGFERD_FILENAMES + [ORDERX_FILENAME]
+ALL_FILENAMES = [FACTURX_FILENAME] + [XRECHNUNG_FILENAME] + ZUGFERD_FILENAMES + [ORDERX_FILENAME]
 FACTURX_LEVEL2xsd = {
     'minimum': 'facturx-minimum/Factur-X_1.08_MINIMUM.xsd',
     'basicwl': 'facturx-basicwl/Factur-X_1.08_BASICWL.xsd',
     'basic': 'facturx-basic/Factur-X_1.08_BASIC.xsd',
     'en16931': 'facturx-en16931/Factur-X_1.08_EN16931.xsd',
     'extended': 'facturx-extended/Factur-X_1.08_EXTENDED.xsd',
+    'xrechnung': 'facturx-en16931/Factur-X_1.08_EN16931.xsd',
 }
 ORDERX_LEVEL2xsd = {
     'basic': 'orderx-basic/SCRDMCCBDACIOMessageStructure_100pD20B.xsd',
@@ -74,6 +77,7 @@ FACTURX_LEVEL2xmp = {
     'basic': 'BASIC',
     'en16931': 'EN 16931',
     'extended': 'EXTENDED',
+    'xrechnung': 'XRECHNUNG',
     }
 ORDERX_TYPES = ('order', 'order_change', 'order_response')
 ORDERX_code2type = {
@@ -217,7 +221,7 @@ def xml_check_xsd(xml, flavor='autodetect', level='autodetect'):
 
 
 def get_facturx_xml_from_pdf(pdf_file, check_xsd=True):
-    filenames = [FACTURX_FILENAME] + ZUGFERD_FILENAMES
+    filenames = [FACTURX_FILENAME] + [XRECHNUNG_FILENAME] + ZUGFERD_FILENAMES
     return get_xml_from_pdf(pdf_file, check_xsd=check_xsd, filenames=filenames)
 
 
@@ -270,7 +274,8 @@ def get_xml_from_pdf(pdf_file, check_xsd=True, filenames=[]):
                 continue
             if (
                     (filename == ORDERX_FILENAME and flavor != 'order-x') or
-                    (filename == FACTURX_FILENAME and flavor != "factur-x")):
+                    (filename == FACTURX_FILENAME and flavor != "factur-x") or
+                    (filename == XRECHNUNG_FILENAME and flavor != "factur-x")):
                 # Don't do that when filename is zugferd-invoice.xml
                 # because it can be either zugferd (ie zugferd 1.0)
                 # or 'factur-x' i.e. zugferd 2.0, see bug #41
@@ -732,6 +737,8 @@ def get_facturx_level(facturx_xml_etree):
 
 
 def get_level(xml_etree, flavor='autodetect'):
+    global XRECHNUNG_FILEVERSION
+
     if not isinstance(xml_etree, type(etree.Element('pouet'))):
         raise ValueError('xml_etree must be an etree.Element() object')
     if flavor not in ('autodetect', 'factur-x', 'facturx', 'order-x', 'orderx', 'zugferd'):
@@ -765,6 +772,8 @@ def get_level(xml_etree, flavor='autodetect'):
     # basic: urn:cen.eu:en16931:2017#compliant#urn:factur-x.eu:1p0:basic
     # en16931: urn:cen.eu:en16931:2017
     # extended: urn:cen.eu:en16931:2017#conformant#urn:factur-x.eu:1p0:extended
+    # xrechnung: urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0
+    # extension xrechung: urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0#conformant#urn:xeinkauf.de:kosit:extension:xrechnung_3.0
     # We also want to support variants such as:
     # urn:cen.eu:en16931:2017#conformant#urn.cpro.gouv.fr:1p0:extended-ctc-fr
     # Content of the ID field per level for Order-X:
@@ -777,6 +786,11 @@ def get_level(xml_etree, flavor='autodetect'):
     level = doc_id.split(':')[-1]
     if level == "extended-ctc-fr":
         level = "extended"
+    if level[:10] == 'xrechnung_':
+        XRECHNUNG_FILEVERSION = level.split('_')[-1]
+        logger.debug('xrechnung version is %s (autodetected)', XRECHNUNG_FILEVERSION)
+        # level = level.split('_')[-2]
+        level = "xrechnung"
     if level not in possible_values:
         # Ignore what is after the first "#"
         doc_id_cut = doc_id.split('#')[0]
