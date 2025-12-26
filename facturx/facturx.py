@@ -418,7 +418,6 @@ def _prepare_pdf_metadata_xml(flavor, level, orderx_type, pdf_metadata):
         "producer": 'pypdf',
         "creator_tool": CREATOR,
         "timestamp": _get_metadata_timestamp(),
-        "version": '1.0',
         }
 
     if flavor == 'order-x':
@@ -426,14 +425,24 @@ def _prepare_pdf_metadata_xml(flavor, level, orderx_type, pdf_metadata):
             "documenttype": orderx_type.upper(),
             "xml_filename": ORDERX_FILENAME,
             "xmp_level": level.upper(),
+            "version": '1.0',
             })
         urn = 'urn:factur-x:pdfa:CrossIndustryDocument:1p0#'
     else:
-        key2value.update({
-            "documenttype": 'INVOICE',
-            "xml_filename": FACTURX_FILENAME,
-            "xmp_level": FACTURX_LEVEL2xmp[level],
-            })
+        if level == 'xrechnung':
+            key2value.update({
+                "documenttype": 'INVOICE',
+                "xml_filename": XRECHNUNG_FILENAME,
+                "xmp_level": FACTURX_LEVEL2xmp[level],
+                "version": XRECHNUNG_FILEVERSION,
+                })
+        else:
+            key2value.update({
+                "documenttype": 'INVOICE',
+                "xml_filename": FACTURX_FILENAME,
+                "xmp_level": FACTURX_LEVEL2xmp[level],
+                "version": '1.0',
+                })
         urn = 'urn:factur-x:pdfa:CrossIndustryDocument:invoice:1p0#'
     xml_str = xml_str.format(urn=urn)
     xml_root = etree.fromstring(xml_str)
@@ -570,8 +579,12 @@ def _facturx_update_metadata_add_attachment(
         xml_filename = ORDERX_FILENAME
         desc = 'Order-X XML file'
     else:
-        xml_filename = FACTURX_FILENAME
-        desc = 'Factur-X XML file'
+        if level == 'xrechnung':
+            xml_filename = XRECHNUNG_FILENAME
+            desc = 'ZUGFeRD XML XRechnung'
+        else:
+            xml_filename = FACTURX_FILENAME
+            desc = 'Factur-X XML file'
 
     fname_obj = create_string_object(xml_filename)
     filespec_dict = DictionaryObject({
@@ -875,7 +888,7 @@ def generate_from_binary(
     :param level: the level of the Factur-X or Order-X XML file. Default value
     is 'autodetect'. The only advantage to specifiy a particular value instead
     of using the autodetection is for a very very small perf improvement.
-    Possible values: minimum, basicwl, basic, en16931, extended for Factur-X
+    Possible values: minimum, basicwl, basic, en16931, extended, xrechnung for Factur-X
     basic, comfort, extended for Order-X
     :type level: string
     :param orderx_type: If generating an Order-X file (flavor='order-x'),
