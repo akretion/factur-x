@@ -33,7 +33,8 @@ from tempfile import NamedTemporaryFile
 from datetime import datetime
 from pypdf import PdfWriter, PdfReader
 from pypdf.generic import DictionaryObject, DecodedStreamObject, \
-    NameObject, NumberObject, ArrayObject, create_string_object
+    NameObject, NumberObject, ArrayObject, create_string_object, \
+    ByteStringObject
 import importlib.resources as importlib_resources
 try:
     importlib_resources.files  # added in py3.9
@@ -478,8 +479,10 @@ def _prepare_pdf_metadata_xml(flavor, level, orderx_type, pdf_metadata):
 def _filespec_additional_attachments(
         pdf_writer, name_arrayobj_cdict, file_dict, filename):
     logger.debug('_filespec_additional_attachments filename=%s', filename)
-    md5sum = hashlib.md5(file_dict['filedata']).hexdigest()
-    md5sum_obj = create_string_object(md5sum)
+    # Cf. https://pypdf.readthedocs.io/en/stable/user/handle-attachments.html#add-attachments
+    # md5sum = hashlib.md5(file_dict['filedata']).hexdigest()
+    # md5sum_obj = create_string_object(md5sum)
+    md5sum_obj = ByteStringObject(hashlib.md5(file_dict['filedata']).digest())
     params_dict = DictionaryObject({
         NameObject('/CheckSum'): md5sum_obj,
         NameObject('/Size'): NumberObject(len(file_dict['filedata'])),
@@ -539,8 +542,10 @@ def _facturx_update_metadata_add_attachment(
         raise ValueError(
             "Wrong value for afrelationship (%s). Possible values: %s."
             % (afrelationship, XML_AFRelationship))
-    md5sum = hashlib.md5(xml_bytes).hexdigest()
-    md5sum_obj = create_string_object(md5sum)
+    # Cf. https://pypdf.readthedocs.io/en/stable/user/handle-attachments.html#add-attachments
+    # md5sum = hashlib.md5(xml_bytes).hexdigest()
+    # md5sum_obj = create_string_object(md5sum)
+    md5sum_obj = ByteStringObject(hashlib.md5(xml_bytes).digest())
     params_dict = DictionaryObject({
         NameObject('/CheckSum'): md5sum_obj,
         NameObject('/ModDate'): create_string_object(_get_pdf_timestamp()),
