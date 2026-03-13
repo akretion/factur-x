@@ -1,0 +1,1341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Schema agency:  UNCEFACT
+Schema version:  100.D16B (Decoupled Code List Schema Modules)
+Schema date:      10 October 2016
+
+Copyright (C) UN/CEFACT (2016). All Rights Reserved.
+
+This document and translations of it may be copied and furnished to others, and derivative works that comment on or otherwise explain it or assist in its implementation may be prepared, copied, published and distributed, in whole or in part, without restriction of any kind, provided that the above copyright notice and this paragraph are included on all such copies and derivative works. However, this document itself may not be modified in any way, such as by removing the copyright notice or references to UN/CEFACT, except as needed for the purpose of developing UN/CEFACT specifications, in which case the procedures for copyrights defined in the UN/CEFACT Intellectual Property Rights document must be followed, or as required to translate it into languages other than English.
+
+The limited permissions granted above are perpetual and will not be revoked by UN/CEFACT or its successors or assigns.
+
+This document and the information contained herein is provided on an "AS IS" basis and UN/CEFACT DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+-->
+<xsd:schema xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:qdt="urn:un:unece:uncefact:data:standard:QualifiedDataType:100" xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100" targetNamespace="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100" elementFormDefault="qualified" version="100.D16B">
+	<xsd:import namespace="urn:un:unece:uncefact:data:standard:QualifiedDataType:100" schemaLocation="CrossIndustryInvoice_QualifiedDataType_100pD16B.xsd"/>
+	<xsd:import namespace="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100" schemaLocation="CrossIndustryInvoice_UnqualifiedDataType_100pD16B.xsd"/>
+	<xsd:complexType name="AdvancePaymentType">
+		<xsd:sequence>
+			<xsd:element name="PaidAmount" type="udt:AmountType"/>
+			<xsd:element name="FormattedReceivedDateTime" type="qdt:FormattedDateTimeType" minOccurs="0"/>
+			<xsd:element name="IncludedTradeTax" type="ram:TradeTaxType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="AppliedAllowanceChargeType">
+		<xsd:sequence>
+			<xsd:element name="ActualAmount" type="udt:AmountType" minOccurs="0"/>
+			<xsd:element name="Description" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="ReasonCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="CalculationPercent" type="udt:PercentType" minOccurs="0"/>
+			<xsd:element name="BasisAmount" type="udt:AmountType" minOccurs="0"/>
+			<xsd:element name="ChargeIndicator" type="udt:IndicatorType"/>
+			<xsd:element name="CategoryAppliedTax" type="ram:AppliedTaxType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="AppliedTaxType">
+		<xsd:sequence>
+			<xsd:element name="CalculatedAmount" type="udt:AmountType" minOccurs="0"/>
+			<xsd:element name="TypeCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="CalculatedRate" type="udt:RateType" minOccurs="0"/>
+			<xsd:element name="BasisAmount" type="udt:AmountType" minOccurs="0"/>
+			<xsd:element name="TaxPointDate" type="udt:DateType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="AvailablePeriodType">
+		<xsd:sequence>
+			<xsd:element name="StartDateTime" type="udt:DateTimeType" minOccurs="0"/>
+			<xsd:element name="EndDateTime" type="udt:DateTimeType" minOccurs="0"/>
+			<xsd:element name="Description" type="udt:TextType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="BasicWorkItemType">
+		<xsd:sequence>
+			<xsd:element name="ID" type="udt:IDType"/>
+			<xsd:element name="ReferenceID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="PrimaryClassificationCode" type="udt:CodeType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="AlternativeClassificationCode" type="udt:CodeType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TypeCode" type="udt:CodeType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Comment" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TotalQuantity" type="udt:QuantityType" minOccurs="0"/>
+			<xsd:element name="TotalQuantityClassificationCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="IndexValue" type="udt:ValueType" minOccurs="0"/>
+			<xsd:element name="StatusCode" type="udt:CodeType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ReferenceFileBinaryObject" type="udt:BinaryObjectType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Index" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="RequestedActionCode" type="udt:CodeType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="PriceListItemID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="ContractualLanguageCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="ActualWorkItemComplexDescription" type="ram:WorkItemComplexDescriptionType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TotalQuantityWorkItemQuantityAnalysis" type="ram:WorkItemQuantityAnalysisType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="UnitCalculatedPrice" type="ram:CalculatedPriceType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TotalCalculatedPrice" type="ram:CalculatedPriceType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="SubordinateBasicWorkItem" type="ram:BasicWorkItemType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ChangedRecordedStatus" type="ram:RecordedStatusType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ItemBasicWorkItem" type="ram:BasicWorkItemType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ReferencedSpecifiedBinaryFile" type="ram:SpecifiedBinaryFileType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="BranchFinancialInstitutionType">
+		<xsd:sequence>
+			<xsd:element name="ID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="Name" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="LocationFinancialInstitutionAddress" type="ram:FinancialInstitutionAddressType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="CalculatedPriceType">
+		<xsd:sequence>
+			<xsd:element name="TypeCode" type="udt:CodeType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ChargeAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="RelatedAppliedAllowanceCharge" type="ram:AppliedAllowanceChargeType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="ContactPersonType">
+		<xsd:sequence>
+			<xsd:element name="GivenName" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="MiddleName" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="FamilyName" type="udt:TextType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="CreditorFinancialAccountType">
+		<xsd:sequence>
+			<xsd:element name="IBANID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="AccountName" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="ProprietaryID" type="udt:IDType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="CreditorFinancialInstitutionType">
+		<xsd:sequence>
+			<xsd:element name="BICID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="CHIPSUniversalID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="NewZealandNCCID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="IrishNSCID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="UKSortCodeID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="CHIPSParticipantID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="SwissBCID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="FedwireRoutingNumberID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="PortugueseNCCID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="RussianCentralBankID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="ItalianDomesticID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="AustrianBankleitzahlID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="CanadianPaymentsAssociationID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="SICID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="GermanBankleitzahlID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="SpanishDomesticInterbankingID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="SouthAfricanNCCID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="HongKongBankID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="AustralianBSBID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="IndianFinancialSystemID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="HellenicBankID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="PolishNationalClearingID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="Name" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="ClearingSystemName" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="JapanFinancialInstitutionCommonID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="LocationFinancialInstitutionAddress" type="ram:FinancialInstitutionAddressType" minOccurs="0"/>
+			<xsd:element name="SubDivisionBranchFinancialInstitution" type="ram:BranchFinancialInstitutionType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="DebtorFinancialAccountType">
+		<xsd:sequence>
+			<xsd:element name="IBANID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="AccountName" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="ProprietaryID" type="udt:IDType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="DebtorFinancialInstitutionType">
+		<xsd:sequence>
+			<xsd:element name="BICID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="ClearingSystemName" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="CHIPSUniversalID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="NewZealandNCCID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="IrishNSCID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="UKSortCodeID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="CHIPSParticipantID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="SwissBCID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="FedwireRoutingNumberID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="PortugueseNCCID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="RussianCentralBankID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="ItalianDomesticID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="AustrianBankleitzahlID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="CanadianPaymentsAssociationID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="SICID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="GermanBankleitzahlID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="SpanishDomesticInterbankingID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="SouthAfricanNCCID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="HongKongBankID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="AustralianBSBID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="IndianFinancialSystemID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="HellenicBankID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="PolishNationalClearingID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="Name" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="JapanFinancialInstitutionCommonID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="LocationFinancialInstitutionAddress" type="ram:FinancialInstitutionAddressType" minOccurs="0"/>
+			<xsd:element name="SubDivisionBranchFinancialInstitution" type="ram:BranchFinancialInstitutionType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="DeliveryAdjustmentType">
+		<xsd:sequence>
+			<xsd:element name="ReasonCode" type="qdt:AdjustmentReasonCodeType" minOccurs="0"/>
+			<xsd:element name="Reason" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ActualAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ActualQuantity" type="udt:QuantityType" minOccurs="0"/>
+			<xsd:element name="ActualDateTime" type="udt:DateTimeType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="DisposalInstructionsType">
+		<xsd:sequence>
+			<xsd:element name="MaterialID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="RecyclingDescriptionCode" type="udt:CodeType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Description" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="RecyclingProcedure" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="DocumentContextParameterType">
+		<xsd:sequence>
+			<xsd:element name="ID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="Value" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="SpecifiedDocumentVersion" type="ram:DocumentVersionType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="DocumentLineDocumentType">
+		<xsd:sequence>
+			<xsd:element name="LineID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="ParentLineID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="LineStatusCode" type="qdt:LineStatusCodeType" minOccurs="0"/>
+			<xsd:element name="LineStatusReasonCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="IncludedNote" type="ram:NoteType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="DocumentVersionType">
+		<xsd:sequence>
+			<xsd:element name="ID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="Name" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="IssueDateTime" type="udt:DateTimeType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="ExchangedDocumentContextType">
+		<xsd:sequence>
+			<xsd:element name="SpecifiedTransactionID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="TestIndicator" type="udt:IndicatorType" minOccurs="0"/>
+			<xsd:element name="BusinessProcessSpecifiedDocumentContextParameter" type="ram:DocumentContextParameterType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="BIMSpecifiedDocumentContextParameter" type="ram:DocumentContextParameterType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ScenarioSpecifiedDocumentContextParameter" type="ram:DocumentContextParameterType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ApplicationSpecifiedDocumentContextParameter" type="ram:DocumentContextParameterType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="GuidelineSpecifiedDocumentContextParameter" type="ram:DocumentContextParameterType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="SubsetSpecifiedDocumentContextParameter" type="ram:DocumentContextParameterType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="MessageStandardSpecifiedDocumentContextParameter" type="ram:DocumentContextParameterType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="ExchangedDocumentType">
+		<xsd:sequence>
+			<xsd:element name="ID" type="udt:IDType"/>
+			<xsd:element name="Name" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TypeCode" type="qdt:DocumentCodeType" minOccurs="0"/>
+			<xsd:element name="IssueDateTime" type="udt:DateTimeType"/>
+			<xsd:element name="CopyIndicator" type="udt:IndicatorType" minOccurs="0"/>
+			<xsd:element name="Purpose" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="ControlRequirementIndicator" type="udt:IndicatorType" minOccurs="0"/>
+			<xsd:element name="LanguageID" type="udt:IDType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="PurposeCode" type="qdt:MessageFunctionCodeType" minOccurs="0"/>
+			<xsd:element name="RevisionDateTime" type="udt:DateTimeType" minOccurs="0"/>
+			<xsd:element name="VersionID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="GlobalID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="RevisionID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="PreviousRevisionID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="CategoryCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="IncludedNote" type="ram:NoteType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="EffectiveSpecifiedPeriod" type="ram:SpecifiedPeriodType" minOccurs="0"/>
+			<xsd:element name="IssuerTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="FinancialAdjustmentType">
+		<xsd:sequence>
+			<xsd:element name="ReasonCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="Reason" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ActualAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ActualQuantity" type="udt:QuantityType" minOccurs="0"/>
+			<xsd:element name="ActualDateTime" type="udt:DateTimeType" minOccurs="0"/>
+			<xsd:element name="ClaimRelatedTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+			<xsd:element name="InvoiceReferenceReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="FinancialInstitutionAddressType">
+		<xsd:sequence>
+			<xsd:element name="PostcodeCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="BuildingNumber" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="LineOne" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="LineTwo" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="LineThree" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="LineFour" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="LineFive" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="StreetName" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="CityName" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="CountrySubDivisionID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="CountryID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="TypeCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="DepartmentName" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="PostOfficeBox" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="CityID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="CountrySubDivisionName" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="CountryName" type="udt:TextType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="GeographicalCoordinateType">
+		<xsd:sequence>
+			<xsd:element name="AltitudeMeasure" type="udt:MeasureType" minOccurs="0"/>
+			<xsd:element name="LatitudeMeasure" type="udt:MeasureType" minOccurs="0"/>
+			<xsd:element name="LongitudeMeasure" type="udt:MeasureType" minOccurs="0"/>
+			<xsd:element name="SystemID" type="udt:IDType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="GroupedWorkItemType">
+		<xsd:sequence>
+			<xsd:element name="ID" type="udt:IDType"/>
+			<xsd:element name="PrimaryClassificationCode" type="udt:CodeType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="AlternativeClassificationCode" type="udt:CodeType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TypeCode" type="udt:CodeType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Comment" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TotalQuantity" type="udt:QuantityType" minOccurs="0"/>
+			<xsd:element name="Index" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="RequestedActionCode" type="udt:CodeType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="PriceListItemID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="ContractualLanguageCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="TotalCalculatedPrice" type="ram:CalculatedPriceType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ItemGroupedWorkItem" type="ram:GroupedWorkItemType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ItemBasicWorkItem" type="ram:BasicWorkItemType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ChangedRecordedStatus" type="ram:RecordedStatusType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ActualWorkItemComplexDescription" type="ram:WorkItemComplexDescriptionType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ReferencedSpecifiedBinaryFile" type="ram:SpecifiedBinaryFileType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="HeaderTradeAgreementType">
+		<xsd:sequence>
+			<xsd:element name="Reference" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="BuyerReference" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="SellerTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+			<xsd:element name="BuyerTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+			<xsd:element name="SalesAgentTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+			<xsd:element name="BuyerRequisitionerTradeParty" type="ram:TradePartyType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="BuyerAssignedAccountantTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+			<xsd:element name="SellerAssignedAccountantTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+			<xsd:element name="BuyerTaxRepresentativeTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+			<xsd:element name="SellerTaxRepresentativeTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+			<xsd:element name="ProductEndUserTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+			<xsd:element name="ApplicableTradeDeliveryTerms" type="ram:TradeDeliveryTermsType" minOccurs="0"/>
+			<xsd:element name="SellerOrderReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
+			<xsd:element name="BuyerOrderReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
+			<xsd:element name="QuotationReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
+			<xsd:element name="OrderResponseReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
+			<xsd:element name="ContractReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
+			<xsd:element name="DemandForecastReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
+			<xsd:element name="SupplyInstructionReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
+			<xsd:element name="PromotionalDealReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
+			<xsd:element name="PriceListReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
+			<xsd:element name="AdditionalReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="RequisitionerReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="BuyerAgentTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+			<xsd:element name="PurchaseConditionsReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="SpecifiedProcuringProject" type="ram:ProcuringProjectType" minOccurs="0"/>
+			<xsd:element name="UltimateCustomerOrderReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="HeaderTradeDeliveryType">
+		<xsd:sequence>
+			<xsd:element name="RelatedSupplyChainConsignment" type="ram:SupplyChainConsignmentType" minOccurs="0"/>
+			<xsd:element name="ShipToTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+			<xsd:element name="UltimateShipToTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+			<xsd:element name="ShipFromTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+			<xsd:element name="ActualDespatchSupplyChainEvent" type="ram:SupplyChainEventType" minOccurs="0"/>
+			<xsd:element name="ActualPickUpSupplyChainEvent" type="ram:SupplyChainEventType" minOccurs="0"/>
+			<xsd:element name="ActualDeliverySupplyChainEvent" type="ram:SupplyChainEventType" minOccurs="0"/>
+			<xsd:element name="ActualReceiptSupplyChainEvent" type="ram:SupplyChainEventType" minOccurs="0"/>
+			<xsd:element name="AdditionalReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="DespatchAdviceReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
+			<xsd:element name="ReceivingAdviceReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
+			<xsd:element name="DeliveryNoteReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
+			<xsd:element name="ConsumptionReportReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
+			<xsd:element name="PreviousDeliverySupplyChainEvent" type="ram:SupplyChainEventType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="PackingListReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="HeaderTradeSettlementType">
+		<xsd:sequence>
+			<xsd:element name="DuePayableAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="CreditorReferenceTypeCode" type="udt:CodeType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="CreditorReferenceType" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="CreditorReferenceIssuerID" type="udt:IDType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="CreditorReferenceID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="PaymentReference" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TaxCurrencyCode" type="qdt:CurrencyCodeType" minOccurs="0"/>
+			<xsd:element name="InvoiceCurrencyCode" type="qdt:CurrencyCodeType" minOccurs="0"/>
+			<xsd:element name="PaymentCurrencyCode" type="qdt:CurrencyCodeType" minOccurs="0"/>
+			<xsd:element name="InvoiceIssuerReference" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="InvoiceDateTime" type="udt:DateTimeType" minOccurs="0"/>
+			<xsd:element name="NextInvoiceDateTime" type="udt:DateTimeType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="CreditReasonCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="CreditReason" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="InvoicerTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+			<xsd:element name="InvoiceeTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+			<xsd:element name="PayeeTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+			<xsd:element name="PayerTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+			<xsd:element name="TaxApplicableTradeCurrencyExchange" type="ram:TradeCurrencyExchangeType" minOccurs="0"/>
+			<xsd:element name="InvoiceApplicableTradeCurrencyExchange" type="ram:TradeCurrencyExchangeType" minOccurs="0"/>
+			<xsd:element name="PaymentApplicableTradeCurrencyExchange" type="ram:TradeCurrencyExchangeType" minOccurs="0"/>
+			<xsd:element name="SpecifiedTradeSettlementPaymentMeans" type="ram:TradeSettlementPaymentMeansType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ApplicableTradeTax" type="ram:TradeTaxType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="BillingSpecifiedPeriod" type="ram:SpecifiedPeriodType" minOccurs="0"/>
+			<xsd:element name="SpecifiedTradeAllowanceCharge" type="ram:TradeAllowanceChargeType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="SubtotalCalculatedTradeTax" type="ram:TradeTaxType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="SpecifiedLogisticsServiceCharge" type="ram:LogisticsServiceChargeType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="SpecifiedTradePaymentTerms" type="ram:TradePaymentTermsType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="SpecifiedTradeSettlementHeaderMonetarySummation" type="ram:TradeSettlementHeaderMonetarySummationType" minOccurs="0"/>
+			<xsd:element name="SpecifiedFinancialAdjustment" type="ram:FinancialAdjustmentType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="InvoiceReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
+			<xsd:element name="ProFormaInvoiceReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
+			<xsd:element name="LetterOfCreditReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
+			<xsd:element name="FactoringAgreementReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="FactoringListReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="PayableSpecifiedTradeAccountingAccount" type="ram:TradeAccountingAccountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ReceivableSpecifiedTradeAccountingAccount" type="ram:TradeAccountingAccountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="PurchaseSpecifiedTradeAccountingAccount" type="ram:TradeAccountingAccountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="SalesSpecifiedTradeAccountingAccount" type="ram:TradeAccountingAccountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="SpecifiedTradeSettlementFinancialCard" type="ram:TradeSettlementFinancialCardType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="SpecifiedAdvancePayment" type="ram:AdvancePaymentType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="UltimatePayeeTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="LegalOrganizationType">
+		<xsd:sequence>
+			<xsd:element name="LegalClassificationCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="Name" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="ID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="TradingBusinessName" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="PostalTradeAddress" type="ram:TradeAddressType" minOccurs="0"/>
+			<xsd:element name="AuthorizedLegalRegistration" type="ram:LegalRegistrationType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="LegalRegistrationType">
+		<xsd:sequence>
+			<xsd:element name="TypeCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="ID" type="udt:IDType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="LineTradeAgreementType">
+		<xsd:sequence>
+			<xsd:element name="BuyerReference" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="BuyerRequisitionerTradeParty" type="ram:TradePartyType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ApplicableTradeDeliveryTerms" type="ram:TradeDeliveryTermsType" minOccurs="0"/>
+			<xsd:element name="SellerOrderReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
+			<xsd:element name="BuyerOrderReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
+			<xsd:element name="QuotationReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
+			<xsd:element name="ContractReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
+			<xsd:element name="DemandForecastReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
+			<xsd:element name="PromotionalDealReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
+			<xsd:element name="AdditionalReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="GrossPriceProductTradePrice" type="ram:TradePriceType" minOccurs="0"/>
+			<xsd:element name="NetPriceProductTradePrice" type="ram:TradePriceType" minOccurs="0"/>
+			<xsd:element name="RequisitionerReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ItemSellerTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+			<xsd:element name="ItemBuyerTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+			<xsd:element name="IncludedSpecifiedMarketplace" type="ram:SpecifiedMarketplaceType" minOccurs="0"/>
+			<xsd:element name="UltimateCustomerOrderReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="LineTradeDeliveryType">
+		<xsd:sequence>
+			<xsd:element name="RequestedQuantity" type="udt:QuantityType" minOccurs="0"/>
+			<xsd:element name="ReceivedQuantity" type="udt:QuantityType" minOccurs="0"/>
+			<xsd:element name="BilledQuantity" type="udt:QuantityType" minOccurs="0"/>
+			<xsd:element name="ChargeFreeQuantity" type="udt:QuantityType" minOccurs="0"/>
+			<xsd:element name="PackageQuantity" type="udt:QuantityType" minOccurs="0"/>
+			<xsd:element name="ProductUnitQuantity" type="udt:QuantityType" minOccurs="0"/>
+			<xsd:element name="PerPackageUnitQuantity" type="udt:QuantityType" minOccurs="0"/>
+			<xsd:element name="NetWeightMeasure" type="qdt:WeightUnitMeasureType" minOccurs="0"/>
+			<xsd:element name="GrossWeightMeasure" type="qdt:WeightUnitMeasureType" minOccurs="0"/>
+			<xsd:element name="TheoreticalWeightMeasure" type="qdt:WeightUnitMeasureType" minOccurs="0"/>
+			<xsd:element name="DespatchedQuantity" type="udt:QuantityType" minOccurs="0"/>
+			<xsd:element name="SpecifiedDeliveryAdjustment" type="ram:DeliveryAdjustmentType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="IncludedSupplyChainPackaging" type="ram:SupplyChainPackagingType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="RelatedSupplyChainConsignment" type="ram:SupplyChainConsignmentType" minOccurs="0"/>
+			<xsd:element name="ShipToTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+			<xsd:element name="UltimateShipToTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+			<xsd:element name="ShipFromTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+			<xsd:element name="ActualDespatchSupplyChainEvent" type="ram:SupplyChainEventType" minOccurs="0"/>
+			<xsd:element name="ActualPickUpSupplyChainEvent" type="ram:SupplyChainEventType" minOccurs="0"/>
+			<xsd:element name="RequestedDeliverySupplyChainEvent" type="ram:SupplyChainEventType" minOccurs="0"/>
+			<xsd:element name="ActualDeliverySupplyChainEvent" type="ram:SupplyChainEventType" minOccurs="0"/>
+			<xsd:element name="ActualReceiptSupplyChainEvent" type="ram:SupplyChainEventType" minOccurs="0"/>
+			<xsd:element name="AdditionalReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="DespatchAdviceReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
+			<xsd:element name="ReceivingAdviceReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
+			<xsd:element name="DeliveryNoteReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
+			<xsd:element name="ConsumptionReportReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
+			<xsd:element name="PackingListReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="LineTradeSettlementType">
+		<xsd:sequence>
+			<xsd:element name="PaymentReference" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="InvoiceIssuerReference" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="TotalAdjustmentAmount" type="udt:AmountType" minOccurs="0"/>
+			<xsd:element name="DiscountIndicator" type="udt:IndicatorType" minOccurs="0"/>
+			<xsd:element name="ApplicableTradeTax" type="ram:TradeTaxType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="BillingSpecifiedPeriod" type="ram:SpecifiedPeriodType" minOccurs="0"/>
+			<xsd:element name="SpecifiedTradeAllowanceCharge" type="ram:TradeAllowanceChargeType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="SubtotalCalculatedTradeTax" type="ram:TradeTaxType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="SpecifiedLogisticsServiceCharge" type="ram:LogisticsServiceChargeType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="SpecifiedTradePaymentTerms" type="ram:TradePaymentTermsType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="SpecifiedTradeSettlementLineMonetarySummation" type="ram:TradeSettlementLineMonetarySummationType" minOccurs="0"/>
+			<xsd:element name="SpecifiedFinancialAdjustment" type="ram:FinancialAdjustmentType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="InvoiceReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
+			<xsd:element name="AdditionalReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="PayableSpecifiedTradeAccountingAccount" type="ram:TradeAccountingAccountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ReceivableSpecifiedTradeAccountingAccount" type="ram:TradeAccountingAccountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="PurchaseSpecifiedTradeAccountingAccount" type="ram:TradeAccountingAccountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="SalesSpecifiedTradeAccountingAccount" type="ram:TradeAccountingAccountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="SpecifiedTradeSettlementFinancialCard" type="ram:TradeSettlementFinancialCardType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="LogisticsLocationType">
+		<xsd:sequence>
+			<xsd:element name="ID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="Name" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TypeCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="Description" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="PhysicalGeographicalCoordinate" type="ram:GeographicalCoordinateType" minOccurs="0"/>
+			<xsd:element name="PostalTradeAddress" type="ram:TradeAddressType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="LogisticsServiceChargeType">
+		<xsd:sequence>
+			<xsd:element name="ID" type="qdt:FreightChargeTypeIDType" minOccurs="0"/>
+			<xsd:element name="Description" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="PaymentArrangementCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="TariffClassCode" type="qdt:FreightChargeTariffClassCodeType" minOccurs="0"/>
+			<xsd:element name="ChargeCategoryCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="ServiceCategoryCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="DisbursementAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="AppliedAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="AllowanceCharge" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="PayingPartyRoleCode" type="qdt:ChargePayingPartyRoleCodeType" minOccurs="0"/>
+			<xsd:element name="CalculationBasisCode" type="qdt:LogisticsChargeCalculationBasisCodeType" minOccurs="0"/>
+			<xsd:element name="CalculationBasis" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="TransportPaymentMethodCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="PaymentPlaceLogisticsLocation" type="ram:LogisticsLocationType" minOccurs="0"/>
+			<xsd:element name="AppliedFromLogisticsLocation" type="ram:LogisticsLocationType" minOccurs="0"/>
+			<xsd:element name="AppliedToLogisticsLocation" type="ram:LogisticsLocationType" minOccurs="0"/>
+			<xsd:element name="AppliedTradeTax" type="ram:TradeTaxType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="LogisticsTransportEquipmentType">
+		<xsd:sequence>
+			<xsd:element name="ID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="LoadingLengthMeasure" type="qdt:LinearUnitMeasureType" minOccurs="0"/>
+			<xsd:element name="CategoryCode" type="qdt:TransportEquipmentCategoryCodeType" minOccurs="0"/>
+			<xsd:element name="CharacteristicCode" type="qdt:TransportEquipmentSizeTypeCodeType" minOccurs="0"/>
+			<xsd:element name="UsedCapacityCode" type="qdt:TransportEquipmentFullnessCodeType" minOccurs="0"/>
+			<xsd:element name="LinearSpatialDimension" type="ram:SpatialDimensionType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="LogisticsTransportMeansType">
+		<xsd:sequence>
+			<xsd:element name="TypeCode" type="qdt:TransportMeansTypeCodeType" minOccurs="0"/>
+			<xsd:element name="Type" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="ID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="Name" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="OwnerTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="LogisticsTransportMovementType">
+		<xsd:sequence>
+			<xsd:element name="StageCode" type="qdt:TransportMovementStageCodeType" minOccurs="0"/>
+			<xsd:element name="ModeCode" type="qdt:TransportModeCodeType" minOccurs="0"/>
+			<xsd:element name="Mode" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="UsedLogisticsTransportMeans" type="ram:LogisticsTransportMeansType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="MaterialGoodsCharacteristicType">
+		<xsd:sequence>
+			<xsd:element name="Description" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TypeCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="ProportionalConstituentPercent" type="udt:PercentType" minOccurs="0"/>
+			<xsd:element name="AbsolutePresenceWeightMeasure" type="udt:MeasureType" minOccurs="0"/>
+			<xsd:element name="AbsolutePresenceVolumeMeasure" type="udt:MeasureType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="NoteType">
+		<xsd:sequence>
+			<xsd:element name="Subject" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="ContentCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="Content" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="SubjectCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="ID" type="udt:IDType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="PackagingMarkingType">
+		<xsd:sequence>
+			<xsd:element name="TypeCode" type="qdt:PackagingMarkingCodeType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Content" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ContentDateTime" type="udt:DateTimeType" minOccurs="0"/>
+			<xsd:element name="ContentAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="BarcodeTypeCode" type="udt:CodeType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ContentCode" type="udt:CodeType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="AutomaticDataCaptureMethodTypeCode" type="qdt:AutomaticDataCaptureMethodCodeType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="ProcuringProjectType">
+		<xsd:sequence>
+			<xsd:element name="ID" type="udt:IDType"/>
+			<xsd:element name="Description" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="Name" type="udt:TextType"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="ProductCharacteristicConditionType">
+		<xsd:sequence>
+			<xsd:element name="TypeCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="Name" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ValueMeasure" type="udt:MeasureType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="ProductCharacteristicType">
+		<xsd:sequence>
+			<xsd:element name="ID" type="udt:IDType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TypeCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="Description" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ValueMeasure" type="udt:MeasureType" minOccurs="0"/>
+			<xsd:element name="MeasurementMethodCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="Value" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ValueCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="ValueDateTime" type="udt:DateTimeType" minOccurs="0"/>
+			<xsd:element name="ValueIndicator" type="udt:IndicatorType" minOccurs="0"/>
+			<xsd:element name="ContentTypeCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="ValueSpecifiedBinaryFile" type="ram:SpecifiedBinaryFileType" minOccurs="0"/>
+			<xsd:element name="ApplicableProductCharacteristicCondition" type="ram:ProductCharacteristicConditionType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ApplicableReferencedStandard" type="ram:ReferencedStandardType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="ProductClassificationType">
+		<xsd:sequence>
+			<xsd:element name="SystemID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="SystemName" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ClassCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="ClassName" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="SubClassCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="ClassProductCharacteristic" type="ram:ProductCharacteristicType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ApplicableReferencedStandard" type="ram:ReferencedStandardType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="RecordedStatusType">
+		<xsd:sequence>
+			<xsd:element name="ConditionCode" type="udt:CodeType"/>
+			<xsd:element name="ChangerName" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="ChangedDateTime" type="udt:DateTimeType"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="ReferencedDocumentType">
+		<xsd:sequence>
+			<xsd:element name="IssuerAssignedID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="URIID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="StatusCode" type="qdt:DocumentStatusCodeType" minOccurs="0"/>
+			<xsd:element name="CopyIndicator" type="udt:IndicatorType" minOccurs="0"/>
+			<xsd:element name="LineID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="TypeCode" type="qdt:DocumentCodeType" minOccurs="0"/>
+			<xsd:element name="GlobalID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="RevisionID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="Name" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="AttachmentBinaryObject" type="udt:BinaryObjectType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Information" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ReferenceTypeCode" type="qdt:ReferenceCodeType" minOccurs="0"/>
+			<xsd:element name="SectionName" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="PreviousRevisionID" type="udt:IDType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="FormattedIssueDateTime" type="qdt:FormattedDateTimeType" minOccurs="0"/>
+			<xsd:element name="EffectiveSpecifiedPeriod" type="ram:SpecifiedPeriodType" minOccurs="0"/>
+			<xsd:element name="IssuerTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+			<xsd:element name="AttachedSpecifiedBinaryFile" type="ram:SpecifiedBinaryFileType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="ReferencedProductType">
+		<xsd:sequence>
+			<xsd:element name="ID" type="udt:IDType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="GlobalID" type="udt:IDType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="SellerAssignedID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="BuyerAssignedID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="ManufacturerAssignedID" type="udt:IDType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="IndustryAssignedID" type="udt:IDType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Name" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Description" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="RelationshipTypeCode" type="udt:CodeType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="UnitQuantity" type="udt:QuantityType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="ReferencedStandardType">
+		<xsd:sequence>
+			<xsd:element name="ID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="VersionID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="ElementVersionID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="URIID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="PartID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="AgencyID" type="udt:IDType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="ReferencePriceType">
+		<xsd:sequence>
+			<xsd:element name="ChargeAmount" type="udt:AmountType" minOccurs="0"/>
+			<xsd:element name="BasisQuantity" type="udt:QuantityType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="NetPriceIndicator" type="udt:IndicatorType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ComparisonMethodCode" type="udt:CodeType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="RegisteredTaxType">
+		<xsd:sequence>
+			<xsd:element name="TypeCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="ExemptionReasonCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="ExemptionReason" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="CurrencyCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="Jurisdiction" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Description" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="CustomsDutyIndicator" type="udt:IndicatorType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="ReturnableAssetInstructionsType">
+		<xsd:sequence>
+			<xsd:element name="MaterialID" type="udt:IDType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TermsAndConditionsDescription" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TermsAndConditionsDescriptionCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="DepositValueSpecifiedAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="DepositValueValiditySpecifiedPeriod" type="ram:SpecifiedPeriodType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="SpatialDimensionType">
+		<xsd:sequence>
+			<xsd:element name="ValueMeasure" type="udt:MeasureType" minOccurs="0"/>
+			<xsd:element name="TypeCode" type="qdt:DimensionTypeCodeType" minOccurs="0"/>
+			<xsd:element name="Description" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="WidthMeasure" type="udt:MeasureType" minOccurs="0"/>
+			<xsd:element name="LengthMeasure" type="udt:MeasureType" minOccurs="0"/>
+			<xsd:element name="HeightMeasure" type="udt:MeasureType" minOccurs="0"/>
+			<xsd:element name="ID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="DiameterMeasure" type="qdt:LinearUnitMeasureType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="SpecificationQueryType">
+		<xsd:sequence>
+			<xsd:element name="ID" type="udt:IDType"/>
+			<xsd:element name="TypeCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="Content" type="udt:TextType"/>
+			<xsd:element name="ContractualLanguageCode" type="udt:CodeType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="SpecificationResponseType">
+		<xsd:sequence>
+			<xsd:element name="ID" type="udt:IDType"/>
+			<xsd:element name="QueryID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="TypeCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="Content" type="udt:TextType"/>
+			<xsd:element name="ContractualLanguageCode" type="udt:CodeType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="SpecifiedBinaryFileType">
+		<xsd:sequence>
+			<xsd:element name="ID" type="udt:IDType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Title" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="AuthorName" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="VersionID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="FileName" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="URIID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="MIMECode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="EncodingCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="CharacterSetCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="IncludedBinaryObject" type="udt:BinaryObjectType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Access" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Description" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="SizeMeasure" type="udt:MeasureType" minOccurs="0"/>
+			<xsd:element name="AccessAvailabilitySpecifiedPeriod" type="ram:SpecifiedPeriodType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="SpecifiedMarketplaceType">
+		<xsd:sequence>
+			<xsd:element name="ID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="Name" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="VirtualIndicator" type="udt:IndicatorType" minOccurs="0"/>
+			<xsd:element name="WebsiteURIID" type="udt:IDType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="SalesMethodCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="OrderingAvailablePeriod" type="ram:AvailablePeriodType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="SpecifiedPeriodType">
+		<xsd:sequence>
+			<xsd:element name="DurationMeasure" type="udt:MeasureType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="InclusiveIndicator" type="udt:IndicatorType" minOccurs="0"/>
+			<xsd:element name="Description" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="StartDateTime" type="udt:DateTimeType" minOccurs="0"/>
+			<xsd:element name="EndDateTime" type="udt:DateTimeType" minOccurs="0"/>
+			<xsd:element name="CompleteDateTime" type="udt:DateTimeType" minOccurs="0"/>
+			<xsd:element name="OpenIndicator" type="udt:IndicatorType" minOccurs="0"/>
+			<xsd:element name="SeasonCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="ID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="Name" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="SequenceNumeric" type="udt:NumericType" minOccurs="0"/>
+			<xsd:element name="StartDateFlexibilityCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="ContinuousIndicator" type="udt:IndicatorType" minOccurs="0"/>
+			<xsd:element name="PurposeCode" type="udt:CodeType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="SubordinateLineTradeAgreementType">
+		<xsd:sequence>
+			<xsd:element name="SellerOrderReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
+			<xsd:element name="BuyerOrderReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
+			<xsd:element name="AdditionalReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="GrossPriceProductTradePrice" type="ram:TradePriceType" minOccurs="0"/>
+			<xsd:element name="NetPriceProductTradePrice" type="ram:TradePriceType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="SubordinateLineTradeDeliveryType">
+		<xsd:sequence>
+			<xsd:element name="PackageQuantity" type="udt:QuantityType" minOccurs="0"/>
+			<xsd:element name="ProductUnitQuantity" type="udt:QuantityType" minOccurs="0"/>
+			<xsd:element name="PerPackageUnitQuantity" type="udt:QuantityType" minOccurs="0"/>
+			<xsd:element name="IncludedSupplyChainPackaging" type="ram:SupplyChainPackagingType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="SubordinateLineTradeSettlementType">
+		<xsd:sequence>
+			<xsd:element name="ApplicableTradeTax" type="ram:TradeTaxType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="SubordinateTradeLineItemType">
+		<xsd:sequence>
+			<xsd:element name="ID" type="udt:IDType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="SpecifiedReferencedProduct" type="ram:ReferencedProductType" minOccurs="0"/>
+			<xsd:element name="ApplicableTradeProduct" type="ram:TradeProductType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="SpecifiedSubordinateLineTradeAgreement" type="ram:SubordinateLineTradeAgreementType" minOccurs="0"/>
+			<xsd:element name="SpecifiedSubordinateLineTradeDelivery" type="ram:SubordinateLineTradeDeliveryType" minOccurs="0"/>
+			<xsd:element name="SpecifiedSubordinateLineTradeSettlement" type="ram:SubordinateLineTradeSettlementType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="SupplyChainConsignmentItemType">
+		<xsd:sequence>
+			<xsd:element name="TypeCode" type="qdt:GoodsTypeCodeType" minOccurs="0"/>
+			<xsd:element name="TypeExtensionCode" type="qdt:GoodsTypeExtensionCodeType" minOccurs="0"/>
+			<xsd:element name="DeclaredValueForCustomsAmount" type="udt:AmountType" minOccurs="0"/>
+			<xsd:element name="DeclaredValueForStatisticsAmount" type="udt:AmountType" minOccurs="0"/>
+			<xsd:element name="InvoiceAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="GrossWeightMeasure" type="qdt:WeightUnitMeasureType" minOccurs="0"/>
+			<xsd:element name="NetWeightMeasure" type="udt:MeasureType" minOccurs="0"/>
+			<xsd:element name="TariffQuantity" type="udt:QuantityType" minOccurs="0"/>
+			<xsd:element name="NatureIdentificationTransportCargo" type="ram:TransportCargoType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="SupplyChainConsignmentType">
+		<xsd:sequence>
+			<xsd:element name="GrossWeightMeasure" type="qdt:WeightUnitMeasureType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="NetWeightMeasure" type="udt:MeasureType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="GrossVolumeMeasure" type="qdt:VolumeUnitMeasureType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="InsurancePremiumAmount" type="udt:AmountType" minOccurs="0"/>
+			<xsd:element name="AssociatedInvoiceAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TotalChargeAmount" type="udt:AmountType" minOccurs="0"/>
+			<xsd:element name="DeclaredValueForCustomsAmount" type="udt:AmountType" minOccurs="0"/>
+			<xsd:element name="PackageQuantity" type="udt:QuantityType" minOccurs="0"/>
+			<xsd:element name="ConsignorTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+			<xsd:element name="ConsigneeTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+			<xsd:element name="CarrierTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+			<xsd:element name="FreightForwarderTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+			<xsd:element name="DeliveryTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+			<xsd:element name="CustomsImportAgentTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+			<xsd:element name="CustomsExportAgentTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+			<xsd:element name="GroupingCentreTradeParty" type="ram:TradePartyType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TransportContractReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
+			<xsd:element name="AssociatedReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="IncludedSupplyChainConsignmentItem" type="ram:SupplyChainConsignmentItemType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="UtilizedLogisticsTransportEquipment" type="ram:LogisticsTransportEquipmentType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="SpecifiedLogisticsTransportMovement" type="ram:LogisticsTransportMovementType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="SupplyChainEventType">
+		<xsd:sequence>
+			<xsd:element name="ID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="OccurrenceDateTime" type="udt:DateTimeType" minOccurs="0"/>
+			<xsd:element name="TypeCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="Description" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="DescriptionBinaryObject" type="udt:BinaryObjectType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="UnitQuantity" type="udt:QuantityType" minOccurs="0"/>
+			<xsd:element name="LatestOccurrenceDateTime" type="udt:DateTimeType" minOccurs="0"/>
+			<xsd:element name="EarliestOccurrenceDateTime" type="udt:DateTimeType" minOccurs="0"/>
+			<xsd:element name="OccurrenceSpecifiedPeriod" type="ram:SpecifiedPeriodType" minOccurs="0"/>
+			<xsd:element name="OccurrenceLogisticsLocation" type="ram:LogisticsLocationType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="SupplyChainPackagingType">
+		<xsd:sequence>
+			<xsd:element name="TypeCode" type="qdt:PackageTypeCodeType" minOccurs="0"/>
+			<xsd:element name="Type" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="Description" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ConditionCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="DisposalMethodCode" type="udt:CodeType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="WeightMeasure" type="udt:MeasureType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="MaximumStackabilityQuantity" type="udt:QuantityType" minOccurs="0"/>
+			<xsd:element name="MaximumStackabilityWeightMeasure" type="udt:MeasureType" minOccurs="0"/>
+			<xsd:element name="CustomerFacingTotalUnitQuantity" type="udt:QuantityType" minOccurs="0"/>
+			<xsd:element name="LayerTotalUnitQuantity" type="udt:QuantityType" minOccurs="0"/>
+			<xsd:element name="ContentLayerQuantity" type="udt:QuantityType" minOccurs="0"/>
+			<xsd:element name="LinearSpatialDimension" type="ram:SpatialDimensionType" minOccurs="0"/>
+			<xsd:element name="MinimumLinearSpatialDimension" type="ram:SpatialDimensionType" minOccurs="0"/>
+			<xsd:element name="MaximumLinearSpatialDimension" type="ram:SpatialDimensionType" minOccurs="0"/>
+			<xsd:element name="SpecifiedPackagingMarking" type="ram:PackagingMarkingType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ApplicableMaterialGoodsCharacteristic" type="ram:MaterialGoodsCharacteristicType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ApplicableDisposalInstructions" type="ram:DisposalInstructionsType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ApplicableReturnableAssetInstructions" type="ram:ReturnableAssetInstructionsType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="SupplyChainTradeLineItemType">
+		<xsd:sequence>
+			<xsd:element name="DescriptionCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="AssociatedDocumentLineDocument" type="ram:DocumentLineDocumentType"/>
+			<xsd:element name="SpecifiedTradeProduct" type="ram:TradeProductType" minOccurs="0"/>
+			<xsd:element name="SpecifiedLineTradeAgreement" type="ram:LineTradeAgreementType" minOccurs="0"/>
+			<xsd:element name="SpecifiedLineTradeDelivery" type="ram:LineTradeDeliveryType" minOccurs="0"/>
+			<xsd:element name="SpecifiedLineTradeSettlement" type="ram:LineTradeSettlementType"/>
+			<xsd:element name="IncludedSubordinateTradeLineItem" type="ram:SubordinateTradeLineItemType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="SupplyChainTradeTransactionType">
+		<xsd:sequence>
+			<xsd:element name="IncludedSupplyChainTradeLineItem" type="ram:SupplyChainTradeLineItemType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ApplicableHeaderTradeAgreement" type="ram:HeaderTradeAgreementType"/>
+			<xsd:element name="ApplicableHeaderTradeDelivery" type="ram:HeaderTradeDeliveryType"/>
+			<xsd:element name="ApplicableHeaderTradeSettlement" type="ram:HeaderTradeSettlementType"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="TaxRegistrationType">
+		<xsd:sequence>
+			<xsd:element name="ID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="AssociatedRegisteredTax" type="ram:RegisteredTaxType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="TradeAccountingAccountType">
+		<xsd:sequence>
+			<xsd:element name="ID" type="udt:IDType"/>
+			<xsd:element name="SetTriggerCode" type="qdt:AccountingDocumentCodeType" minOccurs="0"/>
+			<xsd:element name="TypeCode" type="qdt:AccountingAccountTypeCodeType" minOccurs="0"/>
+			<xsd:element name="AmountTypeCode" type="qdt:AccountingAmountTypeCodeType" minOccurs="0"/>
+			<xsd:element name="Name" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="CostReferenceDimensionPattern" type="udt:TextType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="TradeAddressType">
+		<xsd:sequence>
+			<xsd:element name="ID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="PostcodeCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="PostOfficeBox" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="BuildingName" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="LineOne" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="LineTwo" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="LineThree" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="LineFour" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="LineFive" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="StreetName" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="CityName" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="CitySubDivisionName" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="CountryID" type="qdt:CountryIDType" minOccurs="0"/>
+			<xsd:element name="CountryName" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="CountrySubDivisionID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="CountrySubDivisionName" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="AttentionOf" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="CareOf" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="BuildingNumber" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="DepartmentName" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="AdditionalStreetName" type="udt:TextType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="TradeAllowanceChargeType">
+		<xsd:sequence>
+			<xsd:element name="ChargeIndicator" type="udt:IndicatorType" minOccurs="0"/>
+			<xsd:element name="ID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="SequenceNumeric" type="udt:NumericType" minOccurs="0"/>
+			<xsd:element name="CalculationPercent" type="udt:PercentType" minOccurs="0"/>
+			<xsd:element name="BasisAmount" type="udt:AmountType" minOccurs="0"/>
+			<xsd:element name="BasisQuantity" type="udt:QuantityType" minOccurs="0"/>
+			<xsd:element name="PrepaidIndicator" type="udt:IndicatorType" minOccurs="0"/>
+			<xsd:element name="ActualAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="UnitBasisAmount" type="udt:AmountType" minOccurs="0"/>
+			<xsd:element name="ReasonCode" type="qdt:AllowanceChargeReasonCodeType" minOccurs="0"/>
+			<xsd:element name="Reason" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="TypeCode" type="qdt:AllowanceChargeIdentificationCodeType" minOccurs="0"/>
+			<xsd:element name="CategoryTradeTax" type="ram:TradeTaxType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ActualTradeCurrencyExchange" type="ram:TradeCurrencyExchangeType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="TradeContactType">
+		<xsd:sequence>
+			<xsd:element name="ID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="PersonName" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="DepartmentName" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="TypeCode" type="qdt:ContactTypeCodeType" minOccurs="0"/>
+			<xsd:element name="JobTitle" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="Responsibility" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="PersonID" type="udt:IDType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TelephoneUniversalCommunication" type="ram:UniversalCommunicationType" minOccurs="0"/>
+			<xsd:element name="DirectTelephoneUniversalCommunication" type="ram:UniversalCommunicationType" minOccurs="0"/>
+			<xsd:element name="MobileTelephoneUniversalCommunication" type="ram:UniversalCommunicationType" minOccurs="0"/>
+			<xsd:element name="FaxUniversalCommunication" type="ram:UniversalCommunicationType" minOccurs="0"/>
+			<xsd:element name="EmailURIUniversalCommunication" type="ram:UniversalCommunicationType" minOccurs="0"/>
+			<xsd:element name="TelexUniversalCommunication" type="ram:UniversalCommunicationType" minOccurs="0"/>
+			<xsd:element name="VOIPUniversalCommunication" type="ram:UniversalCommunicationType" minOccurs="0"/>
+			<xsd:element name="InstantMessagingUniversalCommunication" type="ram:UniversalCommunicationType" minOccurs="0"/>
+			<xsd:element name="SpecifiedNote" type="ram:NoteType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="SpecifiedContactPerson" type="ram:ContactPersonType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="TradeCountrySubDivisionType">
+		<xsd:sequence>
+			<xsd:element name="ID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="Name" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="TradeCountryType">
+		<xsd:sequence>
+			<xsd:element name="ID" type="qdt:CountryIDType" minOccurs="0"/>
+			<xsd:element name="Name" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="SubordinateTradeCountrySubDivision" type="ram:TradeCountrySubDivisionType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="TradeCurrencyExchangeType">
+		<xsd:sequence>
+			<xsd:element name="SourceCurrencyCode" type="qdt:CurrencyCodeType"/>
+			<xsd:element name="SourceUnitBasisNumeric" type="udt:NumericType" minOccurs="0"/>
+			<xsd:element name="TargetCurrencyCode" type="qdt:CurrencyCodeType"/>
+			<xsd:element name="TargetUnitBaseNumeric" type="udt:NumericType" minOccurs="0"/>
+			<xsd:element name="MarketID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="ConversionRate" type="udt:RateType"/>
+			<xsd:element name="ConversionRateDateTime" type="udt:DateTimeType" minOccurs="0"/>
+			<xsd:element name="AssociatedReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="TradeDeliveryTermsType">
+		<xsd:sequence>
+			<xsd:element name="DeliveryTypeCode" type="qdt:DeliveryTermsCodeType" minOccurs="0"/>
+			<xsd:element name="Description" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="RelevantTradeLocation" type="ram:TradeLocationType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="TradeLocationType">
+		<xsd:sequence>
+			<xsd:element name="CountryID" type="qdt:CountryIDType" minOccurs="0"/>
+			<xsd:element name="CountryName" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="ID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="Name" type="udt:TextType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="TradePartyType">
+		<xsd:sequence>
+			<xsd:element name="ID" type="udt:IDType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="GlobalID" type="udt:IDType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Name" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="RoleCode" type="qdt:PartyRoleCodeType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Description" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="SpecifiedLegalOrganization" type="ram:LegalOrganizationType" minOccurs="0"/>
+			<xsd:element name="DefinedTradeContact" type="ram:TradeContactType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="PostalTradeAddress" type="ram:TradeAddressType" minOccurs="0"/>
+			<xsd:element name="URIUniversalCommunication" type="ram:UniversalCommunicationType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="SpecifiedTaxRegistration" type="ram:TaxRegistrationType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="EndPointURIUniversalCommunication" type="ram:UniversalCommunicationType" minOccurs="0"/>
+			<xsd:element name="LogoAssociatedSpecifiedBinaryFile" type="ram:SpecifiedBinaryFileType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="TradePaymentDiscountTermsType">
+		<xsd:sequence>
+			<xsd:element name="BasisDateTime" type="udt:DateTimeType" minOccurs="0"/>
+			<xsd:element name="BasisPeriodMeasure" type="udt:MeasureType" minOccurs="0"/>
+			<xsd:element name="BasisAmount" type="udt:AmountType" minOccurs="0"/>
+			<xsd:element name="CalculationPercent" type="udt:PercentType" minOccurs="0"/>
+			<xsd:element name="ActualDiscountAmount" type="udt:AmountType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="TradePaymentPenaltyTermsType">
+		<xsd:sequence>
+			<xsd:element name="BasisDateTime" type="udt:DateTimeType" minOccurs="0"/>
+			<xsd:element name="BasisPeriodMeasure" type="udt:MeasureType" minOccurs="0"/>
+			<xsd:element name="BasisAmount" type="udt:AmountType" minOccurs="0"/>
+			<xsd:element name="CalculationPercent" type="udt:PercentType" minOccurs="0"/>
+			<xsd:element name="ActualPenaltyAmount" type="udt:AmountType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="TradePaymentTermsType">
+		<xsd:sequence>
+			<xsd:element name="ID" type="qdt:PaymentTermsIDType" minOccurs="0"/>
+			<xsd:element name="FromEventCode" type="qdt:PaymentTermsEventTimeReferenceCodeType" minOccurs="0"/>
+			<xsd:element name="SettlementPeriodMeasure" type="udt:MeasureType" minOccurs="0"/>
+			<xsd:element name="Description" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="DueDateDateTime" type="udt:DateTimeType" minOccurs="0"/>
+			<xsd:element name="TypeCode" type="qdt:PaymentTermsTypeCodeType" minOccurs="0"/>
+			<xsd:element name="InstructionTypeCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="DirectDebitMandateID" type="udt:IDType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="PartialPaymentPercent" type="udt:PercentType" minOccurs="0"/>
+			<xsd:element name="PaymentMeansID" type="udt:IDType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="PartialPaymentAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ApplicableTradePaymentPenaltyTerms" type="ram:TradePaymentPenaltyTermsType" minOccurs="0"/>
+			<xsd:element name="ApplicableTradePaymentDiscountTerms" type="ram:TradePaymentDiscountTermsType" minOccurs="0"/>
+			<xsd:element name="PayeeTradeParty" type="ram:TradePartyType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="TradePriceType">
+		<xsd:sequence>
+			<xsd:element name="TypeCode" type="qdt:PriceTypeCodeType" minOccurs="0"/>
+			<xsd:element name="ChargeAmount" type="udt:AmountType" maxOccurs="unbounded"/>
+			<xsd:element name="BasisQuantity" type="udt:QuantityType" minOccurs="0"/>
+			<xsd:element name="MinimumQuantity" type="udt:QuantityType" minOccurs="0"/>
+			<xsd:element name="MaximumQuantity" type="udt:QuantityType" minOccurs="0"/>
+			<xsd:element name="ChangeReason" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="OrderUnitConversionFactorNumeric" type="udt:NumericType" minOccurs="0"/>
+			<xsd:element name="AppliedTradeAllowanceCharge" type="ram:TradeAllowanceChargeType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ValiditySpecifiedPeriod" type="ram:SpecifiedPeriodType" minOccurs="0"/>
+			<xsd:element name="IncludedTradeTax" type="ram:TradeTaxType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="DeliveryTradeLocation" type="ram:TradeLocationType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TradeComparisonReferencePrice" type="ram:ReferencePriceType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="AssociatedReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="TradeProductInstanceType">
+		<xsd:sequence>
+			<xsd:element name="GlobalSerialID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="BatchID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="KanbanID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="SupplierAssignedSerialID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="BestBeforeDateTime" type="udt:DateTimeType" minOccurs="0"/>
+			<xsd:element name="ExpiryDateTime" type="udt:DateTimeType" minOccurs="0"/>
+			<xsd:element name="SellByDateTime" type="udt:DateTimeType" minOccurs="0"/>
+			<xsd:element name="SerialID" type="udt:IDType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="RegistrationID" type="udt:IDType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ProductionSupplyChainEvent" type="ram:SupplyChainEventType" minOccurs="0"/>
+			<xsd:element name="PackagingSupplyChainEvent" type="ram:SupplyChainEventType" minOccurs="0"/>
+			<xsd:element name="ApplicableMaterialGoodsCharacteristic" type="ram:MaterialGoodsCharacteristicType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ApplicableProductCharacteristic" type="ram:ProductCharacteristicType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="TradeProductType">
+		<xsd:sequence>
+			<xsd:element name="ID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="GlobalID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="SellerAssignedID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="BuyerAssignedID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="ManufacturerAssignedID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="Name" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TradeName" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="Description" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="TypeCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="NetWeightMeasure" type="udt:MeasureType" minOccurs="0"/>
+			<xsd:element name="GrossWeightMeasure" type="udt:MeasureType" minOccurs="0"/>
+			<xsd:element name="ProductGroupID" type="udt:IDType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="EndItemTypeCode" type="udt:CodeType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="EndItemName" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="AreaDensityMeasure" type="udt:MeasureType" minOccurs="0"/>
+			<xsd:element name="UseDescription" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="BrandName" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="SubBrandName" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="DrainedNetWeightMeasure" type="udt:MeasureType" minOccurs="0"/>
+			<xsd:element name="VariableMeasureIndicator" type="udt:IndicatorType" minOccurs="0"/>
+			<xsd:element name="ColourCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="ColourDescription" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Designation" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="FormattedCancellationAnnouncedLaunchDateTime" type="qdt:FormattedDateTimeType" minOccurs="0"/>
+			<xsd:element name="FormattedLatestProductDataChangeDateTime" type="qdt:FormattedDateTimeType" minOccurs="0"/>
+			<xsd:element name="ApplicableProductCharacteristic" type="ram:ProductCharacteristicType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ApplicableMaterialGoodsCharacteristic" type="ram:MaterialGoodsCharacteristicType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="DesignatedProductClassification" type="ram:ProductClassificationType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="IndividualTradeProductInstance" type="ram:TradeProductInstanceType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="CertificationEvidenceReferenceReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="InspectionReferenceReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="OriginTradeCountry" type="ram:TradeCountryType" minOccurs="0"/>
+			<xsd:element name="LinearSpatialDimension" type="ram:SpatialDimensionType" minOccurs="0"/>
+			<xsd:element name="MinimumLinearSpatialDimension" type="ram:SpatialDimensionType" minOccurs="0"/>
+			<xsd:element name="MaximumLinearSpatialDimension" type="ram:SpatialDimensionType" minOccurs="0"/>
+			<xsd:element name="ManufacturerTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+			<xsd:element name="PresentationSpecifiedBinaryFile" type="ram:SpecifiedBinaryFileType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="MSDSReferenceReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0"/>
+			<xsd:element name="AdditionalReferenceReferencedDocument" type="ram:ReferencedDocumentType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="LegalRightsOwnerTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+			<xsd:element name="BrandOwnerTradeParty" type="ram:TradePartyType" minOccurs="0"/>
+			<xsd:element name="IncludedReferencedProduct" type="ram:ReferencedProductType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="InformationNote" type="ram:NoteType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="TradeSettlementFinancialCardType">
+		<xsd:sequence>
+			<xsd:element name="MicrochipIndicator" type="udt:IndicatorType" minOccurs="0"/>
+			<xsd:element name="ID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="TypeCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="CardholderName" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="ExpiryDate" type="udt:DateType" minOccurs="0"/>
+			<xsd:element name="VerificationNumeric" type="udt:NumericType" minOccurs="0"/>
+			<xsd:element name="ValidFromDateTime" type="udt:DateTimeType" minOccurs="0"/>
+			<xsd:element name="CreditLimitAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="CreditAvailableAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="InterestRatePercent" type="udt:PercentType" minOccurs="0"/>
+			<xsd:element name="IssuingCompanyName" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="Description" type="udt:TextType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="TradeSettlementHeaderMonetarySummationType">
+		<xsd:sequence>
+			<xsd:element name="LineTotalAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ChargeTotalAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="AllowanceTotalAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TaxBasisTotalAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TaxTotalAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="RoundingAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="GrandTotalAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="InformationAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TotalPrepaidAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TotalDiscountAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TotalAllowanceChargeAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="DuePayableAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="RetailValueExcludingTaxInformationAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TotalDepositFeeInformationAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ProductValueExcludingTobaccoTaxInformationAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TotalRetailValueInformationAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="GrossLineTotalAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="NetLineTotalAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="NetIncludingTaxesLineTotalAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="TradeSettlementLineMonetarySummationType">
+		<xsd:sequence>
+			<xsd:element name="LineTotalAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ChargeTotalAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="AllowanceTotalAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TaxBasisTotalAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TaxTotalAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="GrandTotalAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="InformationAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TotalAllowanceChargeAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TotalRetailValueInformationAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="GrossLineTotalAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="NetLineTotalAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="NetIncludingTaxesLineTotalAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ProductWeightLossInformationAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="TradeSettlementPaymentMeansType">
+		<xsd:sequence>
+			<xsd:element name="PaymentChannelCode" type="qdt:PaymentMeansChannelCodeType" minOccurs="0"/>
+			<xsd:element name="TypeCode" type="qdt:PaymentMeansCodeType" minOccurs="0"/>
+			<xsd:element name="GuaranteeMethodCode" type="qdt:PaymentGuaranteeMeansCodeType" minOccurs="0"/>
+			<xsd:element name="PaymentMethodCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="Information" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ID" type="udt:IDType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ApplicableTradeSettlementFinancialCard" type="ram:TradeSettlementFinancialCardType" minOccurs="0"/>
+			<xsd:element name="PayerPartyDebtorFinancialAccount" type="ram:DebtorFinancialAccountType" minOccurs="0"/>
+			<xsd:element name="PayeePartyCreditorFinancialAccount" type="ram:CreditorFinancialAccountType" minOccurs="0"/>
+			<xsd:element name="PayerSpecifiedDebtorFinancialInstitution" type="ram:DebtorFinancialInstitutionType" minOccurs="0"/>
+			<xsd:element name="PayeeSpecifiedCreditorFinancialInstitution" type="ram:CreditorFinancialInstitutionType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="TradeTaxType">
+		<xsd:sequence>
+			<xsd:element name="CalculatedAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TypeCode" type="qdt:TaxTypeCodeType" minOccurs="0"/>
+			<xsd:element name="ExemptionReason" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="CalculatedRate" type="udt:RateType" minOccurs="0"/>
+			<xsd:element name="CalculationSequenceNumeric" type="udt:NumericType" minOccurs="0"/>
+			<xsd:element name="BasisQuantity" type="udt:QuantityType" minOccurs="0"/>
+			<xsd:element name="BasisAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="UnitBasisAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="LineTotalBasisAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="AllowanceChargeBasisAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="CategoryCode" type="qdt:TaxCategoryCodeType" minOccurs="0"/>
+			<xsd:element name="CurrencyCode" type="qdt:CurrencyCodeType" minOccurs="0"/>
+			<xsd:element name="Jurisdiction" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="CustomsDutyIndicator" type="udt:IndicatorType" minOccurs="0"/>
+			<xsd:element name="ExemptionReasonCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="TaxBasisAllowanceRate" type="udt:RateType" minOccurs="0"/>
+			<xsd:element name="TaxPointDate" type="udt:DateType" minOccurs="0"/>
+			<xsd:element name="Type" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="InformationAmount" type="udt:AmountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="CategoryName" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="DueDateTypeCode" type="qdt:TimeReferenceCodeType" minOccurs="0"/>
+			<xsd:element name="RateApplicablePercent" type="udt:PercentType" minOccurs="0"/>
+			<xsd:element name="SpecifiedTradeAccountingAccount" type="ram:TradeAccountingAccountType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ServiceSupplyTradeCountry" type="ram:TradeCountryType" minOccurs="0"/>
+			<xsd:element name="BuyerRepayableTaxSpecifiedTradeAccountingAccount" type="ram:TradeAccountingAccountType" minOccurs="0"/>
+			<xsd:element name="SellerPayableTaxSpecifiedTradeAccountingAccount" type="ram:TradeAccountingAccountType" minOccurs="0"/>
+			<xsd:element name="SellerRefundableTaxSpecifiedTradeAccountingAccount" type="ram:TradeAccountingAccountType" minOccurs="0"/>
+			<xsd:element name="BuyerDeductibleTaxSpecifiedTradeAccountingAccount" type="ram:TradeAccountingAccountType" minOccurs="0"/>
+			<xsd:element name="BuyerNonDeductibleTaxSpecifiedTradeAccountingAccount" type="ram:TradeAccountingAccountType" minOccurs="0"/>
+			<xsd:element name="PlaceApplicableTradeLocation" type="ram:TradeLocationType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="TransportCargoType">
+		<xsd:sequence>
+			<xsd:element name="TypeCode" type="qdt:CargoCategoryCodeType" minOccurs="0"/>
+			<xsd:element name="Identification" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="OperationalCategoryCode" type="qdt:CargoOperationalCategoryCodeType" minOccurs="0"/>
+			<xsd:element name="StatisticalClassificationCode" type="qdt:CargoCommodityCategoryCodeType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="UniversalCommunicationType">
+		<xsd:sequence>
+			<xsd:element name="URIID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="ChannelCode" type="qdt:CommunicationChannelCodeType" minOccurs="0"/>
+			<xsd:element name="CompleteNumber" type="udt:TextType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="ValuationBreakdownStatementType">
+		<xsd:sequence>
+			<xsd:element name="ID" type="udt:IDType"/>
+			<xsd:element name="Name" type="udt:TextType"/>
+			<xsd:element name="Description" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="MeasurementMethodID" type="udt:IDType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="CreationDateTime" type="udt:DateTimeType"/>
+			<xsd:element name="DefaultCurrencyCode" type="qdt:CurrencyCodeType"/>
+			<xsd:element name="DefaultLanguageCode" type="udt:CodeType"/>
+			<xsd:element name="Comment" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TypeCode" type="udt:CodeType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="RequestedActionCode" type="udt:CodeType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="PriceListID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="ContractualLanguageCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="ItemGroupedWorkItem" type="ram:GroupedWorkItemType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ItemBasicWorkItem" type="ram:BasicWorkItemType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TotalCalculatedPrice" type="ram:CalculatedPriceType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ChangedRecordedStatus" type="ram:RecordedStatusType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="CreationSpecifiedBinaryFile" type="ram:SpecifiedBinaryFileType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ReaderSpecifiedBinaryFile" type="ram:SpecifiedBinaryFileType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ReferencedSpecifiedBinaryFile" type="ram:SpecifiedBinaryFileType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="WorkItemComplexDescriptionType">
+		<xsd:sequence>
+			<xsd:element name="Abstract" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Content" type="udt:TextType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ContractualLanguageCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="RequestingSpecificationQuery" type="ram:SpecificationQueryType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="RespondingSpecificationResponse" type="ram:SpecificationResponseType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="SubsetWorkItemComplexDescription" type="ram:WorkItemComplexDescriptionType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="WorkItemDimensionType">
+		<xsd:sequence>
+			<xsd:element name="ID" type="udt:IDType" minOccurs="0"/>
+			<xsd:element name="ValueMeasure" type="udt:MeasureType"/>
+			<xsd:element name="Description" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="TypeCode" type="udt:CodeType"/>
+			<xsd:element name="ContractualLanguageCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="ComponentWorkItemDimension" type="ram:WorkItemDimensionType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="WorkItemQuantityAnalysisType">
+		<xsd:sequence>
+			<xsd:element name="ID" type="udt:IDType"/>
+			<xsd:element name="ActualQuantity" type="udt:QuantityType" minOccurs="0"/>
+			<xsd:element name="Description" type="udt:TextType" minOccurs="0"/>
+			<xsd:element name="ActualQuantityPercent" type="udt:PercentType" minOccurs="0"/>
+			<xsd:element name="StatusCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="TypeCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="PrimaryClassificationCode" type="udt:CodeType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="AlternativeClassificationCode" type="udt:CodeType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ContractualLanguageCode" type="udt:CodeType" minOccurs="0"/>
+			<xsd:element name="ActualQuantityWorkItemDimension" type="ram:WorkItemDimensionType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="BreakdownWorkItemQuantityAnalysis" type="ram:WorkItemQuantityAnalysisType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ChangedRecordedStatus" type="ram:RecordedStatusType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>

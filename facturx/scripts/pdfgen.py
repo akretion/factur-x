@@ -125,7 +125,7 @@ def main(args=None):
         "Default: autodetect. If you specify a particular level instead of "
         "using autodetection, you will win a very small amount of time "
         "(less than 1 millisecond). "
-        "Possible values for Factur-X: minimum, basicwl, basic, en16931, extended."
+        "Possible values for Factur-X: minimum, basicwl, basic, en16931, extended, xrechnung. "
         "Possible values for Order-X: basic, comfort, extended."
         )
     parser.add_argument(

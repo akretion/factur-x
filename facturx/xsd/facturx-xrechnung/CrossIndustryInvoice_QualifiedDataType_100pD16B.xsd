@@ -1,0 +1,782 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Schema agency:  UNCEFACT
+Schema version:  100.D16B (Decoupled Code List Schema Modules)
+Schema date:      10 October 2016
+
+Copyright (C) UN/CEFACT (2016). All Rights Reserved.
+
+This document and translations of it may be copied and furnished to others, and derivative works that comment on or otherwise explain it or assist in its implementation may be prepared, copied, published and distributed, in whole or in part, without restriction of any kind, provided that the above copyright notice and this paragraph are included on all such copies and derivative works. However, this document itself may not be modified in any way, such as by removing the copyright notice or references to UN/CEFACT, except as needed for the purpose of developing UN/CEFACT specifications, in which case the procedures for copyrights defined in the UN/CEFACT Intellectual Property Rights document must be followed, or as required to translate it into languages other than English.
+
+The limited permissions granted above are perpetual and will not be revoked by UN/CEFACT or its successors or assigns.
+
+This document and the information contained herein is provided on an "AS IS" basis and UN/CEFACT DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+-->
+<xsd:schema xmlns:qdt="urn:un:unece:uncefact:data:standard:QualifiedDataType:100" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100" targetNamespace="urn:un:unece:uncefact:data:standard:QualifiedDataType:100" elementFormDefault="qualified" version="100.D16B">
+	<xsd:import namespace="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100" schemaLocation="CrossIndustryInvoice_UnqualifiedDataType_100pD16B.xsd"/>
+	<xsd:simpleType name="AccountingAccountTypeCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="AccountingAccountTypeCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:AccountingAccountTypeCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="AccountingE501"/>
+				<xsd:attribute name="listAgencyID" type="xsd:token" fixed="210"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="listURI" type="xsd:anyURI"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="AccountingAmountTypeCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="AccountingAmountTypeCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:AccountingAmountTypeCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="AccountingE601"/>
+				<xsd:attribute name="listAgencyID" type="xsd:token" fixed="210"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="listURI" type="xsd:anyURI"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="AccountingDocumentCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="AccountingDocumentCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="AccountingDocumentCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:AccountingDocumentCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="1001_Accounting"/>
+				<xsd:attribute name="listAgencyID" type="qdt:AccountingDocumentCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="listURI" type="xsd:anyURI"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="AdjustmentReasonCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="AdjustmentReasonCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="AdjustmentReasonCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:AdjustmentReasonCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="4465"/>
+				<xsd:attribute name="listAgencyID" type="qdt:AdjustmentReasonCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="AllowanceChargeIdentificationCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="AllowanceChargeIdentificationCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:AllowanceChargeIdentificationCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="5189_AllowanceChargeID"/>
+				<xsd:attribute name="listAgencyID" type="xsd:token" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="listURI" type="xsd:anyURI"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="AllowanceChargeReasonCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="AllowanceChargeReasonCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="AllowanceChargeReasonCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:AllowanceChargeReasonCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="4465_AllowanceChargeReasonCode"/>
+				<xsd:attribute name="listAgencyID" type="qdt:AllowanceChargeReasonCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="listURI" type="xsd:anyURI"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="AutomaticDataCaptureMethodCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="AutomaticDataCaptureMethodCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="AutomaticDataCaptureMethodCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:AutomaticDataCaptureMethodCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="7233_AutomaticDataCaptureMethodCode"/>
+				<xsd:attribute name="listAgencyID" type="qdt:AutomaticDataCaptureMethodCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="listURI" type="xsd:anyURI"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="CargoCategoryCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="CargoCategoryCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="CargoCategoryCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:CargoCategoryCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="Recommendation 21-Annex I"/>
+				<xsd:attribute name="listAgencyID" type="qdt:CargoCategoryCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="name" type="xsd:string"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="CargoCommodityCategoryCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="CargoCommodityCategoryCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:CargoCommodityCategoryCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="7357"/>
+				<xsd:attribute name="listAgencyID" type="xsd:token" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="name" type="xsd:string"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="CargoOperationalCategoryCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="CargoOperationalCategoryCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="CargoOperationalCategoryCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:CargoOperationalCategoryCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="7085b"/>
+				<xsd:attribute name="listAgencyID" type="qdt:CargoOperationalCategoryCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="name" type="xsd:string"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="ChargePayingPartyRoleCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="ChargePayingPartyRoleCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="ChargePayingPartyRoleCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:ChargePayingPartyRoleCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="3035_Charge Paying"/>
+				<xsd:attribute name="listAgencyID" type="qdt:ChargePayingPartyRoleCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="name" type="xsd:string"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="CommunicationChannelCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="CommunicationChannelCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="CommunicationChannelCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:CommunicationChannelCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="3155_CommunicationChannelCode"/>
+				<xsd:attribute name="listAgencyID" type="qdt:CommunicationChannelCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="listURI" type="xsd:anyURI"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="ContactTypeCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="ContactTypeCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="ContactTypeCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:ContactTypeCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="3139_ContactTypeCode"/>
+				<xsd:attribute name="listAgencyID" type="qdt:ContactTypeCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="listURI" type="xsd:anyURI"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="CountryIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="CountryIDSchemeAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="CountryIDType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:CountryIDContentType">
+				<xsd:attribute name="schemeID" type="xsd:token"/>
+				<xsd:attribute name="schemeAgencyID" type="qdt:CountryIDSchemeAgencyIDContentType"/>
+				<xsd:attribute name="schemeVersionID" type="xsd:token" fixed="second edition 2006"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="CurrencyCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="CurrencyCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="CurrencyCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:CurrencyCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="ISO 4217 3A"/>
+				<xsd:attribute name="listAgencyID" type="qdt:CurrencyCodeListAgencyIDContentType" fixed="5"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="listURI" type="xsd:anyURI"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="DeliveryTermsCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="DeliveryTermsCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="DeliveryTermsCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:DeliveryTermsCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="4053"/>
+				<xsd:attribute name="listAgencyID" type="qdt:DeliveryTermsCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="DimensionTypeCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="DimensionTypeCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="DimensionTypeCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:DimensionTypeCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="6145"/>
+				<xsd:attribute name="listAgencyID" type="qdt:DimensionTypeCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="name" type="xsd:string"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="DocumentCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="DocumentCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="DocumentCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:DocumentCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="1001"/>
+				<xsd:attribute name="listAgencyID" type="qdt:DocumentCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="name" type="xsd:string"/>
+				<xsd:attribute name="listURI" type="xsd:anyURI"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="DocumentStatusCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="DocumentStatusCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="DocumentStatusCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:DocumentStatusCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="1373"/>
+				<xsd:attribute name="listAgencyID" type="qdt:DocumentStatusCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="name" type="xsd:string"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="FormattedDateTimeFormatContentType">
+		<xsd:restriction base="xsd:string"/>
+	</xsd:simpleType>
+	<xsd:complexType name="FormattedDateTimeType">
+		<xsd:sequence>
+			<xsd:element name="DateTimeString">
+				<xsd:complexType>
+					<xsd:simpleContent>
+						<xsd:extension base="xsd:string">
+							<xsd:attribute name="format" type="qdt:FormattedDateTimeFormatContentType"/>
+						</xsd:extension>
+					</xsd:simpleContent>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:simpleType name="FreightChargeTariffClassCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="FreightChargeTariffClassCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="FreightChargeTariffClassCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:FreightChargeTariffClassCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="5243"/>
+				<xsd:attribute name="listAgencyID" type="qdt:FreightChargeTariffClassCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="name" type="xsd:string"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="FreightChargeTypeIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="FreightChargeTypeIDSchemeAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="FreightChargeTypeIDType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:FreightChargeTypeIDContentType">
+				<xsd:attribute name="schemeID" type="xsd:token"/>
+				<xsd:attribute name="schemeAgencyID" type="qdt:FreightChargeTypeIDSchemeAgencyIDContentType"/>
+				<xsd:attribute name="schemeVersionID" type="xsd:token"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="GoodsTypeCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="GoodsTypeCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:GoodsTypeCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="TDED 7357"/>
+				<xsd:attribute name="listAgencyID" type="xsd:token" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="name" type="xsd:string"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="GoodsTypeExtensionCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="GoodsTypeExtensionCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:GoodsTypeExtensionCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="TDED 7361"/>
+				<xsd:attribute name="listAgencyID" type="xsd:token" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="name" type="xsd:string"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:complexType name="LinearUnitMeasureType">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:decimal">
+				<xsd:attribute name="unitCode" type="qdt:LinearUnitMeasureUnitCodeContentType"/>
+				<xsd:attribute name="unitCodeListVersionID" type="xsd:token"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="LinearUnitMeasureUnitCodeContentType">
+		<xsd:restriction base="xsd:token">
+			<xsd:minLength value="1"/>
+			<xsd:maxLength value="3"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="LineStatusCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="LineStatusCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="LineStatusCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:LineStatusCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="1229_LineStatusCode"/>
+				<xsd:attribute name="listAgencyID" type="qdt:LineStatusCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="listURI" type="xsd:anyURI"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="LogisticsChargeCalculationBasisCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="LogisticsChargeCalculationBasisCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:LogisticsChargeCalculationBasisCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="TDED 6131"/>
+				<xsd:attribute name="listAgencyID" type="xsd:token" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="name" type="xsd:string"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="MessageFunctionCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="MessageFunctionCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="MessageFunctionCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:MessageFunctionCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="1225_MessageFunctionTypeCode"/>
+				<xsd:attribute name="listAgencyID" type="qdt:MessageFunctionCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="listURI" type="xsd:anyURI"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="PackageTypeCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="PackageTypeCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="PackageTypeCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:PackageTypeCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="7065"/>
+				<xsd:attribute name="listAgencyID" type="qdt:PackageTypeCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="name" type="xsd:string"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="PackagingMarkingCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="PackagingMarkingCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="PackagingMarkingCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:PackagingMarkingCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="7233_PackagingMarkingCode"/>
+				<xsd:attribute name="listAgencyID" type="qdt:PackagingMarkingCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="listURI" type="xsd:anyURI"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="PartyRoleCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="PartyRoleCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="PartyRoleCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:PartyRoleCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="3035"/>
+				<xsd:attribute name="listAgencyID" type="qdt:PartyRoleCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="name" type="xsd:string"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="PaymentGuaranteeMeansCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="PaymentGuaranteeMeansCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="PaymentGuaranteeMeansCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:PaymentGuaranteeMeansCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="4431"/>
+				<xsd:attribute name="listAgencyID" type="qdt:PaymentGuaranteeMeansCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="PaymentMeansChannelCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="PaymentMeansChannelCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="PaymentMeansChannelCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:PaymentMeansChannelCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="4435"/>
+				<xsd:attribute name="listAgencyID" type="qdt:PaymentMeansChannelCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="name" type="xsd:string"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="PaymentMeansCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="PaymentMeansCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="PaymentMeansCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:PaymentMeansCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="4461"/>
+				<xsd:attribute name="listAgencyID" type="qdt:PaymentMeansCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="PaymentTermsEventTimeReferenceCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="PaymentTermsEventTimeReferenceCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="PaymentTermsEventTimeReferenceCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:PaymentTermsEventTimeReferenceCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="2475_Payment Terms Event"/>
+				<xsd:attribute name="listAgencyID" type="qdt:PaymentTermsEventTimeReferenceCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="PaymentTermsIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="PaymentTermsIDSchemeAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="PaymentTermsIDType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:PaymentTermsIDContentType">
+				<xsd:attribute name="schemeID" type="xsd:token"/>
+				<xsd:attribute name="schemeAgencyID" type="qdt:PaymentTermsIDSchemeAgencyIDContentType"/>
+				<xsd:attribute name="schemeVersionID" type="xsd:token"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="PaymentTermsTypeCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="PaymentTermsTypeCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="PaymentTermsTypeCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:PaymentTermsTypeCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="4279"/>
+				<xsd:attribute name="listAgencyID" type="qdt:PaymentTermsTypeCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="name" type="xsd:string"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="PriceTypeCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="PriceTypeCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="PriceTypeCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:PriceTypeCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="5375"/>
+				<xsd:attribute name="listAgencyID" type="qdt:PriceTypeCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="ReferenceCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="ReferenceCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="ReferenceCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:ReferenceCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="1153_ReferenceTypeCode"/>
+				<xsd:attribute name="listAgencyID" type="qdt:ReferenceCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="name" type="xsd:string"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="TaxCategoryCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="TaxCategoryCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="TaxCategoryCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:TaxCategoryCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="5305"/>
+				<xsd:attribute name="listAgencyID" type="qdt:TaxCategoryCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="listURI" type="xsd:anyURI"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="TaxTypeCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="TaxTypeCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="TaxTypeCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:TaxTypeCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="5153"/>
+				<xsd:attribute name="listAgencyID" type="qdt:TaxTypeCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="listURI" type="xsd:anyURI"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="TimeReferenceCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="TimeReferenceCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="TimeReferenceCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:TimeReferenceCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="2475"/>
+				<xsd:attribute name="listAgencyID" type="qdt:TimeReferenceCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="name" type="xsd:string"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="TransportEquipmentCategoryCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="TransportEquipmentCategoryCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="TransportEquipmentCategoryCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:TransportEquipmentCategoryCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="8053"/>
+				<xsd:attribute name="listAgencyID" type="qdt:TransportEquipmentCategoryCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="name" type="xsd:string"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="TransportEquipmentFullnessCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="TransportEquipmentFullnessCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="TransportEquipmentFullnessCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:TransportEquipmentFullnessCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="8169"/>
+				<xsd:attribute name="listAgencyID" type="qdt:TransportEquipmentFullnessCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="name" type="xsd:string"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="TransportEquipmentSizeTypeCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="TransportEquipmentSizeTypeCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="TransportEquipmentSizeTypeCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:TransportEquipmentSizeTypeCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="8155"/>
+				<xsd:attribute name="listAgencyID" type="qdt:TransportEquipmentSizeTypeCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="name" type="xsd:string"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="TransportMeansTypeCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="TransportMeansTypeCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="TransportMeansTypeCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:TransportMeansTypeCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="Recommendation 28"/>
+				<xsd:attribute name="listAgencyID" type="qdt:TransportMeansTypeCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="name" type="xsd:string"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="TransportModeCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="TransportModeCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="TransportModeCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:TransportModeCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="Recommendation 19"/>
+				<xsd:attribute name="listAgencyID" type="qdt:TransportModeCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="name" type="xsd:string"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="TransportMovementStageCodeContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="TransportMovementStageCodeListAgencyIDContentType">
+		<xsd:restriction base="xsd:token"/>
+	</xsd:simpleType>
+	<xsd:complexType name="TransportMovementStageCodeType">
+		<xsd:simpleContent>
+			<xsd:extension base="qdt:TransportMovementStageCodeContentType">
+				<xsd:attribute name="listID" type="xsd:token" fixed="8051"/>
+				<xsd:attribute name="listAgencyID" type="qdt:TransportMovementStageCodeListAgencyIDContentType" fixed="6"/>
+				<xsd:attribute name="listVersionID" type="xsd:token"/>
+				<xsd:attribute name="name" type="xsd:string"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:complexType name="VolumeUnitMeasureType">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:decimal">
+				<xsd:attribute name="unitCode" type="qdt:VolumeUnitMeasureUnitCodeContentType"/>
+				<xsd:attribute name="unitCodeListVersionID" type="xsd:token"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="VolumeUnitMeasureUnitCodeContentType">
+		<xsd:restriction base="xsd:token">
+			<xsd:minLength value="1"/>
+			<xsd:maxLength value="3"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:complexType name="WeightUnitMeasureType">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:decimal">
+				<xsd:attribute name="unitCode" type="qdt:WeightUnitMeasureUnitCodeContentType"/>
+				<xsd:attribute name="unitCodeListVersionID" type="xsd:token"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="WeightUnitMeasureUnitCodeContentType">
+		<xsd:restriction base="xsd:token">
+			<xsd:minLength value="1"/>
+			<xsd:maxLength value="3"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+</xsd:schema>

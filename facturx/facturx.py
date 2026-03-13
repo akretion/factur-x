@@ -52,16 +52,19 @@ logging.basicConfig(format=FORMAT)
 logger = logging.getLogger('factur-x')
 logger.setLevel(logging.INFO)
 
+XRECHUNG_FILEVERSION = '3.0'
 FACTURX_FILENAME = 'factur-x.xml'
+XRECHNUNG_FILENAME = 'xrechnung.xml'
 ZUGFERD_FILENAMES = ['zugferd-invoice.xml', 'ZUGFeRD-invoice.xml']
 ORDERX_FILENAME = 'order-x.xml'
-ALL_FILENAMES = [FACTURX_FILENAME] + ZUGFERD_FILENAMES + [ORDERX_FILENAME]
+ALL_FILENAMES = [FACTURX_FILENAME] + [XRECHNUNG_FILENAME] + ZUGFERD_FILENAMES + [ORDERX_FILENAME]
 FACTURX_LEVEL2xsd = {
     'minimum': 'facturx-minimum/Factur-X_1.08_MINIMUM.xsd',
     'basicwl': 'facturx-basicwl/Factur-X_1.08_BASICWL.xsd',
     'basic': 'facturx-basic/Factur-X_1.08_BASIC.xsd',
     'en16931': 'facturx-en16931/Factur-X_1.08_EN16931.xsd',
     'extended': 'facturx-extended/Factur-X_1.08_EXTENDED.xsd',
+    'xrechnung': 'facturx-xrechnung/CrossIndustryInvoice_100pD16B.xsd'
 }
 ORDERX_LEVEL2xsd = {
     'basic': 'orderx-basic/SCRDMCCBDACIOMessageStructure_100pD20B.xsd',
@@ -74,6 +77,7 @@ FACTURX_LEVEL2xmp = {
     'basic': 'BASIC',
     'en16931': 'EN 16931',
     'extended': 'EXTENDED',
+    'xrechnung': 'XRECHNUNG',
     }
 ORDERX_TYPES = ('order', 'order_change', 'order_response')
 ORDERX_code2type = {
@@ -217,7 +221,7 @@ def xml_check_xsd(xml, flavor='autodetect', level='autodetect'):
 
 
 def get_facturx_xml_from_pdf(pdf_file, check_xsd=True):
-    filenames = [FACTURX_FILENAME] + ZUGFERD_FILENAMES
+    filenames = [FACTURX_FILENAME] + [XRECHNUNG_FILENAME] + ZUGFERD_FILENAMES
     return get_xml_from_pdf(pdf_file, check_xsd=check_xsd, filenames=filenames)
 
 
@@ -270,7 +274,8 @@ def get_xml_from_pdf(pdf_file, check_xsd=True, filenames=[]):
                 continue
             if (
                     (filename == ORDERX_FILENAME and flavor != 'order-x') or
-                    (filename == FACTURX_FILENAME and flavor != "factur-x")):
+                    (filename == FACTURX_FILENAME and flavor != "factur-x") or
+                    (filename == XRECHNUNG_FILENAME and flavor != "factur-x")):
                 # Don't do that when filename is zugferd-invoice.xml
                 # because it can be either zugferd (ie zugferd 1.0)
                 # or 'factur-x' i.e. zugferd 2.0, see bug #41
@@ -413,7 +418,6 @@ def _prepare_pdf_metadata_xml(flavor, level, orderx_type, pdf_metadata):
         "producer": 'pypdf',
         "creator_tool": CREATOR,
         "timestamp": _get_metadata_timestamp(),
-        "version": '1.0',
         }
 
     if flavor == 'order-x':
@@ -421,14 +425,24 @@ def _prepare_pdf_metadata_xml(flavor, level, orderx_type, pdf_metadata):
             "documenttype": orderx_type.upper(),
             "xml_filename": ORDERX_FILENAME,
             "xmp_level": level.upper(),
+            "version": '1.0',
             })
         urn = 'urn:factur-x:pdfa:CrossIndustryDocument:1p0#'
     else:
-        key2value.update({
-            "documenttype": 'INVOICE',
-            "xml_filename": FACTURX_FILENAME,
-            "xmp_level": FACTURX_LEVEL2xmp[level],
-            })
+        if level == 'xrechnung':
+            key2value.update({
+                "documenttype": 'INVOICE',
+                "xml_filename": XRECHNUNG_FILENAME,
+                "xmp_level": FACTURX_LEVEL2xmp[level],
+                "version": XRECHNUNG_FILEVERSION,
+                })
+        else:
+            key2value.update({
+                "documenttype": 'INVOICE',
+                "xml_filename": FACTURX_FILENAME,
+                "xmp_level": FACTURX_LEVEL2xmp[level],
+                "version": '1.0',
+                })
         urn = 'urn:factur-x:pdfa:CrossIndustryDocument:invoice:1p0#'
     xml_str = xml_str.format(urn=urn)
     xml_root = etree.fromstring(xml_str)
@@ -535,6 +549,10 @@ def _facturx_update_metadata_add_attachment(
         raise ValueError(
             'Wrong value for orderx_type (%s), must be in %s'
             % (orderx_type, ORDERX_TYPES))
+    if level == 'xrechnung':
+        if afrelationship != 'alternative':
+            raise ValueError(
+                "Wrong value for afrelationship (%s). XRECHNUNG requires: alternative." % afrelationship)
     if afrelationship not in XML_AFRelationship:
         raise ValueError(
             "Wrong value for afrelationship (%s). Possible values: %s."
@@ -565,8 +583,12 @@ def _facturx_update_metadata_add_attachment(
         xml_filename = ORDERX_FILENAME
         desc = 'Order-X XML file'
     else:
-        xml_filename = FACTURX_FILENAME
-        desc = 'Factur-X XML file'
+        if level == 'xrechnung':
+            xml_filename = XRECHNUNG_FILENAME
+            desc = 'ZUGFeRD XML XRechnung'
+        else:
+            xml_filename = FACTURX_FILENAME
+            desc = 'Factur-X XML file'
 
     fname_obj = create_string_object(xml_filename)
     filespec_dict = DictionaryObject({
@@ -681,8 +703,14 @@ def _base_info2pdf_metadata(base_info):
         '220': 'Order',
         '230': 'Order Change',
         '231': 'Order Response',
+        '326': 'Partial Invoice',
         '380': 'Invoice',
-        '381': 'Refund',
+        '381': 'Credit Note',
+        '384': 'Corrected Invoice',
+        '389': 'Self-billed Invoice',
+        '875': 'Partial Construction Invoice',
+        '876': 'Partial Final Construction Invoice',
+        '877': 'Final Construction Invoice',
         }
     doc_type_name = doc_type_map.get(base_info['doc_type'], 'Invoice')
     date_str = datetime.strftime(base_info['date'], '%Y-%m-%d')
@@ -732,6 +760,8 @@ def get_facturx_level(facturx_xml_etree):
 
 
 def get_level(xml_etree, flavor='autodetect'):
+    global XRECHNUNG_FILEVERSION
+
     if not isinstance(xml_etree, type(etree.Element('pouet'))):
         raise ValueError('xml_etree must be an etree.Element() object')
     if flavor not in ('autodetect', 'factur-x', 'facturx', 'order-x', 'orderx', 'zugferd'):
@@ -765,6 +795,8 @@ def get_level(xml_etree, flavor='autodetect'):
     # basic: urn:cen.eu:en16931:2017#compliant#urn:factur-x.eu:1p0:basic
     # en16931: urn:cen.eu:en16931:2017
     # extended: urn:cen.eu:en16931:2017#conformant#urn:factur-x.eu:1p0:extended
+    # xrechnung: urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0
+    # extension xrechung: urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0#conformant#urn:xeinkauf.de:kosit:extension:xrechnung_3.0
     # We also want to support variants such as:
     # urn:cen.eu:en16931:2017#conformant#urn.cpro.gouv.fr:1p0:extended-ctc-fr
     # Content of the ID field per level for Order-X:
@@ -777,6 +809,11 @@ def get_level(xml_etree, flavor='autodetect'):
     level = doc_id.split(':')[-1]
     if level == "extended-ctc-fr":
         level = "extended"
+    if level[:10] == 'xrechnung_':
+        XRECHNUNG_FILEVERSION = level.split('_')[-1]
+        logger.debug('xrechnung version is %s (autodetected)', XRECHNUNG_FILEVERSION)
+        # level = level.split('_')[-2]
+        level = "xrechnung"
     if level not in possible_values:
         # Ignore what is after the first "#"
         doc_id_cut = doc_id.split('#')[0]
@@ -861,7 +898,7 @@ def generate_from_binary(
     :param level: the level of the Factur-X or Order-X XML file. Default value
     is 'autodetect'. The only advantage to specifiy a particular value instead
     of using the autodetection is for a very very small perf improvement.
-    Possible values: minimum, basicwl, basic, en16931, extended for Factur-X
+    Possible values: minimum, basicwl, basic, en16931, extended, xrechnung for Factur-X
     basic, comfort, extended for Order-X
     :type level: string
     :param orderx_type: If generating an Order-X file (flavor='order-x'),
@@ -1179,6 +1216,14 @@ def generate_from_file(
             "afrelationship switched from '%s' to 'data' because it must be 'data' "
             "for Factur-X profile '%s'.", afrelationship, level)
         afrelationship = 'data'
+    if (
+            flavor == 'factur-x' and
+            level == 'xrechnung' and
+            afrelationship != 'alternative'):
+        logger.warning(
+            "afrelationship switched from '%s' to 'alternative' because it must be 'alternative' "
+            "for Factur-X profile '%s'.", afrelationship, level)
+        afrelationship = 'alternative'
     if flavor == 'order-x' and orderx_type not in ORDERX_TYPES:
         if xml_root is None:
             xml_root = etree.fromstring(xml_bytes)
