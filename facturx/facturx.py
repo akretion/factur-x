@@ -191,8 +191,8 @@ def xml_check_xsd(xml, flavor='autodetect', level='autodetect'):
         xsd_file = 'xsd/%s' % ORDERX_LEVEL2xsd[level]
 
     logger.debug('Using XSD file %s', xsd_file)
-    xsd_etree_obj = etree.parse(
-        importlib_resources.files(__package__).joinpath(xsd_file).open())
+    with importlib_resources.files(__package__).joinpath(xsd_file).open() as xsd_f:
+        xsd_etree_obj = etree.parse(xsd_f)
     official_schema = etree.XMLSchema(xsd_etree_obj)
     try:
         t = etree.parse(BytesIO(xml_bytes))
