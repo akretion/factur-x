@@ -3,8 +3,8 @@
 
 import argparse
 import sys
-from facturx import xml_check_xsd, xml_check_schematron, __version__ as fxversion
-from facturx.facturx import logger
+from facturx import xml_check_xsd, xml_check_schematron, __version__ as fxversion, \
+    configure_script_logging
 import logging
 from os.path import isfile
 
@@ -13,15 +13,11 @@ __date__ = "March 2026"
 __version__ = "0.5"
 
 
+logger = logging.getLogger('factur-x')
+
+
 def xmlcheck(args):
     logger.info('xmlcheck version %s using factur-x lib version %s', __version__, fxversion)
-    log_map = {
-        'debug': logging.DEBUG,
-        'info': logging.INFO,
-        'warn': logging.WARN,
-        'error': logging.ERROR,
-    }
-    logger.setLevel(log_map[args.log_level])
 
     if not isfile(args.xml_file):
         logger.error('%s is not a filename', args.xml_file)
@@ -70,6 +66,13 @@ def main(args=None):
     parser.add_argument(
         "xml_file", help="Factur-X or Order-X XML file to check")
     args = parser.parse_args()
+    log_map = {
+        'debug': logging.DEBUG,
+        'info': logging.INFO,
+        'warn': logging.WARN,
+        'error': logging.ERROR,
+    }
+    configure_script_logging(level=log_map[args.log_level])
     xmlcheck(args)
 
 

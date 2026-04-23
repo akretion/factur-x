@@ -3,8 +3,8 @@
 
 import argparse
 import sys
-from facturx import generate_from_file, __version__ as fxversion
-from facturx.facturx import logger
+from facturx import generate_from_file, __version__ as fxversion, \
+    configure_script_logging
 import logging
 from os.path import isfile, isdir, basename
 
@@ -12,16 +12,11 @@ __author__ = "Alexis de Lattre <alexis.delattre@akretion.com>"
 __date__ = "October 2025"
 __version__ = "0.9"
 
+logger = logging.getLogger('factur-x')
+
 
 def pdfgen(args):
     logger.info('pdfgen version %s using factur-x lib version %s', __version__, fxversion)
-    log_map = {
-        'debug': logging.DEBUG,
-        'info': logging.INFO,
-        'warn': logging.WARN,
-        'error': logging.ERROR,
-    }
-    logger.setLevel(log_map[args.log_level])
 
     pdf_filename = args.regular_pdf_file
     output_pdf_filename = args.facturx_orderx_pdf_file
@@ -180,6 +175,13 @@ def main(args=None):
         "optional_attachments", nargs='*',
         help="Optional list of additionnal attachments")
     args = parser.parse_args()
+    log_map = {
+        'debug': logging.DEBUG,
+        'info': logging.INFO,
+        'warn': logging.WARN,
+        'error': logging.ERROR,
+    }
+    configure_script_logging(level=log_map[args.log_level])
     pdfgen(args)
 
 
