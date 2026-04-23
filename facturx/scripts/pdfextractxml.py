@@ -15,21 +15,13 @@ __version__ = "0.4"
 
 def pdfextractxml(args):
     logger.info('pdfextractxml version %s using factur-x lib version %s', __version__, fxversion)
-    if args.log_level:
-        log_level = args.log_level.lower()
-        log_map = {
-            'debug': logging.DEBUG,
-            'info': logging.INFO,
-            'warn': logging.WARN,
-            'error': logging.ERROR,
-        }
-        if log_level in log_map:
-            logger.setLevel(log_map[log_level])
-        else:
-            logger.error(
-                'Wrong value for log level (%s). Possible values: %s',
-                log_level, ', '.join(log_map.keys()))
-            sys.exit(1)
+    log_map = {
+        'debug': logging.DEBUG,
+        'info': logging.INFO,
+        'warn': logging.WARN,
+        'error': logging.ERROR,
+    }
+    logger.setLevel(log_map[args.log_level])
 
     pdf_filename = args.facturx_orderx_file
     out_xml_filename = args.xml_file_to_create
@@ -75,7 +67,7 @@ def main(args=None):
     parser.add_argument(
         '-l', '--log-level', dest="log_level", default='info',
         help="Set log level. Possible values: debug, info, warn, error. "
-        "Default value: info.")
+        "Default value: info.", choices=['debug', 'info', 'warn', 'error'])
     parser.add_argument(
         '-d', '--disable-xsd-check', dest='disable_xsd_check',
         action='store_true',

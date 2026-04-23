@@ -102,22 +102,21 @@ def main(args=None):
     parser.add_argument(
         '-n', '--loglevel', dest='loglevel', default='info',
         help="Log level. Possible values: critical, error, warning, "
-             "info (default), debug.")
+             "info (default), debug.",
+        choices=['critical', 'error', 'warning', 'info', 'debug'])
     args = parser.parse_args()
     if args.logfile:
         formatter = logging.Formatter(
             "[%(asctime)s] %(levelname)s %(message)s")
         handler = RotatingFileHandler(args.logfile)
-        if args.loglevel == 'debug':
-            level = logging.DEBUG
-        elif args.loglevel == 'critical':
-            level = logging.CRITICAL
-        elif args.loglevel == 'warning':
-            level = logging.WARNING
-        elif args.loglevel == 'error':
-            level = logging.ERROR
-        else:
-            level = logging.INFO
+        log_map = {
+            'debug': logging.DEBUG,
+            'info': logging.INFO,
+            'warning': logging.WARN,
+            'error': logging.ERROR,
+            'critical': logging.CRITICAL,
+        }
+        level = log_map[args.loglevel]
         handler.setLevel(level)
         handler.setFormatter(formatter)
         fxlogger.setLevel(level)
