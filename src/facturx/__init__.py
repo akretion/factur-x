@@ -1,4 +1,5 @@
-__version__ = "4.2"
+import logging
+
 from .facturx import (
     generate_from_binary,
     generate_from_file,
@@ -14,6 +15,8 @@ from .facturx import (
     xml_check_xsd,
 )
 
+__version__ = "4.2"
+
 __all__ = [
     "generate_from_binary",
     "generate_from_file",
@@ -28,3 +31,15 @@ __all__ = [
     "xml_check_schematron",
     "xml_check_xsd",
 ]
+
+logging.getLogger("factur-x").addHandler(logging.NullHandler())
+
+
+def configure_script_logging(level=logging.INFO):
+    logger = logging.getLogger("factur-x")
+    handler = logging.StreamHandler()
+    handler.setFormatter(logging.Formatter(
+        "%(asctime)s [%(levelname)s] %(message)s"
+    ))
+    logger.addHandler(handler)
+    logger.setLevel(level)
