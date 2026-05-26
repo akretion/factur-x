@@ -203,7 +203,8 @@ def xml_check_xsd(xml, flavor="autodetect", level="autodetect"):
 
     xsd_absolute_filepath = importlib_resources.files(__package__).joinpath(xsd_file)
     logger.debug("Using XSD file %s", xsd_absolute_filepath)
-    official_schema = etree.XMLSchema(file=xsd_absolute_filepath)
+    # str is added to be compatible with lxml 4.6.5
+    official_schema = etree.XMLSchema(file=str(xsd_absolute_filepath))
     try:
         t = etree.parse(BytesIO(xml_bytes))
         official_schema.assertValid(t)
