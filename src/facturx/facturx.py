@@ -46,7 +46,7 @@ from pypdf.generic import (
 )
 
 try:
-    importlib_resources.files  # added in py3.9
+    _ = importlib_resources.files  # added in py3.9
 except AttributeError:
     import importlib_resources  # py3.8 compat: pip install importlib-resources
 import hashlib
@@ -95,20 +95,29 @@ ATTACHMENTS_AFRelationship = ("supplement", "unspecified")
 XML_NAMESPACES = {
     "factur-x": {
         "qdt": "urn:un:unece:uncefact:data:standard:QualifiedDataType:100",
-        "ram": "urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100",
+        "ram": (
+            "urn:un:unece:uncefact:data:standard:"
+            "ReusableAggregateBusinessInformationEntity:100"
+        ),
         "rsm": "urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100",
         "udt": "urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100",
         "xsi": "http://www.w3.org/2001/XMLSchema-instance",
     },
     "order-x": {
         "qdt": "urn:un:unece:uncefact:data:standard:QualifiedDataType:128",
-        "ram": "urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:128",
+        "ram": (
+            "urn:un:unece:uncefact:data:standard:"
+            "ReusableAggregateBusinessInformationEntity:128"
+        ),
         "rsm": "urn:un:unece:uncefact:data:SCRDMCCBDACIOMessageStructure:100",
         "udt": "urn:un:unece:uncefact:data:standard:UnqualifiedDataType:128",
         "xsi": "http://www.w3.org/2001/XMLSchema-instance",
     },
     "zugferd": {
-        "ram": "urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:12",
+        "ram": (
+            "urn:un:unece:uncefact:data:standard:"
+            "ReusableAggregateBusinessInformationEntity:12"
+        ),
         "rsm": "urn:ferd:CrossIndustryDocument:invoice:1p0",
         "udt": "urn:un:unece:uncefact:data:standard:UnqualifiedDataType:15",
         "xsi": "http://www.w3.org/2001/XMLSchema-instance",
@@ -165,7 +174,7 @@ def xml_check_xsd(xml, flavor="autodetect", level="autodetect"):
             try:
                 xml_etree = etree.fromstring(xml_bytes)
             except Exception as e:
-                raise Exception("The XML syntax is invalid: %s." % str(e))
+                raise Exception(f"The XML syntax is invalid: {e}.") from e
         flavor = get_flavor(xml_etree)
     if flavor in ("factur-x", "facturx"):
         if level not in FACTURX_LEVEL2xsd:
@@ -173,11 +182,11 @@ def xml_check_xsd(xml, flavor="autodetect", level="autodetect"):
                 try:
                     xml_etree = etree.fromstring(xml_bytes)
                 except Exception as e:
-                    raise Exception("The XML syntax is invalid: %s." % str(e))
+                    raise Exception(f"The XML syntax is invalid: {e}.") from e
             level = get_level(xml_etree, flavor)
         if level not in FACTURX_LEVEL2xsd:
-            raise ValueError("Wrong level '%s' for Factur-X invoice." % level)
-        xsd_file = "xsd/%s" % FACTURX_LEVEL2xsd[level]
+            raise ValueError(f"Wrong level '{level}' for Factur-X invoice.")
+        xsd_file = f"xsd/{FACTURX_LEVEL2xsd[level]}"
     elif flavor == "zugferd":
         xsd_file = "xsd/zugferd/ZUGFeRD1p0.xsd"
     elif flavor in ("order-x", "orderx"):
@@ -186,11 +195,11 @@ def xml_check_xsd(xml, flavor="autodetect", level="autodetect"):
                 try:
                     xml_etree = etree.fromstring(xml_bytes)
                 except Exception as e:
-                    raise Exception("The XML syntax is invalid: %s." % str(e))
+                    raise Exception(f"The XML syntax is invalid: {e}.") from e
             level = get_level(xml_etree, flavor)
         if level not in ORDERX_LEVEL2xsd:
-            raise ValueError("Wrong level '%s' for Order-X document." % level)
-        xsd_file = "xsd/%s" % ORDERX_LEVEL2xsd[level]
+            raise ValueError(f"Wrong level '{level}' for Order-X document.")
+        xsd_file = f"xsd/{ORDERX_LEVEL2xsd[level]}"
 
     xsd_absolute_filepath = importlib_resources.files(__package__).joinpath(xsd_file)
     logger.debug("Using XSD file %s", xsd_absolute_filepath)
@@ -203,11 +212,10 @@ def xml_check_xsd(xml, flavor="autodetect", level="autodetect"):
         logger.error("The XML file is invalid against the XML Schema Definition")
         logger.error("XSD Error: %s", e)
         raise Exception(
-            "The %s XML file is not valid against the official "
-            "XML Schema Definition. "
-            "Here is the error, which may give you an idea on the "
-            "cause of the problem: %s." % (flavor.capitalize(), str(e))
-        )
+            f"The {flavor.capitalize()} XML file is not valid against the official "
+            f"XML Schema Definition. Here is the error, which may give you an idea on "
+            f"the cause of the problem: {e}."
+        ) from e
     end_chrono = datetime.now()
     logger.info(
         "%s XML file successfully validated against XSD in %s sec",
@@ -269,7 +277,7 @@ def xml_check_schematron(xml, flavor="autodetect", level="autodetect"):
             try:
                 xml_etree = etree.fromstring(xml_bytes)
             except Exception as e:
-                raise Exception(f"The XML syntax is invalid: {str(e)}.")
+                raise Exception(f"The XML syntax is invalid: {e}.") from e
         flavor = get_flavor(xml_etree)
     if flavor in ("factur-x", "facturx"):
         if level not in FACTURX_LEVEL2xsd:
@@ -277,7 +285,7 @@ def xml_check_schematron(xml, flavor="autodetect", level="autodetect"):
                 try:
                     xml_etree = etree.fromstring(xml_bytes)
                 except Exception as e:
-                    raise Exception(f"The XML syntax is invalid: {str(e)}.")
+                    raise Exception(f"The XML syntax is invalid: {e}.") from e
             level = get_level(xml_etree, flavor)
         if level not in FACTURX_LEVEL2xsd:
             raise ValueError(f"Wrong level '{level}' for Factur-X invoice.")
@@ -288,10 +296,10 @@ def xml_check_schematron(xml, flavor="autodetect", level="autodetect"):
                 try:
                     xml_etree = etree.fromstring(xml_bytes)
                 except Exception as e:
-                    raise Exception(f"The XML syntax is invalid: {str(e)}.")
+                    raise Exception(f"The XML syntax is invalid: {e}.") from e
             level = get_level(xml_etree, flavor)
         if level not in ORDERX_LEVEL2xsd:
-            raise ValueError(f"xsd/{ORDERX_LEVEL2xsd[level][:-4]}-compiled-saxonc.xsl")
+            raise ValueError(f"Wrong level '{level}' for Order-X document.")
         xsd_filename = ORDERX_LEVEL2xsd[level]
     else:
         logger.warning("There is no schematron check for flavor %s", flavor)
@@ -379,8 +387,10 @@ def get_orderx_xml_from_pdf(pdf_file, check_xsd=True, check_schematron=True):
     )
 
 
-def get_xml_from_pdf(pdf_file, check_xsd=True, check_schematron=True, filenames=[]):
+def get_xml_from_pdf(pdf_file, check_xsd=True, check_schematron=True, filenames=None):
     logger.debug("get_xml_from_pdf with factur-x lib %s", VERSION)
+    if filenames is None:
+        filenames = []
     if not pdf_file:
         raise ValueError("Missing pdf_invoice argument")
     if not isinstance(check_xsd, bool):
@@ -395,8 +405,8 @@ def get_xml_from_pdf(pdf_file, check_xsd=True, check_schematron=True, filenames=
         pdf_file_in = pdf_file
     else:
         raise TypeError(
-            "The first argument of the method get_xml_from_pdf must "
-            "be either a byte or a file (it is a %s)." % type(pdf_file)
+            f"The first argument of the method get_xml_from_pdf must be either a byte "
+            f"or a file (it is a {type(pdf_file)})."
         )
     if not filenames:
         filenames = ALL_FILENAMES
@@ -417,7 +427,8 @@ def get_xml_from_pdf(pdf_file, check_xsd=True, check_schematron=True, filenames=
                 flavor = get_flavor(xml_root)
             except Exception as e:
                 logger.warning(
-                    "File %s is not a factur-x/order-x/zugferd/xrechnung file. Error: %s",
+                    "File %s is not a factur-x/order-x/zugferd/xrechnung file. "
+                    "Error: %s",
                     filename,
                     e,
                 )
@@ -459,8 +470,7 @@ def get_xml_from_pdf(pdf_file, check_xsd=True, check_schematron=True, filenames=
                     xml_check_schematron(xml_root, flavor=flavor, level=level)
                 except Exception:
                     logger.warning(
-                        "Skipping file %s because it is not valid against the schematron",
-                        filename,
+                        "Skipping %s: not valid against the schematron", filename
                     )
                     continue
             xml_bytes = attach_obj.content
@@ -644,7 +654,8 @@ def _prepare_pdf_metadata_xml(flavor, level, orderx_type, pdf_metadata):
         xml_nodes = xml_root.xpath(xpath, namespaces=namespaces)
         if len(xml_nodes) != 1:
             raise Exception(
-                f"XMP generation: wrong xpath {xpath} for {key}. Please report it as a bug."
+                f"XMP generation: wrong xpath {xpath} for {key}. "
+                f"Please report it as a bug."
             )
         xml_node = xml_nodes[0]
         expected_node_text = f"##{key}"
@@ -695,7 +706,7 @@ def _filespec_additional_attachments(
         {
             NameObject("/Type"): NameObject("/EmbeddedFile"),
             NameObject("/Params"): params_dict,
-            NameObject("/Subtype"): NameObject("/%s" % file_mimetype),
+            NameObject("/Subtype"): NameObject(f"/{file_mimetype}"),
         }
     )
     file_entry_obj = pdf_writer._add_object(file_entry)
@@ -711,7 +722,7 @@ def _filespec_additional_attachments(
     filespec_dict = DictionaryObject(
         {
             NameObject("/AFRelationship"): NameObject(
-                "/%s" % afrelationship.capitalize()
+                f"/{afrelationship.capitalize()}"
             ),
             NameObject("/Desc"): create_string_object(file_dict.get("description", "")),
             NameObject("/Type"): NameObject("/Filespec"),
@@ -732,23 +743,24 @@ def _facturx_update_metadata_add_attachment(
     level,
     orderx_type=None,
     lang=None,
-    additional_attachments={},
+    additional_attachments=None,
     afrelationship="data",
     xmp_compression=True,
 ):
     """This method is inspired from the code of the add_attachment()
     method of the pypdf lib"""
+    if additional_attachments is None:
+        additional_attachments = {}
     # The entry for the file
     # facturx_xml_str = facturx_xml_str.encode('utf-8')
     if flavor == "order-x" and orderx_type not in ORDERX_TYPES:
         raise ValueError(
-            "Wrong value for orderx_type (%s), must be in %s"
-            % (orderx_type, ORDERX_TYPES)
+            f"Wrong value for orderx_type ({orderx_type}), must be in {ORDERX_TYPES}"
         )
     if afrelationship not in XML_AFRelationship:
         raise ValueError(
-            "Wrong value for afrelationship (%s). Possible values: %s."
-            % (afrelationship, XML_AFRelationship)
+            f"Wrong value for afrelationship ({afrelationship}). "
+            f"Possible values: {XML_AFRelationship}."
         )
     md5sum_bytes = hashlib.md5(xml_bytes).digest()
     md5sum_obj = ByteStringObject(md5sum_bytes)
@@ -789,7 +801,7 @@ def _facturx_update_metadata_add_attachment(
     filespec_dict = DictionaryObject(
         {
             NameObject("/AFRelationship"): NameObject(
-                "/%s" % afrelationship.capitalize()
+                f"/{afrelationship.capitalize()}"
             ),
             NameObject("/Desc"): create_string_object(desc),
             NameObject("/Type"): NameObject("/Filespec"),
@@ -924,42 +936,35 @@ def _base_info2pdf_metadata(base_info):
     doc_type_name = doc_type_map.get(base_info["doc_type"], "Invoice")
     date_str = datetime.strftime(base_info["date"], "%Y-%m-%d")
     if base_info["doc_type"] == "231":
-        title = "%s: Order Response on Order %s from %s" % (
-            base_info["seller"],
-            base_info["number"],
-            base_info["buyer"],
+        title = (
+            f"{base_info['seller']}: Order Response on Order {base_info['number']} "
+            f"from {base_info['buyer']}"
         )
-        subject = "Response of %s on %s to order %s from %s" % (
-            base_info["seller"],
-            date_str,
-            base_info["number"],
-            base_info["buyer"],
+        subject = (
+            f"Response of {base_info['seller']} on {date_str} to order "
+            f"{base_info['number']} from {base_info['buyer']}"
         )
         doc_x = "Order-X"
         author = base_info["seller"]
     elif base_info["doc_type"] in ("220", "230"):
-        title = "%s: %s %s" % (base_info["buyer"], doc_type_name, base_info["number"])
-        subject = "%s %s issued by %s on %s" % (
-            doc_type_name,
-            base_info["number"],
-            base_info["buyer"],
-            date_str,
+        title = f"{base_info['buyer']}: {doc_type_name} {base_info['number']}"
+        subject = (
+            f"{doc_type_name} {base_info['number']} issued by {base_info['buyer']} "
+            f"on {date_str}"
         )
         doc_x = "Order-X"
         author = base_info["buyer"]
     else:
-        title = "%s: %s %s" % (base_info["seller"], doc_type_name, base_info["number"])
-        subject = "%s %s dated %s issued by %s" % (
-            doc_type_name,
-            base_info["number"],
-            date_str,
-            base_info["seller"],
+        title = f"{base_info['seller']}: {doc_type_name} {base_info['number']}"
+        subject = (
+            f"{doc_type_name} {base_info['number']} dated {date_str} issued by "
+            f"{base_info['seller']}"
         )
         doc_x = "Factur-X"
         author = base_info["seller"]
     pdf_metadata = {
         "author": author,
-        "keywords": "%s, %s" % (doc_type_name, doc_x),
+        "keywords": f"{doc_type_name}, {doc_x}",
         "title": title,
         "subject": subject,
     }
@@ -1045,7 +1050,7 @@ def get_level(xml_etree, flavor="autodetect"):
         if len(doc_id_cut) > 1:
             level = doc_id_cut.split(":")[-2]
     if level not in possible_values:
-        raise ValueError("Invalid Factur-X/Order-X URN: '%s'" % doc_id)
+        raise ValueError(f"Invalid Factur-X/Order-X URN: '{doc_id}'")
     logger.info("Level is %s (autodetected)", level)
     return level
 
@@ -1079,8 +1084,8 @@ def get_orderx_type(xml_etree):
     code = xpath_res and xpath_res[0].text and xpath_res[0].text.strip() or None
     if code not in ORDERX_code2type:
         raise Exception(
-            "The TypeCode extracted from the XML is %s. "
-            "This is not a valid Order-X TypeCode." % code
+            f"The TypeCode extracted from the XML is {code}. "
+            f"This is not a valid Order-X TypeCode."
         )
     logger.info(
         "Order-X type is %s code %s (autodetected)", ORDERX_code2type[code], code
@@ -1313,40 +1318,38 @@ def generate_from_file(
     if not xml:
         raise ValueError("Missing xml argument")
     if not isinstance(flavor, str):
-        raise ValueError("flavor argument is a %s, must be a string" % type(flavor))
+        raise ValueError(f"flavor argument is a {type(flavor)}, must be a string")
     if not isinstance(level, str):
-        raise ValueError("level argument is a %s, must be a string" % type(level))
+        raise ValueError(f"level argument is a {type(level)}, must be a string")
     if not isinstance(orderx_type, (str, type(None))):
         raise ValueError(
-            "orderx_type argument is a %s, must be a string or None" % type(orderx_type)
+            f"orderx_type argument is a {type(orderx_type)}, must be a string or None"
         )
     if not isinstance(check_xsd, bool):
-        raise ValueError(
-            "check_xsd argument is a %s, must be a boolean" % type(check_xsd)
-        )
+        raise ValueError(f"check_xsd argument is a {type(check_xsd)}, must be boolean")
     if not isinstance(check_schematron, bool):
         raise ValueError(
             "check_schematron argument is a {type(check_schematron)}, must be a boolean"
         )
     if not isinstance(pdf_metadata, (dict, type(None))):
         raise ValueError(
-            "pdf_metadata argument is a %s, must be a dict or None" % type(pdf_metadata)
+            f"pdf_metadata argument is a {type(pdf_metadata)}, must be a dict or None"
         )
     if not isinstance(lang, (type(None), str)):
-        raise ValueError("lang argument is a %s, must be a string or None" % type(lang))
+        raise ValueError(f"lang argument is a {type(lang)}, must be a string or None")
     if not isinstance(output_pdf_file, (type(None), str)):
         raise ValueError(
-            "output_pdf_file argument is a %s, must be a string or None"
-            % type(output_pdf_file)
+            f"output_pdf_file argument is a {type(output_pdf_file)}, "
+            f"must be a string or None"
         )
     if not isinstance(attachments, (dict, type(None))):
         raise ValueError(
-            "attachments argument is a %s, must be a dict or None" % type(attachments)
+            f"attachments argument is a {type(attachments)}, must be a dict or None"
         )
     if not isinstance(afrelationship, (str, type(None))):
         raise ValueError(
-            "afrelationship argument is a %s, must be a string or None"
-            % type(afrelationship)
+            f"afrelationship argument is a {type(afrelationship)}, "
+            f"must be a string or None"
         )
     # Tolerance on arguments - reformatting
     flavor = flavor.lower()
@@ -1395,9 +1398,8 @@ def generate_from_file(
         # I don't think we expect the lib to close it
     else:
         raise TypeError(
-            "The second argument of the method generate_from_file must be "
-            "either a string, an etree.Element() object or a file "
-            "(it is a %s)." % type(xml)
+            f"The second argument of the method generate_from_file must be either a "
+            f"string, an etree.Element() object or a file (it is a {type(xml)})."
         )
     if attachments is None:
         attachments = {}

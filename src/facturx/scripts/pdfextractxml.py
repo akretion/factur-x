@@ -76,7 +76,7 @@ def main(args=None):
     if args is None:
         args = sys.argv[1:]
     usage = "facturx-pdfextractxml <facturx_orderx_file> <xml_file_to_create>"
-    epilog = "Author: %s - Version: %s" % (__author__, __version__)
+    epilog = f"Author: {__author__} - Version: {__version__}"
     description = "This extracts the XML file from a Factur-X or Order-X PDF file."
     parser = argparse.ArgumentParser(
         usage=usage, epilog=epilog, description=description

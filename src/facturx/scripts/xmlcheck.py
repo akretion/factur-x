@@ -58,7 +58,7 @@ def main(args=None):
     if args is None:
         args = sys.argv[1:]
     usage = "facturx-xmlcheck <xml_file>"
-    epilog = "Author: %s - Version: %s" % (__author__, __version__)
+    epilog = f"Author: {__author__} - Version: {__version__}"
     description = (
         "This script checks the Factur-X or Order-XML XML against the XML "
         "Schema Definition."
@@ -79,8 +79,10 @@ def main(args=None):
         "--flavor",
         dest="flavor",
         default="autodetect",
-        help="Set XML flavor. Possible values: factur-x, zugferd, order-x or autodetect. "
-        "Default value: autodetect.",
+        help=(
+            "Set XML flavor. Possible values: factur-x, zugferd, order-x "
+            "or autodetect. Default value: autodetect."
+        ),
     )
     parser.add_argument(
         "-n",

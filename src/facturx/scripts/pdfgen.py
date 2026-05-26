@@ -106,7 +106,7 @@ def main(args=None):
         "facturx-pdfgen <regular_pdf_file> <xml_file> "
         "<facturx_orderx_pdf_file> <optional_attachments>"
     )
-    epilog = "Author: %s - Version: %s" % (__author__, __version__)
+    epilog = f"Author: {__author__} - Version: {__version__}"
     description = (
         "This script generate a Factur-X or Order-X PDF from a "
         "regular PDF/A document and a Factur-X or Order-X XML file. "
