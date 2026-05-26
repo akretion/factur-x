@@ -1,26 +1,37 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
 [project]
 name = "factur-x"
 description = "Factur-X and Order-X: electronic invoicing and ordering standards"
 authors = [{name = "Alexis de Lattre", email = "alexis.delattre@akretion.com"}]
-readme = "README.rst"
 classifiers = [
-    "Programming Language :: Python",
     "Topic :: Office/Business :: Financial :: Accounting",
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: BSD License",
     "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
 ]
+readme = "README.rst"
 keywords = ["e-invoice", "ZUGFeRD", "Factur-X", "Order-X", "e-procurement"]
-license = {file = "LICENSE"}
-requires-python = ">=3.7"
-dynamic = ["dependencies", "version"]
+license = {file = "LICENSE.txt"}
+dependencies = [
+    "pypdf>=5.3.0",
+    "lxml",
+    "saxonche",
+]
+requires-python = ">=3.9"
+dynamic = ["version"]
 
-# Needed if we enable facturx-webservice
-# [project.optional-dependencies]
-# web = [
-#    "flask"
-# ]
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "coverage[toml]",
+]
 
 [project.urls]
 Homepage = "https://github.com/akretion/factur-x"
@@ -34,15 +45,64 @@ facturx-xmlcheck = "facturx.scripts.xmlcheck:main"
 # I consider the webservice scripts as a proof of concept, not real clean code
 # facturx-webservice = "facturx.scripts.webservice:main"
 
-[build-system]
-requires = ["hatchling", "hatch-requirements-txt"]
-build-backend = "hatchling.build"
+[tool.hatch.version]
+source = "vcs"
 
-[tool.hatch.metadata.hooks.requirements_txt]
-files = ["requirements.txt"]
+[tool.hatch.build]
+exclude = [
+    "/.github",
+]
 
 [tool.hatch.build.targets.wheel]
-packages = ["facturx"]
+packages = ["src/facturx"]
 
-[tool.hatch.version]
-path = "facturx/__init__.py"
+[tool.hatch.envs.test]
+features = [
+    "test"
+]
+
+[tool.ruff]
+target-version = "py39"
+fix = true
+
+[tool.ruff.lint]
+select = [
+    "B",
+    "E",
+    "F",
+    "I",
+    "UP",
+    "W",
+]
+ignore = [
+]
+exclude = [
+    "docs/conf.py",
+]
+
+[tool.ruff.lint.isort]
+known-first-party = []
+
+
+[tool.coverage.run]
+branch = true
+source_pkgs = ["factur-x"]
+
+[tool.coverage.paths]
+source = ["src", ".tox/*/site-packages"]
+
+[tool.coverage.report]
+show_missing = true
+exclude_lines = [
+    "pragma: no cover",
+]
+
+
+
+[tool.towncrier]
+package = "factur-x"
+package_dir = "src"
+filename = "HISTORY.rst"
+directory = "news"
+issue_format = "`#{issue} <https://github.com/akretion/factur-x/issues/{issue}>`_"
+title_format = "{version} ({project_date})"

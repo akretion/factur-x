@@ -1,0 +1,34 @@
+---
+name: CI
+
+on:
+  push:
+    branches: ["master"]
+    tags: ["*"]
+  pull_request:
+
+jobs:
+  tests:
+    name: "Python ${{ matrix.python-version }}"
+    runs-on: "ubuntu-latest"
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13', '3.14']
+    steps:
+      - uses: "actions/checkout@v3"
+      - uses: "actions/setup-python@v4"
+        with:
+          python-version: "${{ matrix.python-version }}"
+          allow-prereleases: true
+      - name: "Install dependencies"
+        run: |
+          set -xe
+          python -VV
+          python -m site
+          python -m pip install .[test]
+      - name: "Run pytest targets for ${{ matrix.python-version }}"
+        run: |
+          coverage run --source src -m pytest tests -v
+          coverage xml
+      - uses: codecov/codecov-action@v3
