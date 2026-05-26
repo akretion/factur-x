@@ -139,6 +139,12 @@ Contributors
 Changelog
 =========
 
+* Version 4.3 dated 2026-05-26 (`OCA code sprint Santander <https://www.aeodoo.org/event/spanish-oca-days-2026-143/page/introduccion-spanish-oca-days-2026>`_)
+
+  * Restore compatibility with lxml 4.6.5
+  * Add test infrastructure
+  * Fix wrong error message
+
 * Version 4.2 dated 2026-03-23
 
   * Fix resource leak in the loading of the XSD file for XML schema validation (closes bug #68)
