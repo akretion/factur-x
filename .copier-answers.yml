@@ -1,0 +1,17 @@
+# Do NOT update manually; changes here will be overwritten by Copier
+_commit: 55503af
+_src_path: https://github.com/akretion/copier-python-package
+author_email: alexis.delattre@akretion.com
+author_name: Alexis de Lattre
+development_status: 5 - Production/Stable
+github_repo: factur-x
+licence: BSD License
+package_description: 'Factur-X and Order-X: electronic invoicing and ordering standards'
+package_name: factur-x
+python_version:
+- '3.9'
+- '3.10'
+- '3.11'
+- '3.12'
+- '3.13'
+- '3.14'
