@@ -36,6 +36,26 @@ The PDF file *regular_pdf_file* will be updated to Factur-X/Order-X. If you want
 
 To have more examples, look at the docstrings in the source code or look at the source code of the command line tools located in the *bin* subdirectory.
 
+Development
+=============
+
+Use hatch
+-------------
+
+Install the env with all lib
+
+```
+hatch env create
+```
+
+Execute the test
+-------------------
+
+```
+hatch run test:pytest
+```
+
+
 Command line tools
 ==================
 
