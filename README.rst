@@ -139,6 +139,8 @@ Contributors
 Changelog
 =========
 
+  * Make saxonche dependency optional
+
 * Version 4.3 dated 2026-05-26 (`OCA code sprint Santander <https://www.aeodoo.org/event/spanish-oca-days-2026-143/page/introduccion-spanish-oca-days-2026>`_)
 
   * Restore compatibility with lxml 4.6.5

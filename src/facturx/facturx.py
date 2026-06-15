@@ -32,7 +32,10 @@ from datetime import datetime
 from io import BytesIO, IOBase
 from tempfile import NamedTemporaryFile
 
-import saxonche
+try:
+    import saxonche
+except ImportError:
+    saxonche = None
 from lxml import etree
 from pypdf import PdfReader, PdfWriter
 from pypdf.generic import (
@@ -242,6 +245,9 @@ def xml_check_schematron(xml, flavor="autodetect", level="autodetect"):
     :return: True if the XML is valid against the schematron
     raise an error if it is not valid against the schematron
     """
+    if not saxonche:
+        logger.info("Missing saxonche module, schematron validation skipped")
+        return True
     logger.debug("xml_check_schematron with factur-x lib %s", VERSION)
     if not isinstance(flavor, str):
         raise ValueError("Wrong type for flavor argument")
