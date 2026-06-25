@@ -149,6 +149,7 @@ Changelog
   * Update Factur-X XSD and schematrons to release 1.0.9.
   * pypdf: replace create_string_object by TextStringObject
   * Make saxonche dependency optional
+  * improve logging code (contribution of Baptiste Ravier)
 
 * Version 4.3 dated 2026-05-26 (`OCA code sprint Santander <https://www.aeodoo.org/event/spanish-oca-days-2026-143/page/introduccion-spanish-oca-days-2026>`_)
 
