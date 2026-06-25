@@ -1,16 +1,19 @@
-Factur-X and Order-X Python library
-===================================
+Factur-X / Order-X / UBL Python library
+========================================
 
-Factur-X is a Franco-German e-invoicing standard which complies with the European e-invoicing standard `EN 16931 <https://ec.europa.eu/digital-building-blocks/wikis/display/DIGITAL/Obtaining+a+copy+of+the+European+standard+on+eInvoicing>`_. The Factur-X specifications are available on the `FNFE-MPE website <http://fnfe-mpe.org/factur-x/>`_ in English and French. The Factur-X standard is also called `ZUGFeRD 2.2 in Germany <https://www.ferd-net.de/standards/zugferd>`_.
+Factur-X is a Franco-German e-invoicing standard which complies with the European e-invoicing standard `EN 16931 <https://ec.europa.eu/digital-building-blocks/wikis/display/DIGITAL/Obtaining+a+copy+of+the+European+standard+on+eInvoicing>`_. The Factur-X specifications are available on the `FNFE-MPE website <http://fnfe-mpe.org/factur-x/>`_ in English and French. The Factur-X standard is also called `ZUGFeRD 2.x in Germany <https://www.ferd-net.de/standards/zugferd>`_. A Factur-X invoice is a PDF invoice with a Cross Industry Invoice (CII) XML file embedded in the PDF.
 
 Order-X is the equivalent of Factur-X for purchase orders. The Order-X specifications are available in English on `the FNFE-MPE website <https://fnfe-mpe.org/factur-x/order-x/>`_ and on the `FeRD website <https://www.ferd-net.de/standards/order-x>`_.
+
+UBL (Universal Business Language) is an XML standard written by OASIS to describe invoices, purchase orders, delivery notes, pricelists and many different business documents. UBL version 2.1 has become ISO/IEC 19845:2015. The UBL standard competes with the Cross Industry Invoice (CII) standard, but both are supported by EN-16931.
 
 The main feature of this Python library is to generate Factur-X invoices and Order-X orders from a regular PDF document and a Factur-X or Order-X compliant XML file.
 
 This lib provides additionnal features such as:
 
 * extract the XML file from a Factur-X or Order-X PDF file,
-* check a Factur-X or Order-X XML file against the official `XML Schema Definition <https://en.wikipedia.org/wiki/XML_Schema_(W3C)>`_.
+* check a Factur-X, Order-X or UBL XML file against the official `XML Schema Definition <https://en.wikipedia.org/wiki/XML_Schema_(W3C)>`_ and the official schematrons.
+* generate CII XML and UBL XML files from a simple python dictionnary that use EN-16931 tags (BT-1, BT-2, BG-25, ...) as keys.
 
 Some of the features provided by this lib also work for ZUGFeRD 1.0 (the ancestor of the Factur-X standard).
 
@@ -44,17 +47,16 @@ Use hatch
 
 Install the env with all lib
 
-```
-hatch env create
-```
+.. code::
+
+  hatch env create
 
 Execute the test
 -------------------
 
-```
-hatch run test:pytest
-```
+.. code::
 
+  hatch run test:pytest
 
 Command line tools
 ==================
@@ -138,6 +140,15 @@ Contributors
 
 Changelog
 =========
+
+* Version 5.0 dated 2026-06-25 : UBL has just arrived!
+
+  * 3 new methods **generate_ubl_xml()**, **generate_cii_xml()** and **generate_xml()**. The method generate_xml() is a simple wrapper to call either generate_cii_xml() or generate_ubl_xml(). These methods take a python dictionnary with EN16931 tags as keys (BT-1, BT-2, BG-25, ...) and generate the corresponding XML in the profile you asked for. See tests/test_generate_xml.py to have an example of the data structure to use.
+  * xml_check_xsd(): add support for UBL 2.1. To use it, set argument flavor='ubl-2.1'.
+  * xml_check_schematron(): new argument **check_option** that allows to test against several schematrons and not only the base schematron. For example, if you use check_option='fr-ctc', the XML file will be tested both against the base schematron and the FR-CTC schematron that contains additionnal rules for the French e-invoicing reform. Add support for UBL 2.1.
+  * Update Factur-X XSD and schematrons to release 1.0.9.
+  * pypdf: replace create_string_object by TextStringObject
+  * Make saxonche dependency optional
 
 * Version 4.3 dated 2026-05-26 (`OCA code sprint Santander <https://www.aeodoo.org/event/spanish-oca-days-2026-143/page/introduccion-spanish-oca-days-2026>`_)
 
