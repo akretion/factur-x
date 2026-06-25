@@ -24,13 +24,15 @@ from flask import Flask, request, send_file
 
 from facturx import __version__ as fxversion
 from facturx import generate_from_file
-from facturx.facturx import logger as fxlogger
+from facturx import configure_script_logging
 
 MAX_ATTACHMENTS = 3  # TODO make it a cmd line option
 __author__ = "Alexis de Lattre <alexis.delattre@akretion.com>"
 __date__ = "July 2025"
 __version__ = "0.2"
 app = Flask(__name__)
+
+logger = logging.getLogger('factur-x')
 
 
 @app.route("/generate_facturx", methods=["POST"])
@@ -125,28 +127,29 @@ def main(args=None):
         default="info",
         help="Log level. Possible values: critical, error, warning, "
         "info (default), debug.",
+        choices=["critical", "error", "warning", "info", "debug"],
     )
     args = parser.parse_args()
+    log_map = {
+        "debug": logging.DEBUG,
+        "info": logging.INFO,
+        "warning": logging.WARN,
+        "error": logging.ERROR,
+        "critical": logging.CRITICAL,
+    }
+    level = log_map[args.loglevel]
     if args.logfile:
         formatter = logging.Formatter("[%(asctime)s] %(levelname)s %(message)s")
         handler = RotatingFileHandler(args.logfile)
-        if args.loglevel == "debug":
-            level = logging.DEBUG
-        elif args.loglevel == "critical":
-            level = logging.CRITICAL
-        elif args.loglevel == "warning":
-            level = logging.WARNING
-        elif args.loglevel == "error":
-            level = logging.ERROR
-        else:
-            level = logging.INFO
         handler.setLevel(level)
         handler.setFormatter(formatter)
-        fxlogger.setLevel(level)
-        fxlogger.addHandler(handler)
+        logger.setLevel(level)
+        logger.addHandler(handler)
         app.logger.addHandler(handler)
         app.logger.info("Start webservice to generate Factur-X invoices")
-    fxlogger.info(
+    else:
+        configure_script_logging(level=level)
+    logger.info(
         "webservice version %s using factur-x lib version %s", __version__, fxversion
     )
     app.run(debug=args.debug, port=args.port, host=args.host)

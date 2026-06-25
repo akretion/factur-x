@@ -58,12 +58,9 @@ import logging
 import mimetypes
 import os.path
 
-VERSION = importlib.metadata.version("factur-x")
-FORMAT = "%(asctime)s [%(levelname)s] %(message)s"
-logging.basicConfig(format=FORMAT)
 logger = logging.getLogger("factur-x")
-logger.setLevel(logging.INFO)
 
+VERSION = importlib.metadata.version("factur-x")
 FACTURX_FILENAME = "factur-x.xml"
 ZUGFERD_FILENAMES = ["zugferd-invoice.xml", "ZUGFeRD-invoice.xml"]
 ORDERX_FILENAME = "order-x.xml"

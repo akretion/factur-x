@@ -8,34 +8,19 @@ from os.path import isdir, isfile
 
 from facturx import __version__ as fxversion
 from facturx import get_xml_from_pdf
-from facturx.facturx import logger
+from facturx import configure_script_logging
 
 __author__ = "Alexis de Lattre <alexis.delattre@akretion.com>"
 __date__ = "March 2026"
 __version__ = "0.4"
+
+logger = logging.getLogger("factur-x")
 
 
 def pdfextractxml(args):
     logger.info(
         "pdfextractxml version %s using factur-x lib version %s", __version__, fxversion
     )
-    if args.log_level:
-        log_level = args.log_level.lower()
-        log_map = {
-            "debug": logging.DEBUG,
-            "info": logging.INFO,
-            "warn": logging.WARN,
-            "error": logging.ERROR,
-        }
-        if log_level in log_map:
-            logger.setLevel(log_map[log_level])
-        else:
-            logger.error(
-                "Wrong value for log level (%s). Possible values: %s",
-                log_level,
-                ", ".join(log_map.keys()),
-            )
-            sys.exit(1)
 
     pdf_filename = args.facturx_orderx_file
     out_xml_filename = args.xml_file_to_create
@@ -88,6 +73,7 @@ def main(args=None):
         default="info",
         help="Set log level. Possible values: debug, info, warn, error. "
         "Default value: info.",
+        choices=["debug", "info", "warn", "error"],
     )
     parser.add_argument(
         "-d",
@@ -111,6 +97,13 @@ def main(args=None):
         help="Filename of the XML file that will be extracted from the PDF",
     )
     args = parser.parse_args()
+    log_map = {
+        "debug": logging.DEBUG,
+        "info": logging.INFO,
+        "warn": logging.WARN,
+        "error": logging.ERROR,
+    }
+    configure_script_logging(level=log_map[args.log_level])
     pdfextractxml(args)
 
 

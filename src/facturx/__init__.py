@@ -1,3 +1,5 @@
+import logging
+
 __version__ = "5.0"
 from .facturx import (
     generate_from_binary,
@@ -32,3 +34,15 @@ __all__ = [
     "generate_cii_xml",
     "generate_ubl_xml",
 ]
+
+logging.getLogger("factur-x").addHandler(logging.NullHandler())
+
+
+def configure_script_logging(level=logging.INFO):
+    logger = logging.getLogger("factur-x")
+    handler = logging.StreamHandler()
+    handler.setFormatter(logging.Formatter(
+        "%(asctime)s [%(levelname)s] %(message)s"
+    ))
+    logger.addHandler(handler)
+    logger.setLevel(level)
