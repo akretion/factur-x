@@ -148,6 +148,7 @@ Changelog
   * xml_check_schematron(): new argument **check_option** that allows to test against several schematrons and not only the base schematron. For example, if you use check_option='fr-ctc', the XML file will be tested both against the base schematron and the FR-CTC schematron that contains additionnal rules for the French e-invoicing reform. Add support for UBL 2.1.
   * Update Factur-X XSD and schematrons to release 1.0.9.
   * pypdf: replace create_string_object by TextStringObject
+  * Make saxonche dependency optional
 
 * Version 4.3 dated 2026-05-26 (`OCA code sprint Santander <https://www.aeodoo.org/event/spanish-oca-days-2026-143/page/introduccion-spanish-oca-days-2026>`_)
 
