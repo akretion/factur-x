@@ -1,4 +1,4 @@
-__version__ = "4.2"
+__version__ = "5.0"
 from .facturx import (
     generate_from_binary,
     generate_from_file,
@@ -13,6 +13,7 @@ from .facturx import (
     xml_check_schematron,
     xml_check_xsd,
 )
+from .generate_xml import generate_cii_xml, generate_ubl_xml, generate_xml
 
 __all__ = [
     "generate_from_binary",
@@ -27,4 +28,7 @@ __all__ = [
     "get_xml_namespaces",
     "xml_check_schematron",
     "xml_check_xsd",
+    "generate_xml",
+    "generate_cii_xml",
+    "generate_ubl_xml",
 ]
