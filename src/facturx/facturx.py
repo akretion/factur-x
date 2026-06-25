@@ -65,18 +65,48 @@ FACTURX_FILENAME = "factur-x.xml"
 ZUGFERD_FILENAMES = ["zugferd-invoice.xml", "ZUGFeRD-invoice.xml"]
 ORDERX_FILENAME = "order-x.xml"
 ALL_FILENAMES = [FACTURX_FILENAME] + ZUGFERD_FILENAMES + [ORDERX_FILENAME]
+# XSD files
 FACTURX_LEVEL2xsd = {
-    "minimum": "facturx-minimum/Factur-X_1.08_MINIMUM.xsd",
-    "basicwl": "facturx-basicwl/Factur-X_1.08_BASICWL.xsd",
-    "basic": "facturx-basic/Factur-X_1.08_BASIC.xsd",
-    "en16931": "facturx-en16931/Factur-X_1.08_EN16931.xsd",
-    "extended": "facturx-extended/Factur-X_1.08_EXTENDED.xsd",
+    "minimum": "facturx-minimum/Factur-X_1.09_MINIMUM.xsd",
+    "basicwl": "facturx-basicwl/Factur-X_1.09_BASICWL.xsd",
+    "basic": "facturx-basic/Factur-X_1.09_BASIC.xsd",
+    "en16931": "facturx-en16931/Factur-X_1.09_EN16931.xsd",
+    "extended": "facturx-extended/Factur-X_1.09_EXTENDED.xsd",
+    # CII only
+    "extended-ctc-fr": "cii-extended-ctc-fr/CrossIndustryInvoice_100pD22B.xsd",
 }
+ZUGFERD_xsd = "zugferd/ZUGFeRD1p0.xsd"  # ZUGFeRD 1.x
 ORDERX_LEVEL2xsd = {
     "basic": "orderx-basic/SCRDMCCBDACIOMessageStructure_100pD20B.xsd",
     "comfort": "orderx-comfort/SCRDMCCBDACIOMessageStructure_100pD20B.xsd",
     "extended": "orderx-extended/SCRDMCCBDACIOMessageStructure_100pD20B.xsd",
 }
+UBL_21_xsd = "ubl-2.1/maindoc/UBL-Invoice-2.1.xsd"
+# SCHEMATON "BASE" files
+FACTURX_LEVEL2schematron = {
+    "minimum": "facturx-minimum/Factur-X_1.09_MINIMUM.xsl",
+    "basicwl": "facturx-basicwl/Factur-X_1.09_BASICWL.xsl",
+    "basic": "facturx-basic/Factur-X_1.09_BASIC.xsl",
+    "en16931": "facturx-en16931/Factur-X_1.09_EN16931.xsl",
+    "extended": "facturx-extended/Factur-X_1.09_EXTENDED.xsl",
+    # CII only
+    "extended-ctc-fr": "cii-extended-ctc-fr/EXTENDED-CTC-FR-CII-V1.4.0.xsl",
+}
+ORDERX_LEVEL2schematron = {
+    "basic": "orderx-basic/SCRDMCCBDACIOMessageStructure_100pD20B-compiled.xsl",
+    "comfort": "orderx-comfort/SCRDMCCBDACIOMessageStructure_100pD20B-compiled.xsl",
+    "extended": "orderx-extended/SCRDMCCBDACIOMessageStructure_100pD20B-compiled.xsl",
+}
+UBL_21_LEVEL2schematron = {
+    "en16931": "ubl-2.1/EN16931-UBL-validation-V1.3.16.xsl",
+    "extended-ctc-fr": "ubl-2.1/EXTENDED-CTC-FR-UBL-V1.4.0.xsl",
+}
+# SCHEMATRON "fr-ctc" files
+UBL_21_FR_CTC_schematron = "ubl-2.1/BR-FR-Flux2-Schematron-UBL_V1.4.0.xsl"
+CII_FR_CTC_schematron = (
+    "cii-schematron-fr-ctc/20260430_BR-FR-Flux2-Schematron-CII_V1.3.1.xsl"
+)
+
 FACTURX_LEVEL2xmp = {
     "minimum": "MINIMUM",
     "basicwl": "BASIC WL",
@@ -131,7 +161,8 @@ def xml_check_xsd(xml, flavor="autodetect", level="autodetect"):
     Validate the XML file against the XSD
     :param xml: the Factur-X or Order-X XML
     :type xml: string, file or etree object
-    :param flavor: possible values: 'factur-x', 'zugferd', 'order-x' or 'autodetect'.
+    :param flavor: possible values: 'factur-x', 'zugferd', 'order-x', 'ubl-2.1'
+    or 'autodetect'.
     Value 'zugferd' means ZUGFeRD 1.0.
     :type flavor: string
     :param level: the level of the Factur-X or Order-X XML file. Default value
@@ -169,7 +200,7 @@ def xml_check_xsd(xml, flavor="autodetect", level="autodetect"):
         raise ValueError("xml argument is empty")
 
     # autodetect
-    if flavor not in ("factur-x", "facturx", "zugferd", "order-x", "orderx"):
+    if flavor not in ("factur-x", "facturx", "zugferd", "order-x", "orderx", "ubl-2.1"):
         if xml_etree is None:
             try:
                 xml_etree = etree.fromstring(xml_bytes)
@@ -186,9 +217,9 @@ def xml_check_xsd(xml, flavor="autodetect", level="autodetect"):
             level = get_level(xml_etree, flavor)
         if level not in FACTURX_LEVEL2xsd:
             raise ValueError(f"Wrong level '{level}' for Factur-X invoice.")
-        xsd_file = f"xsd/{FACTURX_LEVEL2xsd[level]}"
+        xsd_file = f"xsd_and_schematron/{FACTURX_LEVEL2xsd[level]}"
     elif flavor == "zugferd":
-        xsd_file = "xsd/zugferd/ZUGFeRD1p0.xsd"
+        xsd_file = f"xsd_and_schematron/{ZUGFERD_xsd}"
     elif flavor in ("order-x", "orderx"):
         if level not in ORDERX_LEVEL2xsd:
             if xml_etree is None:
@@ -199,7 +230,11 @@ def xml_check_xsd(xml, flavor="autodetect", level="autodetect"):
             level = get_level(xml_etree, flavor)
         if level not in ORDERX_LEVEL2xsd:
             raise ValueError(f"Wrong level '{level}' for Order-X document.")
-        xsd_file = f"xsd/{ORDERX_LEVEL2xsd[level]}"
+        xsd_file = f"xsd_and_schematron/{ORDERX_LEVEL2xsd[level]}"
+    elif flavor == "ubl-2.1":
+        xsd_file = f"xsd_and_schematron/{UBL_21_xsd}"
+    else:
+        raise ValueError(f"Flavor '{flavor}' doesn't exist")
 
     xsd_absolute_filepath = importlib_resources.files(__package__).joinpath(xsd_file)
     logger.debug("Using XSD file %s", xsd_absolute_filepath)
@@ -226,12 +261,15 @@ def xml_check_xsd(xml, flavor="autodetect", level="autodetect"):
     return True
 
 
-def xml_check_schematron(xml, flavor="autodetect", level="autodetect"):
+def xml_check_schematron(
+    xml, flavor="autodetect", level="autodetect", check_option="base"
+):
     """
     Validate the XML file against the schematron
     :param xml: the Factur-X or Order-X XML
     :type xml: string, file or etree object
-    :param flavor: possible values: 'factur-x', 'zugferd', 'order-x' or 'autodetect'.
+    :param flavor: possible values: 'factur-x', 'zugferd', 'order-x', 'ubl-2.1'
+    or 'autodetect'.
     Value 'zugferd' means ZUGFeRD 1.0.
     :type flavor: string
     :param level: the level of the Factur-X or Order-X XML file. Default value
@@ -239,6 +277,13 @@ def xml_check_schematron(xml, flavor="autodetect", level="autodetect"):
     of using the autodetection is for a small perf improvement.
     Possible values for Factur-X: minimum, basicwl, basic, en16931, extended.
     Possible values for Order-X: basic, comfort, extended.
+    :type check_option: string
+    :param check_option: keyword that designate the list of schematons to use.
+    "base" (default value) will only check against the base schematon.
+    "fr-ctc" will check against both the base schematron and France CTC
+    schematon.
+    "fr-chorus" will check against the base schematron, France CTC schematon
+    and the Chorus-specific schematron (not available yet)
     :return: True if the XML is valid against the schematron
     raise an error if it is not valid against the schematron
     """
@@ -273,7 +318,7 @@ def xml_check_schematron(xml, flavor="autodetect", level="autodetect"):
         raise ValueError("xml argument is empty")
 
     # autodetect
-    if flavor not in ("factur-x", "facturx", "zugferd", "order-x", "orderx"):
+    if flavor not in ("factur-x", "facturx", "zugferd", "order-x", "orderx", "ubl-2.1"):
         if xml_etree is None:
             try:
                 xml_etree = etree.fromstring(xml_bytes)
@@ -281,88 +326,107 @@ def xml_check_schematron(xml, flavor="autodetect", level="autodetect"):
                 raise Exception(f"The XML syntax is invalid: {e}.") from e
         flavor = get_flavor(xml_etree)
     if flavor in ("factur-x", "facturx"):
-        if level not in FACTURX_LEVEL2xsd:
+        if level not in FACTURX_LEVEL2schematron:
             if xml_etree is None:
                 try:
                     xml_etree = etree.fromstring(xml_bytes)
                 except Exception as e:
                     raise Exception(f"The XML syntax is invalid: {e}.") from e
             level = get_level(xml_etree, flavor)
-        if level not in FACTURX_LEVEL2xsd:
+        if level not in FACTURX_LEVEL2schematron:
             raise ValueError(f"Wrong level '{level}' for Factur-X invoice.")
-        xsd_filename = FACTURX_LEVEL2xsd[level]
+        xsl_files = {"base": f"xsd_and_schematron/{FACTURX_LEVEL2schematron[level]}"}
+        if check_option in ("fr-ctc", "fr-chorus") and level != "minimum":
+            xsl_files["fr-ctc"] = f"xsd_and_schematron/{CII_FR_CTC_schematron}"
     elif flavor in ("order-x", "orderx"):
-        if level not in ORDERX_LEVEL2xsd:
+        if level not in ORDERX_LEVEL2schematron:
             if xml_etree is None:
                 try:
                     xml_etree = etree.fromstring(xml_bytes)
                 except Exception as e:
                     raise Exception(f"The XML syntax is invalid: {e}.") from e
             level = get_level(xml_etree, flavor)
-        if level not in ORDERX_LEVEL2xsd:
+        if level not in ORDERX_LEVEL2schematron:
             raise ValueError(f"Wrong level '{level}' for Order-X document.")
-        xsd_filename = ORDERX_LEVEL2xsd[level]
+        xsl_files = {"base": f"xsd_and_schematron/{ORDERX_LEVEL2schematron[level]}"}
+    elif flavor == "ubl-2.1":
+        if level not in UBL_21_LEVEL2schematron:
+            raise ValueError(f"Wrong level '{level}' for UBL 2.1")
+        xsl_files = {"base": f"xsd_and_schematron/{UBL_21_LEVEL2schematron[level]}"}
+        if check_option in ("fr-ctc", "fr-chorus"):
+            xsl_files["fr-ctc"] = f"xsd_and_schematron/{UBL_21_FR_CTC_schematron}"
     else:
-        logger.warning("There is no schematron check for flavor %s", flavor)
+        logger.warning("There is no schematron check for flavor '%s'", flavor)
         return True
+    if check_option == "fr-chorus":
+        logger.info(
+            "The fr-chorus schematron is not available yet. "
+            "It will be added as soon as it is available"
+        )
 
-    relative_xsl_file = f"xsd/{xsd_filename[:-4]}-compiled.xsl"
-    xsl_file = str(importlib_resources.files(__package__).joinpath(relative_xsl_file))
-    logger.debug("Using schematron XSL file %s", xsl_file)
-    xml_str_no_bom = xml_str.lstrip("\ufeff")
     errors = []
-    with saxonche.PySaxonProcessor() as saxproc:
-        xslt_proc = saxproc.new_xslt30_processor()
-        xdm_node = saxproc.parse_xml(xml_text=xml_str_no_bom)
-        # compile_stylesheet() is the slow/heavy part
-        # It can be optimized by generating stylesheet export files using saxon EE
-        # stylesheet export files can then be used by saxon HE
-        executable = xslt_proc.compile_stylesheet(stylesheet_file=xsl_file)
-        result_str = executable.transform_to_string(xdm_node=xdm_node)
-        logger.debug("schematron result_str=%s", result_str)
-
-    try:
-        svrl_root = etree.fromstring(result_str.encode("utf-8"))
-    except Exception as e:
-        logger.error(
-            f"Schematron check generated an invalid XML output. Error: {str(e)}"
-        )
-        logger.info("Unable to validate %s XML file against schematron", flavor)
-        return False
-    xpath_errors = svrl_root.xpath(
-        ".//svrl:successful-report | .//svrl:failed-assert", namespaces=svrl_root.nsmap
-    )
     error_nr = 1
-    for xpath_error in xpath_errors:
-        detail_xpath = xpath_error.xpath(
-            "*[local-name() = 'text']", namespaces=svrl_root.nsmap
+    xml_str_no_bom = xml_str.lstrip("\ufeff")
+    for check_type, xsl_file in xsl_files.items():
+        absolute_xsl_file = str(
+            importlib_resources.files(__package__).joinpath(xsl_file)
         )
-        if detail_xpath:
-            error_msg = detail_xpath[0].text and detail_xpath[0].text.strip()
-            error_msg = f"{error_nr}. {error_msg}"
-            location = xpath_error.attrib and xpath_error.attrib.get("location")
-            if location:
-                error_msg = f"{error_msg}\nError location: {location}"
-            errors.append(error_msg)
-            error_nr += 1
+        logger.debug(
+            "Schematron check '%s': using XSL file %s", check_type, absolute_xsl_file
+        )
+        with saxonche.PySaxonProcessor() as saxproc:
+            xslt_proc = saxproc.new_xslt30_processor()
+            xdm_node = saxproc.parse_xml(xml_text=xml_str_no_bom)
+            # compile_stylesheet() is the slow/heavy part
+            # It can be optimized by generating stylesheet export files using saxon EE
+            # stylesheet export files can then be used by saxon HE
+            executable = xslt_proc.compile_stylesheet(stylesheet_file=absolute_xsl_file)
+            result_str = executable.transform_to_string(xdm_node=xdm_node)
+            logger.debug("schematron result_str=%s", result_str)
+
+        try:
+            svrl_root = etree.fromstring(result_str.encode("utf-8"))
+        except Exception as e:
+            logger.error(
+                f"Schematron '{check_type}' check on {flavor} {level} file generated "
+                f"an invalid XML output. Error: {str(e)}"
+            )
+            return False
+        xpath_errors = svrl_root.xpath(
+            ".//svrl:successful-report | .//svrl:failed-assert",
+            namespaces=svrl_root.nsmap,
+        )
+        for xpath_error in xpath_errors:
+            detail_xpath = xpath_error.xpath(
+                "*[local-name() = 'text']", namespaces=svrl_root.nsmap
+            )
+            if detail_xpath:
+                error_msg = detail_xpath[0].text and detail_xpath[0].text.strip()
+                error_msg = f"{error_nr}. [{check_type}] {error_msg}"
+                location = xpath_error.attrib and xpath_error.attrib.get("location")
+                if location:
+                    error_msg = f"{error_msg}\nError location: {location}"
+                errors.append(error_msg)
+                error_nr += 1
 
     if errors:
         logger.error(
-            "The XML file is invalid against the schematron: %d errors found.",
-            len(errors),
+            f"The {flavor} {level} XML file is invalid against {len(xsl_files)} "
+            f"schematron(s): {len(errors)} errors found."
         )
         for error_msg in errors:
             logger.error(error_msg)
         error_list_str = "\n".join(errors)
         full_error = (
-            f"The Factur-X XML file is not valid against the official "
-            f"schematron. {len(errors)} errors found:\n{error_list_str}"
+            f"The {flavor} {level} XML file is not valid against the {len(xsl_files)} "
+            f"schematron(s). {len(errors)} errors found:\n{error_list_str}"
         )
         raise Exception(full_error)
     end_chrono = datetime.now()
     logger.info(
-        "%s XML file successfully validated against schematron in %s sec",
+        "%s XML file successfully validated against %s schematron(s) in %s sec",
         flavor,
+        len(xsl_files),
         (end_chrono - start_chrono).total_seconds(),
     )
     return True
