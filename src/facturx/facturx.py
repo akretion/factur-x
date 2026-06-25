@@ -42,7 +42,7 @@ from pypdf.generic import (
     DictionaryObject,
     NameObject,
     NumberObject,
-    create_string_object,
+    TextStringObject,
 )
 
 try:
@@ -691,12 +691,10 @@ def _filespec_additional_attachments(
     # creation date and modification date are optional
     if isinstance(file_dict.get("modification_datetime"), datetime):
         mod_date_pdf = _get_pdf_timestamp(file_dict["modification_datetime"])
-        params_dict[NameObject("/ModDate")] = create_string_object(mod_date_pdf)
+        params_dict[NameObject("/ModDate")] = TextStringObject(mod_date_pdf)
     if isinstance(file_dict.get("creation_datetime"), datetime):
         creation_date_pdf = _get_pdf_timestamp(file_dict["creation_datetime"])
-        params_dict[NameObject("/CreationDate")] = create_string_object(
-            creation_date_pdf
-        )
+        params_dict[NameObject("/CreationDate")] = TextStringObject(creation_date_pdf)
     file_entry = DecodedStreamObject()
     file_entry.set_data(file_dict["filedata"])
     file_entry = file_entry.flate_encode()
@@ -716,7 +714,7 @@ def _filespec_additional_attachments(
             NameObject("/F"): file_entry_obj,
         }
     )
-    fname_obj = create_string_object(filename)
+    fname_obj = TextStringObject(filename)
     afrelationship = file_dict.get("afrelationship")
     if afrelationship not in ATTACHMENTS_AFRelationship:
         afrelationship = "unspecified"
@@ -725,7 +723,7 @@ def _filespec_additional_attachments(
             NameObject("/AFRelationship"): NameObject(
                 f"/{afrelationship.capitalize()}"
             ),
-            NameObject("/Desc"): create_string_object(file_dict.get("description", "")),
+            NameObject("/Desc"): TextStringObject(file_dict.get("description", "")),
             NameObject("/Type"): NameObject("/Filespec"),
             NameObject("/F"): fname_obj,
             NameObject("/EF"): ef_dict,
@@ -768,7 +766,7 @@ def _facturx_update_metadata_add_attachment(
     params_dict = DictionaryObject(
         {
             NameObject("/CheckSum"): md5sum_obj,
-            NameObject("/ModDate"): create_string_object(_get_pdf_timestamp()),
+            NameObject("/ModDate"): TextStringObject(_get_pdf_timestamp()),
             NameObject("/Size"): NumberObject(len(xml_bytes)),
         }
     )
@@ -798,13 +796,13 @@ def _facturx_update_metadata_add_attachment(
         xml_filename = FACTURX_FILENAME
         desc = "Factur-X XML file"
 
-    fname_obj = create_string_object(xml_filename)
+    fname_obj = TextStringObject(xml_filename)
     filespec_dict = DictionaryObject(
         {
             NameObject("/AFRelationship"): NameObject(
                 f"/{afrelationship.capitalize()}"
             ),
-            NameObject("/Desc"): create_string_object(desc),
+            NameObject("/Desc"): TextStringObject(desc),
             NameObject("/Type"): NameObject("/Filespec"),
             NameObject("/F"): fname_obj,
             NameObject("/EF"): ef_dict,
@@ -873,7 +871,7 @@ def _facturx_update_metadata_add_attachment(
     if lang:
         pdf_writer._root_object.update(
             {
-                NameObject("/Lang"): create_string_object(lang.replace("_", "-")),
+                NameObject("/Lang"): TextStringObject(lang.replace("_", "-")),
             }
         )
     metadata_txt_dict = _prepare_pdf_metadata_txt(pdf_metadata)
