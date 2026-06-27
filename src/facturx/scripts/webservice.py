@@ -23,8 +23,7 @@ from tempfile import NamedTemporaryFile
 from flask import Flask, request, send_file
 
 from facturx import __version__ as fxversion
-from facturx import generate_from_file
-from facturx import configure_script_logging
+from facturx import configure_script_logging, generate_from_file
 
 MAX_ATTACHMENTS = 3  # TODO make it a cmd line option
 __author__ = "Alexis de Lattre <alexis.delattre@akretion.com>"
@@ -32,7 +31,7 @@ __date__ = "July 2025"
 __version__ = "0.2"
 app = Flask(__name__)
 
-logger = logging.getLogger('factur-x')
+logger = logging.getLogger("factur-x")
 
 
 @app.route("/generate_facturx", methods=["POST"])

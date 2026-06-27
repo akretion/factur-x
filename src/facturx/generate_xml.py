@@ -26,7 +26,6 @@
 import datetime
 import importlib.metadata
 import logging
-from pprint import pprint
 
 from lxml import etree, objectify
 
@@ -1317,11 +1316,6 @@ def generate_cii_xml(
     xml_bytes = etree.tostring(
         xml_root, pretty_print=True, xml_declaration=True, encoding="UTF-8"
     )
-    # verif schema => faire comme lib fx
-    print("xml_bytes===============")
-    xml_str = xml_bytes.decode("utf-8")
-    print("type(xml_str)", type(xml_str))
-    pprint(xml_str)
     if check_xsd:
         xml_check_xsd(xml_root, flavor="factur-x", level=level)
     if check_schematron:
@@ -2252,10 +2246,6 @@ def generate_ubl_xml(
     xml_bytes = etree.tostring(
         xml_root, pretty_print=True, xml_declaration=True, encoding="UTF-8"
     )
-    # verif schema => faire comme lib fx
-    print("xml_bytes===============")
-    xml_str = xml_bytes.decode("utf-8")
-    pprint(xml_str)
     if check_xsd:
         xml_check_xsd(xml_root, flavor="ubl-2.1")
     if check_schematron:

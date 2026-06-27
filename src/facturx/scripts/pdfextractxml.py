@@ -7,8 +7,7 @@ import sys
 from os.path import isdir, isfile
 
 from facturx import __version__ as fxversion
-from facturx import get_xml_from_pdf
-from facturx import configure_script_logging
+from facturx import configure_script_logging, get_xml_from_pdf
 
 __author__ = "Alexis de Lattre <alexis.delattre@akretion.com>"
 __date__ = "March 2026"
@@ -70,10 +69,9 @@ def main(args=None):
         "-l",
         "--log-level",
         dest="log_level",
-        default="info",
-        help="Set log level. Possible values: debug, info, warn, error. "
-        "Default value: info.",
         choices=["debug", "info", "warn", "error"],
+        default="info",
+        help="Set log level. Default value: info.",
     )
     parser.add_argument(
         "-d",

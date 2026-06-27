@@ -41,8 +41,6 @@ logging.getLogger("factur-x").addHandler(logging.NullHandler())
 def configure_script_logging(level=logging.INFO):
     logger = logging.getLogger("factur-x")
     handler = logging.StreamHandler()
-    handler.setFormatter(logging.Formatter(
-        "%(asctime)s [%(levelname)s] %(message)s"
-    ))
+    handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(message)s"))
     logger.addHandler(handler)
     logger.setLevel(level)

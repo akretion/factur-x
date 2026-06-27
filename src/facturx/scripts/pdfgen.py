@@ -7,8 +7,7 @@ import sys
 from os.path import basename, isdir, isfile
 
 from facturx import __version__ as fxversion
-from facturx import generate_from_file
-from facturx import configure_script_logging
+from facturx import configure_script_logging, generate_from_file
 
 __author__ = "Alexis de Lattre <alexis.delattre@akretion.com>"
 __date__ = "October 2025"
@@ -110,10 +109,9 @@ def main(args=None):
         "-l",
         "--log-level",
         dest="log_level",
-        default="info",
-        help="Set log level. Possible values: debug, info, warn, error. "
-        "Default value: info.",
         choices=["debug", "info", "warn", "error"],
+        default="info",
+        help="Set log level. Default value: info.",
     )
     parser.add_argument(
         "-d",
@@ -135,12 +133,12 @@ def main(args=None):
         "-f",
         "--flavor",
         dest="flavor",
+        choices=["order-x", "factur-x", "autodetect"],
         default="autodetect",
         help="Specify if you want to generate a Factur-X or Order-X PDF file. "
         "Default: autodetect. If you specify a particular flavor instead of "
         "using autodetection from the XML, you will win a very small amount of time "
-        "(less than 1 millisecond). "
-        "Possible values: order-x, factur-x or autodetect.",
+        "(less than 1 millisecond). ",
     )
     parser.add_argument(
         "-n",
@@ -159,12 +157,12 @@ def main(args=None):
         "-p",
         "--orderx-type",
         dest="orderx_type",
+        choices=["order", "order_change", "order_response", "autodetect"],
         default="autodetect",
         help="When you generate an Order-X document, specify the order type. "
         "Default: autodetect. If you specify a particular order type instead of "
         "using autodetection, you will win a very small amount of time "
-        "(less than 1 millisecond). "
-        "Possible values: order, order_change, order_response.",
+        "(less than 1 millisecond).",
     )
     parser.add_argument(
         "-g",
@@ -177,9 +175,9 @@ def main(args=None):
         "-r",
         "--afrelationship",
         dest="afrelationship",
+        choices=["data", "source", "alternative"],
         default="data",
         help="Set the AFRelationship PDF property of the Factur-X/Order-X XML file. "
-        "Possible values: data, source, alternative. "
         "Default value: data.",
     )
     parser.add_argument(
