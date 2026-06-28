@@ -167,12 +167,13 @@ def _check_data_dict(data_dict, flavor, level):
     if level in ("basicwl", "en16931"):
         fields_to_remove = []
         for field in data_dict.keys():
-            if field.startswith("BT-X-"):
+            if field.startswith("EXT-FR-FE-"):
                 fields_to_remove.append(field)
         for field_to_remove in fields_to_remove:
             logger.warning(
                 f"field {field_to_remove} removed from data_dict because "
-                "level is {level} and minimum level for BT-X-xxx fields is 'extended'"
+                f"level is {level} and minimum level for EXT-FR-FE-xx fields "
+                "is 'extended'"
             )
             data_dict.pop(field_to_remove)
     # check periods
@@ -519,25 +520,25 @@ def _cii_generate_single_invoice_line(namespaces, line_dict):
             *[
                 RAM.SellerOrderReferencedDocument(
                     *[
-                        RAM.IssuerAssignedID(line_dict["BT-X-537"])
+                        RAM.IssuerAssignedID(line_dict["EXT-FR-FE-144"])
                         for _ in [1]
-                        if line_dict.get("BT-X-537")
+                        if line_dict.get("EXT-FR-FE-144")
                     ],
                     *[
-                        RAM.LineID(line_dict["BT-X-538"])
+                        RAM.LineID(line_dict["EXT-FR-FE-145"])
                         for _ in [1]
-                        if line_dict.get("BT-X-538")
+                        if line_dict.get("EXT-FR-FE-145")
                     ],
                 )
                 for _ in [1]
-                if line_dict.get("BT-X-537") or line_dict.get("BT-X-538")
+                if line_dict.get("EXT-FR-FE-144") or line_dict.get("EXT-FR-FE-145")
             ],
             *[
                 RAM.BuyerOrderReferencedDocument(
                     *[
-                        RAM.IssuerAssignedID(line_dict["BT-X-21"])
+                        RAM.IssuerAssignedID(line_dict["EXT-FR-FE-135"])
                         for _ in [1]
-                        if line_dict.get("BT-X-21")
+                        if line_dict.get("EXT-FR-FE-135")
                     ],
                     *[
                         RAM.LineID(line_dict["BT-132"])
@@ -546,7 +547,7 @@ def _cii_generate_single_invoice_line(namespaces, line_dict):
                     ],
                 )
                 for _ in [1]
-                if line_dict.get("BT-X-21") or line_dict.get("BT-132")
+                if line_dict.get("EXT-FR-FE-135") or line_dict.get("BT-132")
             ],
             *[
                 RAM.GrossPriceProductTradePrice(
@@ -762,7 +763,7 @@ def generate_cii_xml(
                     for _ in [1]
                     if data_dict.get("BT-10")
                 ],
-                # SELLER
+                # SELLER  BG-4
                 _cii_generate_party_block(
                     "SellerTradeParty",
                     namespaces,
@@ -788,7 +789,7 @@ def generate_cii_xml(
                     tax_id=data_dict.get("BT-31"),
                     local_tax_id=data_dict.get("BT-32"),
                 ),
-                # BUYER
+                # BUYER  BG-7
                 _cii_generate_party_block(
                     "BuyerTradeParty",
                     namespaces,
@@ -812,33 +813,31 @@ def generate_cii_xml(
                     universal_comm_schemeid=data_dict.get("BT-49-1"),
                     tax_id=data_dict.get("BT-48"),
                 ),
-                # Sales Agent
+                # Sales Agent  EXT-FR-FE-BG-03
                 _cii_generate_party_block(
                     "SalesAgentTradeParty",
                     namespaces,
-                    identifiers=data_dict.get("BT-X-338"),
-                    name=data_dict.get("BT-X-335"),
-                    role_code=data_dict.get("BT-X-545"),
-                    legal_org_id=data_dict.get("BT-X-339"),
-                    legal_org_schemeid=data_dict.get("BT-X-339-0"),
-                    biz_name=data_dict.get("BT-X-336"),
-                    contact_name=data_dict.get("BT-X-342"),
-                    contact_department_name=data_dict.get("BT-X-343"),
-                    contact_type_code=data_dict.get("BT-X-347"),
-                    contact_phone=data_dict.get("BT-X-344"),
-                    contact_email=data_dict.get("BT-X-346"),
-                    country_code=data_dict.get("BT-X-353"),
-                    country_subdivision_name=data_dict.get("BT-X-354"),
-                    postcode=data_dict.get("BT-X-348"),
-                    city=data_dict.get("BT-X-352"),
-                    addr_line1=data_dict.get("BT-X-349"),
-                    addr_line2=data_dict.get("BT-X-350"),
-                    addr_line3=data_dict.get("BT-X-351"),
-                    universal_comm_id=data_dict.get("BT-X-341"),
-                    universal_comm_schemeid=data_dict.get("BT-X-341-0"),
-                    tax_id=data_dict.get("BT-X-340"),
+                    identifiers=data_dict.get("EXT-FR-FE-69"),
+                    name=data_dict.get("EXT-FR-FE-66"),
+                    role_code=data_dict.get("EXT-FR-FE-67"),
+                    legal_org_id=data_dict.get("EXT-FR-FE-71"),
+                    legal_org_schemeid=data_dict.get("EXT-FR-FE-72"),
+                    biz_name=data_dict.get("EXT-FR-FE-68"),
+                    contact_name=data_dict.get("EXT-FR-FE-86"),
+                    contact_phone=data_dict.get("EXT-FR-FE-87"),
+                    contact_email=data_dict.get("EXT-FR-FE-88"),
+                    country_code=data_dict.get("EXT-FR-FE-84"),
+                    country_subdivision_name=data_dict.get("EXT-FR-FE-83"),
+                    postcode=data_dict.get("EXT-FR-FE-81"),
+                    city=data_dict.get("EXT-FR-FE-82"),
+                    addr_line1=data_dict.get("EXT-FR-FE-78"),
+                    addr_line2=data_dict.get("EXT-FR-FE-79"),
+                    addr_line3=data_dict.get("EXT-FR-FE-80"),
+                    universal_comm_id=data_dict.get("EXT-FR-FE-75"),
+                    universal_comm_schemeid=data_dict.get("EXT-FR-FE-76"),
+                    tax_id=data_dict.get("EXT-FR-FE-73"),
                 ),
-                # Seller Tax Representative
+                # Seller Tax Representative  BG-11
                 _cii_generate_party_block(
                     "SellerTaxRepresentativeTradeParty",
                     namespaces,
@@ -879,30 +878,29 @@ def generate_cii_xml(
                         data_dict, namespaces
                     )
                 ],
-                # Buyer Agent
+                # Buyer Agent  EXT-FR-FE-BG-01
                 _cii_generate_party_block(
                     "BuyerAgentTradeParty",
                     namespaces,
-                    identifiers=data_dict.get("BT-X-409"),
-                    name=data_dict.get("BT-X-406"),
-                    role_code=data_dict.get("BT-X-549"),
-                    legal_org_id=data_dict.get("BT-X-410"),
-                    legal_org_schemeid=data_dict.get("BT-X-410-0"),
-                    biz_name=data_dict.get("BT-X-407"),
-                    contact_name=data_dict.get("BT-X-413"),
-                    contact_department_name=data_dict.get("BT-X-414"),
-                    contact_phone=data_dict.get("BT-X-416"),
-                    contact_email=data_dict.get("BT-X-418"),
-                    country_code=data_dict.get("BT-X-424"),
-                    country_subdivision_name=data_dict.get("BT-X-425"),
-                    postcode=data_dict.get("BT-X-419"),
-                    city=data_dict.get("BT-X-423"),
-                    addr_line1=data_dict.get("BT-X-420"),
-                    addr_line2=data_dict.get("BT-X-421"),
-                    addr_line3=data_dict.get("BT-X-422"),
-                    universal_comm_id=data_dict.get("BT-X-412"),
-                    universal_comm_schemeid=data_dict.get("BT-X-412-0"),
-                    tax_id=data_dict.get("BT-X-411"),
+                    identifiers=data_dict.get("EXT-FR-FE-06"),
+                    name=data_dict.get("EXT-FR-FE-03"),
+                    role_code=data_dict.get("EXT-FR-FE-04"),
+                    legal_org_id=data_dict.get("EXT-FR-FE-08"),
+                    legal_org_schemeid=data_dict.get("EXT-FR-FE-09"),
+                    biz_name=data_dict.get("EXT-FR-FE-05"),
+                    contact_name=data_dict.get("EXT-FR-FE-23"),
+                    contact_phone=data_dict.get("EXT-FR-FE-24"),
+                    contact_email=data_dict.get("EXT-FR-FE-25"),
+                    country_code=data_dict.get("EXT-FR-FE-21"),
+                    country_subdivision_name=data_dict.get("EXT-FR-FE-20"),
+                    postcode=data_dict.get("EXT-FR-FE-18"),
+                    city=data_dict.get("EXT-FR-FE-19"),
+                    addr_line1=data_dict.get("EXT-FR-FE-15"),
+                    addr_line2=data_dict.get("EXT-FR-FE-16"),
+                    addr_line3=data_dict.get("EXT-FR-FE-17"),
+                    universal_comm_id=data_dict.get("EXT-FR-FE-12"),
+                    universal_comm_schemeid=data_dict.get("EXT-FR-FE-13"),
+                    tax_id=data_dict.get("EXT-FR-FE-10"),
                 ),
                 *[
                     RAM.SpecifiedProcuringProject(
@@ -974,104 +972,100 @@ def generate_cii_xml(
                     if data_dict.get("BT-6")
                 ],
                 RAM.InvoiceCurrencyCode(data_dict["BT-5"]),
-                # Invoicer
+                # Invoicer  EXT-FR-FE-BG-05
                 _cii_generate_party_block(
                     "InvoicerTradeParty",
                     namespaces,
-                    identifiers=data_dict.get("BT-X-206"),
-                    name=data_dict.get("BT-X-207"),
-                    role_code=data_dict.get("BT-X-553"),
-                    legal_org_id=data_dict.get("BT-X-208"),
-                    legal_org_schemeid=data_dict.get("BT-X-208-0"),
-                    biz_name=data_dict.get("BT-X-209"),
-                    contact_name=data_dict.get("BT-X-210"),
-                    contact_department_name=data_dict.get("BT-X-211"),
-                    contact_phone=data_dict.get("BT-X-212"),
-                    contact_email=data_dict.get("BT-X-214"),
-                    country_code=data_dict.get("BT-X-220"),
-                    country_subdivision_name=data_dict.get("BT-X-221"),
-                    postcode=data_dict.get("BT-X-215"),
-                    city=data_dict.get("BT-X-219"),
-                    addr_line1=data_dict.get("BT-X-216"),
-                    addr_line2=data_dict.get("BT-X-217"),
-                    addr_line3=data_dict.get("BT-X-218"),
-                    universal_comm_id=data_dict.get("BT-X-222"),
-                    universal_comm_schemeid=data_dict.get("BT-X-222-0"),
-                    tax_id=data_dict.get("BT-X-223"),
+                    identifiers=data_dict.get("EXT-FR-FE-115"),
+                    name=data_dict.get("EXT-FR-FE-112"),
+                    role_code=data_dict.get("EXT-FR-FE-113"),
+                    legal_org_id=data_dict.get("EXT-FR-FE-117"),
+                    legal_org_schemeid=data_dict.get("EXT-FR-FE-118"),
+                    biz_name=data_dict.get("EXT-FR-FE-114"),
+                    contact_name=data_dict.get("EXT-FR-FE-132"),
+                    contact_phone=data_dict.get("EXT-FR-FE-133"),
+                    contact_email=data_dict.get("EXT-FR-FE-134"),
+                    country_code=data_dict.get("EXT-FR-FE-130"),
+                    country_subdivision_name=data_dict.get("EXT-FR-FE-129"),
+                    postcode=data_dict.get("EXT-FR-FE-128"),
+                    city=data_dict.get("EXT-FR-FE-127"),
+                    addr_line1=data_dict.get("EXT-FR-FE-124"),
+                    addr_line2=data_dict.get("EXT-FR-FE-125"),
+                    addr_line3=data_dict.get("EXT-FR-FE-126"),
+                    universal_comm_id=data_dict.get("EXT-FR-FE-121"),
+                    universal_comm_schemeid=data_dict.get("EXT-FR-FE-122"),
+                    tax_id=data_dict.get("EXT-FR-FE-119"),
                 ),
-                # Invoicee
+                # Invoicee  EXT-FR-FE-BG-04
                 _cii_generate_party_block(
                     "InvoiceeTradeParty",
                     namespaces,
-                    identifiers=data_dict.get("BT-X-225"),
-                    name=data_dict.get("BT-X-226"),
-                    role_code=data_dict.get("BT-X-554"),
-                    legal_org_id=data_dict.get("BT-X-227"),
-                    legal_org_schemeid=data_dict.get("BT-X-227-0"),
-                    biz_name=data_dict.get("BT-X-228"),
-                    contact_name=data_dict.get("BT-X-229"),
-                    contact_department_name=data_dict.get("BT-X-230"),
-                    contact_phone=data_dict.get("BT-X-231"),
-                    contact_email=data_dict.get("BT-X-233"),
-                    country_code=data_dict.get("BT-X-239"),
-                    country_subdivision_name=data_dict.get("BT-X-240"),
-                    postcode=data_dict.get("BT-X-234"),
-                    city=data_dict.get("BT-X-238"),
-                    addr_line1=data_dict.get("BT-X-235"),
-                    addr_line2=data_dict.get("BT-X-236"),
-                    addr_line3=data_dict.get("BT-X-237"),
-                    universal_comm_id=data_dict.get("BT-X-241"),
-                    universal_comm_schemeid=data_dict.get("BT-X-241-0"),
-                    tax_id=data_dict.get("BT-X-242"),
+                    identifiers=data_dict.get("EXT-FR-FE-92"),
+                    name=data_dict.get("EXT-FR-FE-89"),
+                    role_code=data_dict.get("EXT-FR-FE-90"),
+                    legal_org_id=data_dict.get("EXT-FR-FE-94"),
+                    legal_org_schemeid=data_dict.get("EXT-FR-FE-95"),
+                    biz_name=data_dict.get("EXT-FR-FE-91"),
+                    contact_name=data_dict.get("EXT-FR-FE-109"),
+                    contact_phone=data_dict.get("EXT-FR-FE-110"),
+                    contact_email=data_dict.get("EXT-FR-FE-111"),
+                    country_code=data_dict.get("EXT-FR-FE-107"),
+                    country_subdivision_name=data_dict.get("EXT-FR-FE-106"),
+                    postcode=data_dict.get("EXT-FR-FE-105"),
+                    city=data_dict.get("EXT-FR-FE-104"),
+                    addr_line1=data_dict.get("EXT-FR-FE-101"),
+                    addr_line2=data_dict.get("EXT-FR-FE-102"),
+                    addr_line3=data_dict.get("EXT-FR-FE-103"),
+                    universal_comm_id=data_dict.get("EXT-FR-FE-98"),
+                    universal_comm_schemeid=data_dict.get("EXT-FR-FE-99"),
+                    tax_id=data_dict.get("EXT-FR-FE-96"),
                 ),
-                # Payee (Basic WL)
+                # Payee (Basic WL)  BG-10
                 _cii_generate_party_block(
                     "PayeeTradeParty",
                     namespaces,
                     identifiers=data_dict.get("BT-60"),
                     name=data_dict.get("BT-59"),
-                    role_code=data_dict.get("BT-X-468"),
+                    role_code=data_dict.get("EXT-FR-FE-26"),
                     legal_org_id=data_dict.get("BT-61"),
                     legal_org_schemeid=data_dict.get("BT-61-1"),
-                    contact_name=data_dict.get("BT-X-244"),
-                    contact_department_name=data_dict.get("BT-X-245"),
-                    contact_phone=data_dict.get("BT-X-246"),
-                    contact_email=data_dict.get("BT-X-248"),
-                    country_code=data_dict.get("BT-X-254"),
-                    country_subdivision_name=data_dict.get("BT-X-255"),
-                    postcode=data_dict.get("BT-X-249"),
-                    city=data_dict.get("BT-X-253"),
-                    addr_line1=data_dict.get("BT-X-250"),
-                    addr_line2=data_dict.get("BT-X-251"),
-                    addr_line3=data_dict.get("BT-X-252"),
-                    universal_comm_id=data_dict.get("BT-X-256"),
-                    universal_comm_schemeid=data_dict.get("BT-X-256-0"),
-                    tax_id=data_dict.get("BT-X-257"),
+                    contact_name=data_dict.get("EXT-FR-FE-40"),
+                    contact_phone=data_dict.get("EXT-FR-FE-41"),
+                    contact_email=data_dict.get("EXT-FR-FE-42"),
+                    country_code=data_dict.get("EXT-FR-FE-38"),
+                    country_subdivision_name=data_dict.get("EXT-FR-FE-37"),
+                    postcode=data_dict.get("EXT-FR-FE-36"),
+                    city=data_dict.get("EXT-FR-FE-35"),
+                    addr_line1=data_dict.get("EXT-FR-FE-32"),
+                    addr_line2=data_dict.get("EXT-FR-FE-33"),
+                    addr_line3=data_dict.get("EXT-FR-FE-34"),
+                    universal_comm_id=data_dict.get("EXT-FR-FE-29"),
+                    universal_comm_schemeid=data_dict.get("EXT-FR-FE-30"),
+                    tax_id=data_dict.get("EXT-FR-FE-27"),
                 ),
-                # Payer
+                # Payer  EXT-FR-FE-BG-02
                 _cii_generate_party_block(
                     "PayerTradeParty",
                     namespaces,
-                    identifiers=data_dict.get("BT-X-479"),
-                    name=data_dict.get("BT-X-476"),
-                    role_code=data_dict.get("BT-X-483"),
-                    legal_org_id=data_dict.get("BT-X-480"),
-                    legal_org_schemeid=data_dict.get("BT-X-480-0"),
-                    biz_name=data_dict.get("BT-X-477"),
-                    contact_name=data_dict.get("BT-X-484"),
-                    contact_department_name=data_dict.get("BT-X-485"),
-                    contact_phone=data_dict.get("BT-X-487"),
-                    contact_email=data_dict.get("BT-X-489"),
-                    country_code=data_dict.get("BT-X-495"),
-                    country_subdivision_name=data_dict.get("BT-X-496"),
-                    postcode=data_dict.get("BT-X-490"),
-                    city=data_dict.get("BT-X-494"),
-                    addr_line1=data_dict.get("BT-X-491"),
-                    addr_line2=data_dict.get("BT-X-492"),
-                    addr_line3=data_dict.get("BT-X-493"),
-                    universal_comm_id=data_dict.get("BT-X-482"),
-                    universal_comm_schemeid=data_dict.get("BT-X-482-0"),
-                    tax_id=data_dict.get("BT-X-481"),
+                    identifiers=data_dict.get("EXT-FR-FE-46"),
+                    name=data_dict.get("EXT-FR-FE-43"),
+                    role_code=data_dict.get("EXT-FR-FE-44"),
+                    legal_org_id=data_dict.get("EXT-FR-FE-48"),
+                    legal_org_schemeid=data_dict.get("EXT-FR-FE-49"),
+                    biz_name=data_dict.get("EXT-FR-FE-45"),
+                    contact_name=data_dict.get("EXT-FR-FE-63"),
+                    contact_phone=data_dict.get("EXT-FR-FE-64"),
+                    contact_email=data_dict.get("EXT-FR-FE-65"),
+                    country_code=data_dict.get("EXT-FR-FE-61"),
+                    country_subdivision_name=data_dict.get("EXT-FR-FE-60"),
+                    postcode=data_dict.get("EXT-FR-FE-59"),
+                    city=data_dict.get("EXT-FR-FE-58"),
+                    addr_line1=data_dict.get("EXT-FR-FE-55"),
+                    addr_line2=data_dict.get("EXT-FR-FE-56"),
+                    addr_line3=data_dict.get("EXT-FR-FE-57"),
+                    universal_comm_id=data_dict.get("EXT-FR-FE-52"),
+                    universal_comm_schemeid=data_dict.get("EXT-FR-FE-53"),
+                    tax_id=data_dict.get("EXT-FR-FE-50"),
                 ),
                 *[
                     RAM.SpecifiedTradeSettlementPaymentMeans(
@@ -1326,10 +1320,6 @@ def generate_cii_xml(
             xml_bytes, flavor="factur-x", level=level, check_option=check_schematron
         )
     return xml_bytes
-
-
-# TODO : BT-X-xxx are CII only references, not used in UBL.
-# It may not be a good thing to use it in data_dict
 
 
 def _ubl_generate_party(node_name, namespaces, **kwargs):
@@ -1954,7 +1944,7 @@ def generate_ubl_xml(
             for _ in [1]
             if data_dict.get("BT-11")
         ],
-        # SELLER
+        # SELLER  BG-4
         CAC.AccountingSupplierParty(
             _ubl_generate_party(
                 "Party",
@@ -1981,7 +1971,7 @@ def generate_ubl_xml(
                 local_tax_id=data_dict.get("BT-32"),
             ),
         ),
-        # BUYER
+        # BUYER  BG-7
         CAC.AccountingCustomerParty(
             _ubl_generate_party(
                 "Party",
@@ -2006,30 +1996,30 @@ def generate_ubl_xml(
                 tax_id=data_dict.get("BT-48"),
             ),
         ),
-        # Payee
+        # Payee  BG-10
         _ubl_generate_party(
             "PayeeParty",
             namespaces,
             identifiers=data_dict.get("BT-60"),
             name=data_dict.get("BT-59"),
-            role_code=data_dict.get("BT-X-468"),
+            role_code=data_dict.get("EXT-FR-FE-26"),
             legal_org_id=data_dict.get("BT-61"),
             legal_org_schemeid=data_dict.get("BT-61-1"),
-            contact_name=data_dict.get("BT-X-244"),
-            contact_phone=data_dict.get("BT-X-246"),
-            contact_email=data_dict.get("BT-X-248"),
-            country_code=data_dict.get("BT-X-254"),
-            country_subdivision_name=data_dict.get("BT-X-255"),
-            postcode=data_dict.get("BT-X-249"),
-            city=data_dict.get("BT-X-253"),
-            addr_line1=data_dict.get("BT-X-250"),
-            addr_line2=data_dict.get("BT-X-251"),
-            addr_line3=data_dict.get("BT-X-252"),
-            universal_comm_id=data_dict.get("BT-X-256"),
-            universal_comm_schemeid=data_dict.get("BT-X-256-0"),
-            tax_id=data_dict.get("BT-X-257"),
+            contact_name=data_dict.get("EXT-FR-FE-40"),
+            contact_phone=data_dict.get("EXT-FR-FE-41"),
+            contact_email=data_dict.get("EXT-FR-FE-42"),
+            country_code=data_dict.get("EXT-FR-FE-38"),
+            country_subdivision_name=data_dict.get("EXT-FR-FE-37"),
+            postcode=data_dict.get("EXT-FR-FE-36"),
+            city=data_dict.get("EXT-FR-FE-35"),
+            addr_line1=data_dict.get("EXT-FR-FE-32"),
+            addr_line2=data_dict.get("EXT-FR-FE-33"),
+            addr_line3=data_dict.get("EXT-FR-FE-34"),
+            universal_comm_id=data_dict.get("EXT-FR-FE-29"),
+            universal_comm_schemeid=data_dict.get("EXT-FR-FE-30"),
+            tax_id=data_dict.get("EXT-FR-FE-27"),
         ),
-        # Seller Tax Representative
+        # Seller Tax Representative  BG-11
         _ubl_generate_party(
             "TaxRepresentativeParty",
             namespaces,
