@@ -28,6 +28,7 @@ import importlib.metadata
 import logging
 
 from lxml import etree, objectify
+from stdnum.iban import is_valid as iban_is_valid
 
 from .facturx import XML_NAMESPACES, xml_check_schematron, xml_check_xsd
 
@@ -1105,6 +1106,7 @@ def generate_cii_xml(
                                     RAM.IBANID(data_dict["BT-84"])
                                     for _ in [1]
                                     if data_dict.get("BT-84")
+                                    and iban_is_valid(data_dict["BT-84"])
                                 ],
                                 *[
                                     RAM.AccountName(data_dict["BT-85"])
@@ -1112,13 +1114,14 @@ def generate_cii_xml(
                                     if data_dict.get("BT-85")
                                 ],
                                 *[
-                                    RAM.ProprietaryID(data_dict["BT-84-0"])
+                                    RAM.ProprietaryID(data_dict["BT-84"])
                                     for _ in [1]
-                                    if data_dict.get("BT-84-0")
+                                    if data_dict.get("BT-84")
+                                    and not iban_is_valid(data_dict["BT-84"])
                                 ],
                             )
                             for _ in [1]
-                            if data_dict.get("BT-84") or data_dict.get("BT-84-0")
+                            if data_dict.get("BT-84")
                         ],
                         *[
                             RAM.PayeeSpecifiedCreditorFinancialInstitution(

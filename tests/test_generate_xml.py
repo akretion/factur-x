@@ -292,6 +292,7 @@ class TestGenerateXML(unittest.TestCase):
         _xml_bytes = generate_cii_xml(
             data_dict, level="extended", check_schematron="fr-ctc"
         )
+        # print(_xml_bytes.decode('utf-8'))
         data_dict = self._prepare_data_dict()
         _xml_bytes = generate_cii_xml(
             data_dict, level="en16931", check_schematron="fr-ctc"
