@@ -56,10 +56,7 @@ BT_8toUBL = {
 
 
 VERSION = importlib.metadata.version("factur-x")
-FORMAT = "%(asctime)s [%(levelname)s] %(message)s"
-logging.basicConfig(format=FORMAT)
 logger = logging.getLogger("factur-x")
-logger.setLevel(logging.INFO)
 
 EN6931_FIELDS = {
     "BT-1": {
