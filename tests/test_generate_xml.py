@@ -1,8 +1,8 @@
 # Copyright 2026 Akretion France (https://www.akretion.com).
 # @author: Alexis de Lattre <alexis.delattre@akretion.com>
 
+import datetime
 import unittest
-from datetime import datetime
 
 from facturx import generate_cii_xml, generate_ubl_xml
 
@@ -12,17 +12,17 @@ class TestGenerateXML(unittest.TestCase):
         date_fmt = "%Y-%m-%d"
         data_dict = {
             "BT-1": "F124212",
-            "BT-2": datetime.strptime("2026-06-17", date_fmt),
+            "BT-2": datetime.datetime.strptime("2026-06-17", date_fmt),
             "BT-3": "380",
             "BT-5": "EUR",
             #            'BT-6': "EUR",
             # for BT-8, as the values are different in UBL and CII
             # we use a codification: 'invoice', 'delivery' or 'payment'
             "BT-8": "invoice",
-            "BT-9": datetime.strptime("2026-07-16", date_fmt),
+            "BT-9": datetime.datetime.strptime("2026-07-16", date_fmt),
             "BT-10": "120943",
             "BT-11": "Projet_Zorro",
-            "BT-11-0": "Super Projet",
+            "BT-11-0": "Zorro super projet",
             "BT-12": "Contrat_du_siècle",
             "BT-13": "PO1242",
             "BT-14": "DEVIS2093",
@@ -84,13 +84,38 @@ class TestGenerateXML(unittest.TestCase):
             "BT-57": "+33 7 42 12 42 12",
             "BT-58": "laetita.durand@jolieboutique.com",
             # End Buyer
-            "BT-X-335": "M. Rémi Agent",
+            # Seller Agent  EXT-FR-FE-BG-03
+            "EXT-FR-FE-66": "M. Rémi Agent",
+            "EXT-FR-FE-86": "Rémi Agent",
+            "EXT-FR-FE-87": "+33 7 87 32 34 54",
+            "EXT-FR-FE-88": "remi@superagent.com",
+            # Buyer Agent  EXT-FR-FE-BG-01
+            "EXT-FR-FE-03": "M. Négociateur CHEF",
+            "EXT-FR-FE-23": "Charlotte Dupont",
+            "EXT-FR-FE-24": "+33 7 88 55 33 22",
+            "EXT-FR-FE-25": "charlotte@supernegociatrice.eu",
+            # Invoicer EXT-FR-FE-BG-05
+            "EXT-FR-FE-112": "Facturier SARL",
+            "EXT-FR-FE-130": "FR",
+            "EXT-FR-FE-128": "97400",
+            "EXT-FR-FE-127": "St Denis",
+            "EXT-FR-FE-124": "12 rue Sainte Marie",
+            "EXT-FR-FE-117": "704721240",
+            "EXT-FR-FE-118": "0002",
+            # Invoicee EXT-FR-FE-BG-04
+            "EXT-FR-FE-89": "Receipee EURL",
+            "EXT-FR-FE-107": "FR",
+            "EXT-FR-FE-105": "69001",
+            "EXT-FR-FE-104": "Lyon",
+            "EXT-FR-FE-101": "42 boulevard de la Croix Rousse",
+            "EXT-FR-FE-94": "528010523",
+            "EXT-FR-FE-95": "0002",
             # Start Tax Representative
             "BT-62": "Société écran",
             "BT-69": "FR",
             "BT-63": "FR15123456789",
-            "BT-73": datetime.strptime("2026-06-01", date_fmt),
-            "BT-74": datetime.strptime("2026-06-30", date_fmt),
+            "BT-73": datetime.datetime.strptime("2026-06-01", date_fmt),
+            "BT-74": datetime.datetime.strptime("2026-06-30", date_fmt),
             # Start Ship to
             "BT-70": "Plateforme logistique FastIT",
             "BT-71": {
@@ -100,8 +125,8 @@ class TestGenerateXML(unittest.TestCase):
             "BT-77": "Carpentras",
             "BT-78": "84200",
             "BT-75": "5 avenue Georges Clémenceau",
-            "BT-72": datetime.strptime("2026-06-14", date_fmt),
-            "BT-83": datetime.strptime("2026-06-17", date_fmt),
+            "BT-72": datetime.datetime.strptime("2026-06-14", date_fmt),
+            "BT-83": datetime.datetime.strptime("2026-06-17", date_fmt),
             "BT-81": "30",
             "BT-82": "Libellé du moyen de paiement",
             #            "BT-87": "567890",
@@ -109,6 +134,18 @@ class TestGenerateXML(unittest.TestCase):
             "BT-84": "FR2012421242124212421242124",
             "BT-85": "Au bon moulin SARL",
             "BT-86": "QNTOFRP1XXX",
+            "BT-89": "RUM_9083209",
+            # Payeur EXT-FR-FE-BG-02
+            "EXT-FR-FE-45": "Société payeur",
+            "EXT-FR-FE-61": "FR",
+            "EXT-FR-FE-59": "05100",
+            "EXT-FR-FE-58": "Névache",
+            "EXT-FR-FE-55": "Vallée étroite",
+            "EXT-FR-FE-52": "754760932",
+            "EXT-FR-FE-53": "0225",
+            "EXT-FR-FE-48": "754760932",
+            "EXT-FR-FE-49": "0002",
+            "BT-91": "FR7312345678901275089715A98",
             "BT-90": "Au bon moulin SARL",
             "BG-1": [
                 {
@@ -167,7 +204,8 @@ class TestGenerateXML(unittest.TestCase):
             "BG-3": [
                 {
                     "BT-25": "F124211",
-                    "BT-26": datetime.strptime("2025-12-30", date_fmt),
+                    "EXT-FR-FE-02": "386",
+                    "BT-26": datetime.datetime.strptime("2025-12-30", date_fmt),
                 },
                 {
                     "BT-25": "F124210",
@@ -234,14 +272,14 @@ class TestGenerateXML(unittest.TestCase):
                     "BT-151": "S",
                     "BT-152": "5.50",
                     "BT-131": "135.00",  # Total HT
-                    "BT-134": datetime.strptime("2026-06-14", date_fmt),
-                    "BT-135": datetime.strptime("2026-06-15", date_fmt),
+                    "BT-134": datetime.datetime.strptime("2026-06-14", date_fmt),
+                    "BT-135": datetime.datetime.strptime("2026-06-15", date_fmt),
                     "BG-32": {  # key = BT-160: value = BT-161
                         "Couleur": "Vert",
                         "Taille": "L",
                     },
                     "BT-158-00": {  # key = (BT-158-1, BT-158-2): value = BT-158
-                        ("BB", None): "LOT1242",
+                        ("BB", "1.0"): "LOT1242",
                         ("HS", "NC8"): "15092000",
                     },
                     "BG-27": [
@@ -278,10 +316,47 @@ class TestGenerateXML(unittest.TestCase):
                     "BT-151": "S",
                     "BT-152": "20.00",
                     "BT-131": "138.00",  # Total HT
+                    "BT-132": "DV843873",
+                    "EXT-FR-FE-135": "PO982749",
+                    "EXT-FR-FE-140": "BL0982432",
+                    "EXT-FR-FE-141": "AVIS9074398",
+                    # EXT-FR-FE-BG-10
+                    "EXT-FR-FE-149": "Alpes du Sud Logistique",
+                    "EXT-FR-FE-155": "05600",
+                    "EXT-FR-FE-151": "12 rue de Vanban",
+                    "EXT-FR-FE-154": "Eygliers",
+                    "EXT-FR-FE-157": "FR",
+                    # ref to previous invoice
+                    "EXT-FR-FE-136": "F824739",
+                    "EXT-FR-FE-139": "12",
+                    "EXT-FR-FE-137": "380",
+                    "EXT-FR-FE-138": datetime.datetime.strptime("2025-12-24", date_fmt),
                 },
             ],
         }
         return data_dict
+
+    def _check_data_in_xml(self, data_dict, xml_str, flavor="factur-x"):
+        if isinstance(data_dict, dict):
+            for key, value in data_dict.items():
+                if isinstance(value, str):
+                    if (
+                        isinstance(key, str)
+                        and not key.endswith("-0")
+                        and key != "BT-8"
+                    ):
+                        self.assertIn(value, xml_str)
+                elif isinstance(value, datetime.date):
+                    if flavor == "factur-x":
+                        value_str = value.strftime("%Y%m%d")
+                    elif flavor == "ubl-2.1":
+                        value_str = value.strftime("%Y-%m-%d")
+                    self.assertIn(value_str, xml_str)
+                else:
+                    self._check_data_in_xml(data_dict[key], xml_str, flavor=flavor)
+        elif isinstance(data_dict, list):
+            for item in data_dict:
+                self._check_data_in_xml(item, xml_str, flavor=flavor)
 
     def test_generate_cii_xml(self):
         # I need to re-generate data_dict before every call to generate_cii_xml()
@@ -289,55 +364,69 @@ class TestGenerateXML(unittest.TestCase):
         data_dict = self._prepare_data_dict()
         # bug in specific extended sch ?
         data_dict["BT-18-00"].pop("AHO")
-        _xml_bytes = generate_cii_xml(
+        xml_bytes = generate_cii_xml(
             data_dict,
             level="extended",
             check_schematron="fr-ctc",
             prefixed_namespaces=True,
         )
-        # print(_xml_bytes.decode('utf-8'))
+        xml_str = xml_bytes.decode("utf-8")
+        self._check_data_in_xml(data_dict, xml_str)
+
         data_dict = self._prepare_data_dict()
-        _xml_bytes = generate_cii_xml(
+        xml_bytes = generate_cii_xml(
             data_dict,
             level="en16931",
             check_schematron="fr-ctc",
             prefixed_namespaces=True,
         )
+        xml_str = xml_bytes.decode("utf-8")
+        self._check_data_in_xml(data_dict, xml_str)
+
         data_dict = self._prepare_data_dict()
-        _xml_bytes = generate_cii_xml(
+        xml_bytes = generate_cii_xml(
             data_dict,
             level="basicwl",
             check_schematron="fr-ctc",
             prefixed_namespaces=True,
         )
+        xml_str = xml_bytes.decode("utf-8")
+        self._check_data_in_xml(data_dict, xml_str)
+
         data_dict = self._prepare_data_dict()
         data_dict["BT-18-00"].pop("AHO")  # bug in schematron ?
-        _xml_bytes = generate_cii_xml(
+        xml_bytes = generate_cii_xml(
             data_dict,
             level="extended-ctc-fr",
             check_schematron="fr-ctc",
             prefixed_namespaces=True,
         )
+        xml_str = xml_bytes.decode("utf-8")
+        self._check_data_in_xml(data_dict, xml_str)
 
     def test_generate_ubl(self):
         data_dict = self._prepare_data_dict()
         data_dict["BT-18-00"].pop("AHO")
         # To avoid schematron bug https://github.com/fnfempe/France_RFE/issues/1
         data_dict.pop("BG-24")
-        _xml_bytes = generate_ubl_xml(
-            data_dict,
-            level="en16931",
-            check_schematron="fr-ctc",
-            prefixed_namespaces=True,
-        )
-        # print(_xml_bytes.decode('utf-8'))
-        data_dict = self._prepare_data_dict()
-        data_dict["BT-18-00"].pop("AHO")
-        # To avoid schematron bug https://github.com/fnfempe/France_RFE/issues/1
-        data_dict.pop("BG-24")
-        _xml_bytes = generate_ubl_xml(
+        xml_bytes = generate_ubl_xml(
             data_dict,
             level="extended-ctc-fr",
             check_schematron="fr-ctc",
             prefixed_namespaces=True,
         )
+        xml_str = xml_bytes.decode("utf-8")
+        self._check_data_in_xml(data_dict, xml_str, flavor="ubl-2.1")
+
+        data_dict = self._prepare_data_dict()
+        data_dict["BT-18-00"].pop("AHO")
+        # To avoid schematron bug https://github.com/fnfempe/France_RFE/issues/1
+        data_dict.pop("BG-24")
+        xml_bytes = generate_ubl_xml(
+            data_dict,
+            level="en16931",
+            check_schematron="fr-ctc",
+            prefixed_namespaces=True,
+        )
+        xml_str = xml_bytes.decode("utf-8")
+        self._check_data_in_xml(data_dict, xml_str, flavor="ubl-2.1")
