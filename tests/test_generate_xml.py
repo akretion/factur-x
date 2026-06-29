@@ -136,7 +136,7 @@ class TestGenerateXML(unittest.TestCase):
             "BT-86": "QNTOFRP1XXX",
             "BT-89": "RUM_9083209",
             # Payeur EXT-FR-FE-BG-02
-            "EXT-FR-FE-45": "Société payeur",
+            "EXT-FR-FE-43": "Société payeur",
             "EXT-FR-FE-61": "FR",
             "EXT-FR-FE-59": "05100",
             "EXT-FR-FE-58": "Névache",

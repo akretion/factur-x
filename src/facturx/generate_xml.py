@@ -30,7 +30,7 @@ import logging
 from lxml import etree, objectify
 from stdnum.iban import is_valid as iban_is_valid
 
-from .facturx import XML_NAMESPACES, xml_check_schematron, xml_check_xsd
+from .facturx import get_xml_namespaces, xml_check_schematron, xml_check_xsd
 
 FACTURX_DATE_FORMAT = "%Y%m%d"
 UBL_DATE_FORMAT = "%Y-%m-%d"
@@ -209,7 +209,7 @@ def _remove_extended_keys(data_dict, level):
             _remove_extended_keys(item, level)
 
 
-def _cii_generate_party_block(node_name, namespaces, **kwargs):
+def _cii_generate_party(node_name, namespaces, **kwargs):
     if not node_name:
         raise ValueError("node_name arg is required")
     if not kwargs.get("name"):
@@ -597,7 +597,7 @@ def _cii_generate_single_invoice_line(namespaces, line_dict):
         ),
         RAM.SpecifiedLineTradeDelivery(
             RAM.BilledQuantity(line_dict["BT-129"], unitCode=line_dict["BT-130"]),
-            _cii_generate_party_block(  # EXT-FR-FE-BG-10
+            _cii_generate_party(  # EXT-FR-FE-BG-10
                 "ShipToTradeParty",
                 namespaces,
                 identifiers=line_dict.get("EXT-FR-FE-146"),
@@ -777,7 +777,7 @@ def generate_cii_xml(
         )
 
     _check_data_dict(data_dict, "factur-x", level)
-    FX_NAMESPACES = XML_NAMESPACES["factur-x"]
+    FX_NAMESPACES = get_xml_namespaces("factur-x")
     if prefixed_namespaces:
         RSM = objectify.ElementMaker(
             namespace=FX_NAMESPACES["rsm"], nsmap=FX_NAMESPACES, annotate=False
@@ -853,7 +853,7 @@ def generate_cii_xml(
                     if data_dict.get("BT-10")
                 ],
                 # SELLER  BG-4
-                _cii_generate_party_block(
+                _cii_generate_party(
                     "SellerTradeParty",
                     namespaces,
                     identifiers=data_dict.get("BT-29"),
@@ -879,7 +879,7 @@ def generate_cii_xml(
                     local_tax_id=data_dict.get("BT-32"),
                 ),
                 # BUYER  BG-7
-                _cii_generate_party_block(
+                _cii_generate_party(
                     "BuyerTradeParty",
                     namespaces,
                     identifiers=data_dict.get("BT-46"),
@@ -903,7 +903,7 @@ def generate_cii_xml(
                     tax_id=data_dict.get("BT-48"),
                 ),
                 # Sales Agent  EXT-FR-FE-BG-03
-                _cii_generate_party_block(
+                _cii_generate_party(
                     "SalesAgentTradeParty",
                     namespaces,
                     identifiers=data_dict.get("EXT-FR-FE-69"),
@@ -927,7 +927,7 @@ def generate_cii_xml(
                     tax_id=data_dict.get("EXT-FR-FE-73"),
                 ),
                 # Seller Tax Representative  BG-11
-                _cii_generate_party_block(
+                _cii_generate_party(
                     "SellerTaxRepresentativeTradeParty",
                     namespaces,
                     name=data_dict.get("BT-62"),
@@ -968,7 +968,7 @@ def generate_cii_xml(
                     )
                 ],
                 # Buyer Agent  EXT-FR-FE-BG-01
-                _cii_generate_party_block(
+                _cii_generate_party(
                     "BuyerAgentTradeParty",
                     namespaces,
                     identifiers=data_dict.get("EXT-FR-FE-06"),
@@ -1001,7 +1001,7 @@ def generate_cii_xml(
                 ],
             ),
             RAM.ApplicableHeaderTradeDelivery(
-                _cii_generate_party_block(
+                _cii_generate_party(
                     "ShipToTradeParty",
                     namespaces,
                     identifiers=data_dict.get("BT-71"),
@@ -1058,7 +1058,7 @@ def generate_cii_xml(
                 ],
                 RAM.InvoiceCurrencyCode(data_dict["BT-5"]),
                 # Invoicer  EXT-FR-FE-BG-05
-                _cii_generate_party_block(
+                _cii_generate_party(
                     "InvoicerTradeParty",
                     namespaces,
                     identifiers=data_dict.get("EXT-FR-FE-115"),
@@ -1082,7 +1082,7 @@ def generate_cii_xml(
                     tax_id=data_dict.get("EXT-FR-FE-119"),
                 ),
                 # Invoicee  EXT-FR-FE-BG-04
-                _cii_generate_party_block(
+                _cii_generate_party(
                     "InvoiceeTradeParty",
                     namespaces,
                     identifiers=data_dict.get("EXT-FR-FE-92"),
@@ -1106,7 +1106,7 @@ def generate_cii_xml(
                     tax_id=data_dict.get("EXT-FR-FE-96"),
                 ),
                 # Payee (Basic WL)  BG-10
-                _cii_generate_party_block(
+                _cii_generate_party(
                     "PayeeTradeParty",
                     namespaces,
                     identifiers=data_dict.get("BT-60"),
@@ -1129,7 +1129,7 @@ def generate_cii_xml(
                     tax_id=data_dict.get("EXT-FR-FE-27"),
                 ),
                 # Payer  EXT-FR-FE-BG-02
-                _cii_generate_party_block(
+                _cii_generate_party(
                     "PayerTradeParty",
                     namespaces,
                     identifiers=data_dict.get("EXT-FR-FE-46"),
@@ -1968,7 +1968,7 @@ def generate_ubl_xml(
             "'en16931', 'extended-ctc-fr' and 'autodetect'"
         )
 
-    _check_data_dict(data_dict, "ubl-2.1", level=level)
+    _check_data_dict(data_dict, "ubl-2.1", level)
 
     if data_dict.get("BT-90"):
         if data_dict.get("BT-59"):  # if PayeeParty
@@ -1982,16 +1982,7 @@ def generate_ubl_xml(
             else:
                 data_dict["BT-29"]["SEPA"] = data_dict["BT-90"]
 
-    UBL_NAMESPACES = {
-        None: "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2",
-        "cac": "urn:oasis:names:specification:ubl:schema:xsd:"
-        "CommonAggregateComponents-2",
-        "cbc": "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2",
-        "xsi": "http://www.w3.org/2001/XMLSchema-instance",
-        "ccts": "urn:un:unece:uncefact:documentation:2",
-        "qdt": "urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2",
-        "udt": "urn:oasis:names:specification:ubl:schema:xsd:UnqualifiedDataTypes-2",
-    }
+    UBL_NAMESPACES = get_xml_namespaces("ubl-2.1")
 
     if prefixed_namespaces:
         CAC = objectify.ElementMaker(

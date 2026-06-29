@@ -152,6 +152,16 @@ XML_NAMESPACES = {
         "udt": "urn:un:unece:uncefact:data:standard:UnqualifiedDataType:15",
         "xsi": "http://www.w3.org/2001/XMLSchema-instance",
     },
+    "ubl-2.1": {
+        None: "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2",
+        "cac": "urn:oasis:names:specification:ubl:schema:xsd:"
+        "CommonAggregateComponents-2",
+        "cbc": "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2",
+        "xsi": "http://www.w3.org/2001/XMLSchema-instance",
+        "ccts": "urn:un:unece:uncefact:documentation:2",
+        "qdt": "urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2",
+        "udt": "urn:oasis:names:specification:ubl:schema:xsd:UnqualifiedDataTypes-2",
+    },
 }
 CREATOR = f"factur-x Python lib v{VERSION} by Alexis de Lattre"
 
@@ -1039,7 +1049,7 @@ def _base_info2pdf_metadata(base_info):
 
 
 def get_xml_namespaces(flavor):
-    if flavor not in ("factur-x", "facturx", "order-x", "orderx", "zugferd"):
+    if flavor not in ("factur-x", "facturx", "order-x", "orderx", "zugferd", "ubl-2.1"):
         raise ValueError("Wrong value for flavor argument.")
     if flavor == "facturx":
         flavor = "factur-x"
