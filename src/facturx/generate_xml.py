@@ -676,7 +676,11 @@ def _cii_generate_single_invoice_line(namespaces, line_dict):
 
 
 def generate_cii_xml(
-    data_dict, level="autodetect", check_xsd=True, check_schematron="base"
+    data_dict,
+    level="autodetect",
+    check_xsd=True,
+    check_schematron="base",
+    prefixed_namespaces=True,
 ):
     # in data_dict, the key names use ID CII and not ID Modèle AFNOR FE
     # because we don't want France-specific stuff
@@ -709,12 +713,35 @@ def generate_cii_xml(
 
     _check_data_dict(data_dict, "factur-x", level)
     FX_NAMESPACES = XML_NAMESPACES["factur-x"]
-    RSM = objectify.ElementMaker(
-        namespace=FX_NAMESPACES["rsm"], nsmap=FX_NAMESPACES, annotate=False
-    )
-    RAM = objectify.ElementMaker(namespace=FX_NAMESPACES["ram"], annotate=False)
-    UDT = objectify.ElementMaker(namespace=FX_NAMESPACES["udt"], annotate=False)
-    QDT = objectify.ElementMaker(namespace=FX_NAMESPACES["qdt"], annotate=False)
+    if prefixed_namespaces:
+        RSM = objectify.ElementMaker(
+            namespace=FX_NAMESPACES["rsm"], nsmap=FX_NAMESPACES, annotate=False
+        )
+        RAM = objectify.ElementMaker(namespace=FX_NAMESPACES["ram"], annotate=False)
+        UDT = objectify.ElementMaker(namespace=FX_NAMESPACES["udt"], annotate=False)
+        QDT = objectify.ElementMaker(namespace=FX_NAMESPACES["qdt"], annotate=False)
+    else:
+        RSM = objectify.ElementMaker(
+            namespace=FX_NAMESPACES["rsm"],
+            nsmap={None: FX_NAMESPACES["rsm"]},
+            annotate=False,
+        )
+        RAM = objectify.ElementMaker(
+            namespace=FX_NAMESPACES["ram"],
+            nsmap={None: FX_NAMESPACES["ram"]},
+            annotate=False,
+        )
+        UDT = objectify.ElementMaker(
+            namespace=FX_NAMESPACES["udt"],
+            nsmap={None: FX_NAMESPACES["udt"]},
+            annotate=False,
+        )
+        QDT = objectify.ElementMaker(
+            namespace=FX_NAMESPACES["qdt"],
+            nsmap={None: FX_NAMESPACES["qdt"]},
+            annotate=False,
+        )
+
     namespaces = {
         "ram": RAM,
         "rsm": RSM,
@@ -1764,7 +1791,11 @@ def _ubl_generate_single_invoice_line(namespaces, line_dict, invoice_currency):
 
 
 def generate_ubl_xml(
-    data_dict, level="autodetect", check_xsd=True, check_schematron="base"
+    data_dict,
+    level="autodetect",
+    check_xsd=True,
+    check_schematron="base",
+    prefixed_namespaces=True,
 ):
     if not isinstance(data_dict, dict):
         raise ValueError("data_dict must be a dict")
@@ -1818,15 +1849,33 @@ def generate_ubl_xml(
         "udt": "urn:oasis:names:specification:ubl:schema:xsd:UnqualifiedDataTypes-2",
     }
 
-    CAC = objectify.ElementMaker(
-        namespace=UBL_NAMESPACES["cac"], nsmap=UBL_NAMESPACES, annotate=False
-    )
-    CBC = objectify.ElementMaker(
-        namespace=UBL_NAMESPACES["cbc"], nsmap=UBL_NAMESPACES, annotate=False
-    )
-    DEFAULT = objectify.ElementMaker(
-        namespace=UBL_NAMESPACES[None], nsmap=UBL_NAMESPACES, annotate=False
-    )
+    if prefixed_namespaces:
+        CAC = objectify.ElementMaker(
+            namespace=UBL_NAMESPACES["cac"], nsmap=UBL_NAMESPACES, annotate=False
+        )
+        CBC = objectify.ElementMaker(
+            namespace=UBL_NAMESPACES["cbc"], nsmap=UBL_NAMESPACES, annotate=False
+        )
+        DEFAULT = objectify.ElementMaker(
+            namespace=UBL_NAMESPACES[None], nsmap=UBL_NAMESPACES, annotate=False
+        )
+    else:
+        CAC = objectify.ElementMaker(
+            namespace=UBL_NAMESPACES["cac"],
+            nsmap={None: UBL_NAMESPACES["cac"]},
+            annotate=False,
+        )
+        CBC = objectify.ElementMaker(
+            namespace=UBL_NAMESPACES["cbc"],
+            nsmap={None: UBL_NAMESPACES["cbc"]},
+            annotate=False,
+        )
+        DEFAULT = objectify.ElementMaker(
+            namespace=UBL_NAMESPACES[None],
+            nsmap={None: UBL_NAMESPACES[None]},
+            annotate=False,
+        )
+
     namespaces = {
         "cac": CAC,
         "cbc": CBC,
@@ -2251,6 +2300,7 @@ def generate_xml(
     level="autodetect",
     check_xsd=True,
     check_schematron="base",
+    prefixed_namespaces=True,
 ):
     if flavor not in ("factur-x", "facturx", "ubl-2.1"):
         raise ValueError("Wrong value for flavor argument")
@@ -2260,6 +2310,7 @@ def generate_xml(
             level=level,
             check_xsd=check_xsd,
             check_schematron=check_schematron,
+            prefixed_namespaces=prefixed_namespaces,
         )
     else:
         return generate_cii_xml(
@@ -2267,4 +2318,5 @@ def generate_xml(
             level=level,
             check_xsd=check_xsd,
             check_schematron=check_schematron,
+            prefixed_namespaces=prefixed_namespaces,
         )

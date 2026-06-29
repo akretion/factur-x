@@ -290,21 +290,33 @@ class TestGenerateXML(unittest.TestCase):
         # bug in specific extended sch ?
         data_dict["BT-18-00"].pop("AHO")
         _xml_bytes = generate_cii_xml(
-            data_dict, level="extended", check_schematron="fr-ctc"
+            data_dict,
+            level="extended",
+            check_schematron="fr-ctc",
+            prefixed_namespaces=True,
         )
         # print(_xml_bytes.decode('utf-8'))
         data_dict = self._prepare_data_dict()
         _xml_bytes = generate_cii_xml(
-            data_dict, level="en16931", check_schematron="fr-ctc"
+            data_dict,
+            level="en16931",
+            check_schematron="fr-ctc",
+            prefixed_namespaces=True,
         )
         data_dict = self._prepare_data_dict()
         _xml_bytes = generate_cii_xml(
-            data_dict, level="basicwl", check_schematron="fr-ctc"
+            data_dict,
+            level="basicwl",
+            check_schematron="fr-ctc",
+            prefixed_namespaces=True,
         )
         data_dict = self._prepare_data_dict()
         data_dict["BT-18-00"].pop("AHO")  # bug in schematron ?
         _xml_bytes = generate_cii_xml(
-            data_dict, level="extended-ctc-fr", check_schematron="fr-ctc"
+            data_dict,
+            level="extended-ctc-fr",
+            check_schematron="fr-ctc",
+            prefixed_namespaces=True,
         )
 
     def test_generate_ubl(self):
@@ -313,12 +325,19 @@ class TestGenerateXML(unittest.TestCase):
         # To avoid schematron bug https://github.com/fnfempe/France_RFE/issues/1
         data_dict.pop("BG-24")
         _xml_bytes = generate_ubl_xml(
-            data_dict, level="en16931", check_schematron="fr-ctc"
+            data_dict,
+            level="en16931",
+            check_schematron="fr-ctc",
+            prefixed_namespaces=True,
         )
+        # print(_xml_bytes.decode('utf-8'))
         data_dict = self._prepare_data_dict()
         data_dict["BT-18-00"].pop("AHO")
         # To avoid schematron bug https://github.com/fnfempe/France_RFE/issues/1
         data_dict.pop("BG-24")
         _xml_bytes = generate_ubl_xml(
-            data_dict, level="extended-ctc-fr", check_schematron="fr-ctc"
+            data_dict,
+            level="extended-ctc-fr",
+            check_schematron="fr-ctc",
+            prefixed_namespaces=True,
         )
