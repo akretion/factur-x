@@ -1,0 +1,58 @@
+﻿<?xml version='1.0' encoding='UTF-8'?>
+<rsm:CrossIndustryInvoice xmlns:qdt="urn:un:unece:uncefact:data:standard:QualifiedDataType:100"
+xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100"
+xmlns:rsm="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100"
+xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+     <rsm:ExchangedDocumentContext>
+          <ram:BusinessProcessSpecifiedDocumentContextParameter>
+               <ram:ID>S1</ram:ID>
+          </ram:BusinessProcessSpecifiedDocumentContextParameter>
+          <ram:GuidelineSpecifiedDocumentContextParameter>
+               <ram:ID>urn:factur-x.eu:1p0:minimum</ram:ID>
+          </ram:GuidelineSpecifiedDocumentContextParameter>
+     </rsm:ExchangedDocumentContext>
+     <rsm:ExchangedDocument>
+          <ram:ID>F20260023</ram:ID>
+          <ram:TypeCode>380</ram:TypeCode>
+          <ram:IssueDateTime>
+               <udt:DateTimeString format="102">20260131</udt:DateTimeString>
+          </ram:IssueDateTime>
+     </rsm:ExchangedDocument>
+     <rsm:SupplyChainTradeTransaction>
+          <ram:ApplicableHeaderTradeAgreement>
+               <ram:BuyerReference>SERVEXEC</ram:BuyerReference>
+               <ram:SellerTradeParty>
+                    <ram:Name>LE FOURNISSEUR</ram:Name>
+                    <ram:SpecifiedLegalOrganization>
+                         <ram:ID schemeID="0002">123456782</ram:ID>
+                    </ram:SpecifiedLegalOrganization>
+                    <ram:PostalTradeAddress>
+                         <ram:CountryID>FR</ram:CountryID>
+                    </ram:PostalTradeAddress>
+                    <ram:SpecifiedTaxRegistration>
+                         <ram:ID schemeID="VA">FR11123456782</ram:ID>
+                    </ram:SpecifiedTaxRegistration>
+               </ram:SellerTradeParty>
+               <ram:BuyerTradeParty>
+                    <ram:Name>LE CLIENT</ram:Name>
+                    <ram:SpecifiedLegalOrganization>
+                         <ram:ID schemeID="0002">987654321</ram:ID>
+                    </ram:SpecifiedLegalOrganization>
+               </ram:BuyerTradeParty>
+               <ram:BuyerOrderReferencedDocument>
+                    <ram:IssuerAssignedID>PO201925478</ram:IssuerAssignedID>
+               </ram:BuyerOrderReferencedDocument>
+          </ram:ApplicableHeaderTradeAgreement>
+<ram:ApplicableHeaderTradeDelivery/>
+          <ram:ApplicableHeaderTradeSettlement>
+               <ram:InvoiceCurrencyCode>EUR</ram:InvoiceCurrencyCode>
+               <ram:SpecifiedTradeSettlementHeaderMonetarySummation>
+                    <ram:TaxBasisTotalAmount>100.00</ram:TaxBasisTotalAmount>
+                    <ram:TaxTotalAmount currencyID="EUR">4.90</ram:TaxTotalAmount>
+                    <ram:GrandTotalAmount>104.90</ram:GrandTotalAmount>
+                    <ram:DuePayableAmount>104.90</ram:DuePayableAmount>
+               </ram:SpecifiedTradeSettlementHeaderMonetarySummation>
+          </ram:ApplicableHeaderTradeSettlement>
+     </rsm:SupplyChainTradeTransaction>
+</rsm:CrossIndustryInvoice>

@@ -1,0 +1,376 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ccts="urn:un:unece:uncefact:documentation:2" xmlns:qdt="urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2" xmlns:udt="urn:oasis:names:specification:ubl:schema:xsd:UnqualifiedDataTypes-2">
+  <cbc:UBLVersionID>2.1</cbc:UBLVersionID>
+  <cbc:CustomizationID>urn:cen.eu:en16931:2017</cbc:CustomizationID>
+  <cbc:ProfileID>S1</cbc:ProfileID>
+  <cbc:ID>F124212</cbc:ID>
+  <cbc:IssueDate>2026-06-17</cbc:IssueDate>
+  <cbc:DueDate>2026-07-16</cbc:DueDate>
+  <cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>
+  <cbc:Note>#AAI#Ceci est une information générale</cbc:Note>
+  <cbc:Note>#ADN#B2G</cbc:Note>
+  <cbc:Note>note sans sujet !</cbc:Note>
+  <cbc:Note>#PMT#Indemnité forfaitaire pour frais de recouvrement en cas de retard de paiement : 40 €.</cbc:Note>
+  <cbc:Note>#PMD#Tout retard de paiement engendre une pénalité exigible à compter de la date d'échéance, calculée sur la base de trois fois le taux d'intérêt légal.</cbc:Note>
+  <cbc:Note>#AAB#Les réglements reçus avant la date d'échéance ne donneront pas lieu à escompte.</cbc:Note>
+  <cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode>
+  <cbc:AccountingCost>401HOF</cbc:AccountingCost>
+  <cbc:BuyerReference>120943</cbc:BuyerReference>
+  <cac:InvoicePeriod>
+    <cbc:StartDate>2026-06-01</cbc:StartDate>
+    <cbc:EndDate>2026-06-30</cbc:EndDate>
+    <cbc:DescriptionCode>3</cbc:DescriptionCode>
+  </cac:InvoicePeriod>
+  <cac:OrderReference>
+    <cbc:ID>PO1242</cbc:ID>
+    <cbc:SalesOrderID>DEVIS2093</cbc:SalesOrderID>
+  </cac:OrderReference>
+  <cac:BillingReference>
+    <cac:InvoiceDocumentReference>
+      <cbc:ID>F124211</cbc:ID>
+      <cbc:IssueDate>2025-12-30</cbc:IssueDate>
+    </cac:InvoiceDocumentReference>
+  </cac:BillingReference>
+  <cac:BillingReference>
+    <cac:InvoiceDocumentReference>
+      <cbc:ID>F124210</cbc:ID>
+    </cac:InvoiceDocumentReference>
+  </cac:BillingReference>
+  <cac:DespatchDocumentReference>
+    <cbc:ID>BL-2026/05/12</cbc:ID>
+  </cac:DespatchDocumentReference>
+  <cac:ReceiptDocumentReference>
+    <cbc:ID>BR-2026/06/42</cbc:ID>
+  </cac:ReceiptDocumentReference>
+  <cac:OriginatorDocumentReference>
+    <cbc:ID>LOT12</cbc:ID>
+  </cac:OriginatorDocumentReference>
+  <cac:ContractDocumentReference>
+    <cbc:ID>Contrat_du_siècle</cbc:ID>
+  </cac:ContractDocumentReference>
+  <cac:AdditionalDocumentReference>
+    <cbc:ID schemeID="AHK">EMPL042</cbc:ID>
+    <cbc:DocumentTypeCode>130</cbc:DocumentTypeCode>
+  </cac:AdditionalDocumentReference>
+  <cac:ProjectReference>
+    <cbc:ID>Projet_Zorro</cbc:ID>
+  </cac:ProjectReference>
+  <cac:AccountingSupplierParty>
+    <cac:Party>
+      <cbc:EndpointID schemeID="0225">999999998_042</cbc:EndpointID>
+      <cac:PartyIdentification>
+        <cbc:ID schemeID="0009">99999999800019</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyIdentification>
+        <cbc:ID schemeID="0224">Code_ROUTAGE_seller</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyIdentification>
+        <cbc:ID schemeID="SEPA">Au bon moulin SARL</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyName>
+        <cbc:Name>L'huile d'olive en folie</cbc:Name>
+      </cac:PartyName>
+      <cac:PostalAddress>
+        <cbc:StreetName>1242 chemin de l'olive</cbc:StreetName>
+        <cbc:AdditionalStreetName>Lieu dit des senteurs</cbc:AdditionalStreetName>
+        <cbc:CityName>Malaucène</cbc:CityName>
+        <cbc:PostalZone>84340</cbc:PostalZone>
+        <cbc:CountrySubentity>Vaucluse</cbc:CountrySubentity>
+        <cac:AddressLine>
+          <cbc:Line>ZAC du Mont Ventoux</cbc:Line>
+        </cac:AddressLine>
+        <cac:Country>
+          <cbc:IdentificationCode>FR</cbc:IdentificationCode>
+        </cac:Country>
+      </cac:PostalAddress>
+      <cac:PartyTaxScheme>
+        <cbc:CompanyID>FR11999999998</cbc:CompanyID>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:PartyTaxScheme>
+      <cac:PartyTaxScheme>
+        <cbc:CompanyID>DGFIP_ref_1242</cbc:CompanyID>
+        <cac:TaxScheme>
+          <cbc:ID>LOC</cbc:ID>
+        </cac:TaxScheme>
+      </cac:PartyTaxScheme>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>Au bon moulin</cbc:RegistrationName>
+        <cbc:CompanyID schemeID="0002">999999998</cbc:CompanyID>
+      </cac:PartyLegalEntity>
+      <cac:Contact>
+        <cbc:Name>M. Rémi Dupont</cbc:Name>
+        <cbc:Telephone>+33 6 12 42 12 42</cbc:Telephone>
+        <cbc:ElectronicMail>commercial@aubonmoulin.com</cbc:ElectronicMail>
+      </cac:Contact>
+    </cac:Party>
+  </cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty>
+    <cac:Party>
+      <cbc:EndpointID schemeID="0225">787878784</cbc:EndpointID>
+      <cac:PartyIdentification>
+        <cbc:ID schemeID="0009">78787878400018</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyName>
+        <cbc:Name>Ma jolie Trading Brand</cbc:Name>
+      </cac:PartyName>
+      <cac:PostalAddress>
+        <cbc:StreetName>35 rue de la République</cbc:StreetName>
+        <cbc:AdditionalStreetName>La presqu'île</cbc:AdditionalStreetName>
+        <cbc:CityName>Lyon</cbc:CityName>
+        <cbc:PostalZone>69001</cbc:PostalZone>
+        <cbc:CountrySubentity>Rhône</cbc:CountrySubentity>
+        <cac:Country>
+          <cbc:IdentificationCode>FR</cbc:IdentificationCode>
+        </cac:Country>
+      </cac:PostalAddress>
+      <cac:PartyTaxScheme>
+        <cbc:CompanyID>FR19787878784</cbc:CompanyID>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:PartyTaxScheme>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>Ma jolie boutique SARL</cbc:RegistrationName>
+        <cbc:CompanyID schemeID="0002">787878784</cbc:CompanyID>
+      </cac:PartyLegalEntity>
+      <cac:Contact>
+        <cbc:Name>Mme Laëtitia Durand</cbc:Name>
+        <cbc:Telephone>+33 7 42 12 42 12</cbc:Telephone>
+        <cbc:ElectronicMail>laetita.durand@jolieboutique.com</cbc:ElectronicMail>
+      </cac:Contact>
+    </cac:Party>
+  </cac:AccountingCustomerParty>
+  <cac:TaxRepresentativeParty>
+    <cac:PartyName>
+      <cbc:Name>Société écran</cbc:Name>
+    </cac:PartyName>
+    <cac:PostalAddress>
+      <cac:Country>
+        <cbc:IdentificationCode>FR</cbc:IdentificationCode>
+      </cac:Country>
+    </cac:PostalAddress>
+    <cac:PartyTaxScheme>
+      <cbc:CompanyID>FR15123456789</cbc:CompanyID>
+      <cac:TaxScheme>
+        <cbc:ID>VAT</cbc:ID>
+      </cac:TaxScheme>
+    </cac:PartyTaxScheme>
+  </cac:TaxRepresentativeParty>
+  <cac:Delivery>
+    <cbc:ActualDeliveryDate>2026-06-14</cbc:ActualDeliveryDate>
+    <cac:DeliveryLocation>
+      <cbc:ID schemeID="0009">63636363200010</cbc:ID>
+      <cac:Address>
+        <cbc:StreetName>5 avenue Georges Clémenceau</cbc:StreetName>
+        <cbc:CityName>Carpentras</cbc:CityName>
+        <cbc:PostalZone>84200</cbc:PostalZone>
+        <cac:Country>
+          <cbc:IdentificationCode>FR</cbc:IdentificationCode>
+        </cac:Country>
+      </cac:Address>
+    </cac:DeliveryLocation>
+    <cac:DeliveryParty>
+      <cac:PartyName>
+        <cbc:Name>Plateforme logistique FastIT</cbc:Name>
+      </cac:PartyName>
+    </cac:DeliveryParty>
+  </cac:Delivery>
+  <cac:PaymentMeans>
+    <cbc:PaymentMeansCode name="Libellé du moyen de paiement">30</cbc:PaymentMeansCode>
+    <cbc:PaymentID>2026-06-17 00:00:00</cbc:PaymentID>
+    <cac:PayeeFinancialAccount>
+      <cbc:ID>FR2012421242124212421242124</cbc:ID>
+      <cbc:Name>Au bon moulin SARL</cbc:Name>
+      <cac:FinancialInstitutionBranch>
+        <cbc:ID>QNTOFRP1XXX</cbc:ID>
+      </cac:FinancialInstitutionBranch>
+    </cac:PayeeFinancialAccount>
+    <cac:PaymentMandate>
+      <cbc:ID>RUM_9083209</cbc:ID>
+      <cac:PayerFinancialAccount>
+        <cbc:ID>FR7312345678901275089715A98</cbc:ID>
+      </cac:PayerFinancialAccount>
+    </cac:PaymentMandate>
+  </cac:PaymentMeans>
+  <cac:PaymentTerms>
+    <cbc:Note>30 jours net</cbc:Note>
+  </cac:PaymentTerms>
+  <cac:AllowanceCharge>
+    <cbc:ChargeIndicator>false</cbc:ChargeIndicator>
+    <cbc:AllowanceChargeReason>Consigne</cbc:AllowanceChargeReason>
+    <cbc:Amount currencyID="EUR">3.00</cbc:Amount>
+    <cbc:BaseAmount currencyID="EUR">138.00</cbc:BaseAmount>
+    <cac:TaxCategory>
+      <cbc:ID>S</cbc:ID>
+      <cbc:Percent>20.00</cbc:Percent>
+      <cac:TaxScheme>
+        <cbc:ID>VAT</cbc:ID>
+      </cac:TaxScheme>
+    </cac:TaxCategory>
+  </cac:AllowanceCharge>
+  <cac:AllowanceCharge>
+    <cbc:ChargeIndicator>false</cbc:ChargeIndicator>
+    <cbc:AllowanceChargeReason>Réduc fidélité</cbc:AllowanceChargeReason>
+    <cbc:Amount currencyID="EUR">2.50</cbc:Amount>
+    <cbc:BaseAmount currencyID="EUR">138.00</cbc:BaseAmount>
+    <cac:TaxCategory>
+      <cbc:ID>S</cbc:ID>
+      <cbc:Percent>20.00</cbc:Percent>
+      <cac:TaxScheme>
+        <cbc:ID>VAT</cbc:ID>
+      </cac:TaxScheme>
+    </cac:TaxCategory>
+  </cac:AllowanceCharge>
+  <cac:AllowanceCharge>
+    <cbc:ChargeIndicator>true</cbc:ChargeIndicator>
+    <cbc:AllowanceChargeReason>Surtaxe carburant</cbc:AllowanceChargeReason>
+    <cbc:Amount currencyID="EUR">5.50</cbc:Amount>
+    <cbc:BaseAmount currencyID="EUR">138.00</cbc:BaseAmount>
+    <cac:TaxCategory>
+      <cbc:ID>S</cbc:ID>
+      <cbc:Percent>20.00</cbc:Percent>
+      <cac:TaxScheme>
+        <cbc:ID>VAT</cbc:ID>
+      </cac:TaxScheme>
+    </cac:TaxCategory>
+  </cac:AllowanceCharge>
+  <cac:TaxTotal>
+    <cbc:TaxAmount currencyID="EUR">35.03</cbc:TaxAmount>
+    <cac:TaxSubtotal>
+      <cbc:TaxableAmount currencyID="EUR">138.00</cbc:TaxableAmount>
+      <cbc:TaxAmount currencyID="EUR">27.6</cbc:TaxAmount>
+      <cac:TaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>20.00</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:TaxCategory>
+    </cac:TaxSubtotal>
+    <cac:TaxSubtotal>
+      <cbc:TaxableAmount currencyID="EUR">135.00</cbc:TaxableAmount>
+      <cbc:TaxAmount currencyID="EUR">7.43</cbc:TaxAmount>
+      <cac:TaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>5.50</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:TaxCategory>
+    </cac:TaxSubtotal>
+  </cac:TaxTotal>
+  <cac:LegalMonetaryTotal>
+    <cbc:LineExtensionAmount currencyID="EUR">273.00</cbc:LineExtensionAmount>
+    <cbc:TaxExclusiveAmount currencyID="EUR">273.00</cbc:TaxExclusiveAmount>
+    <cbc:TaxInclusiveAmount currencyID="EUR">308.03</cbc:TaxInclusiveAmount>
+    <cbc:AllowanceTotalAmount currencyID="EUR">5.50</cbc:AllowanceTotalAmount>
+    <cbc:ChargeTotalAmount currencyID="EUR">5.50</cbc:ChargeTotalAmount>
+    <cbc:PrepaidAmount currencyID="EUR">100.00</cbc:PrepaidAmount>
+    <cbc:PayableAmount currencyID="EUR">208.03</cbc:PayableAmount>
+  </cac:LegalMonetaryTotal>
+  <cac:InvoiceLine>
+    <cbc:ID>1</cbc:ID>
+    <cbc:Note>Olives récoltées exclusivement dans le Vaucluse (FR)</cbc:Note>
+    <cbc:InvoicedQuantity unitCode="C62">10</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">135.00</cbc:LineExtensionAmount>
+    <cbc:AccountingCost>623400</cbc:AccountingCost>
+    <cac:InvoicePeriod>
+      <cbc:StartDate>2026-06-14</cbc:StartDate>
+      <cbc:EndDate>2026-06-15</cbc:EndDate>
+    </cac:InvoicePeriod>
+    <cac:AllowanceCharge>
+      <cbc:ChargeIndicator>false</cbc:ChargeIndicator>
+      <cbc:AllowanceChargeReason>test</cbc:AllowanceChargeReason>
+      <cbc:Amount currencyID="EUR">1.50</cbc:Amount>
+    </cac:AllowanceCharge>
+    <cac:AllowanceCharge>
+      <cbc:ChargeIndicator>true</cbc:ChargeIndicator>
+      <cbc:AllowanceChargeReason>test inverse</cbc:AllowanceChargeReason>
+      <cbc:Amount currencyID="EUR">1.50</cbc:Amount>
+    </cac:AllowanceCharge>
+    <cac:Item>
+      <cbc:Name>Huile d'olive Joio 50cl</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>JOIO50CL</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:StandardItemIdentification>
+        <cbc:ID schemeID="0160">3518370900150</cbc:ID>
+      </cac:StandardItemIdentification>
+      <cac:OriginCountry>
+        <cbc:IdentificationCode>FR</cbc:IdentificationCode>
+      </cac:OriginCountry>
+      <cac:CommodityClassification>
+        <cbc:ItemClassificationCode listID="BB" listVersionID="1.0">LOT1242</cbc:ItemClassificationCode>
+      </cac:CommodityClassification>
+      <cac:CommodityClassification>
+        <cbc:ItemClassificationCode listID="HS" listVersionID="NC8">15092000</cbc:ItemClassificationCode>
+      </cac:CommodityClassification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>5.50</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+      <cac:AdditionalItemProperty>
+        <cbc:Name>Couleur</cbc:Name>
+        <cbc:Value>Vert</cbc:Value>
+      </cac:AdditionalItemProperty>
+      <cac:AdditionalItemProperty>
+        <cbc:Name>Taille</cbc:Name>
+        <cbc:Value>L</cbc:Value>
+      </cac:AdditionalItemProperty>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">13.50</cbc:PriceAmount>
+      <cac:AllowanceCharge>
+        <cbc:ChargeIndicator>false</cbc:ChargeIndicator>
+        <cbc:Amount currencyID="EUR">1.50</cbc:Amount>
+        <cbc:BaseAmount currencyID="EUR">15.00</cbc:BaseAmount>
+      </cac:AllowanceCharge>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>2</cbc:ID>
+    <cbc:Note>Nougat préparé par les moines et les moniales du Barroux (FR)</cbc:Note>
+    <cbc:InvoicedQuantity unitCode="C62">20</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">138.00</cbc:LineExtensionAmount>
+    <cbc:AccountingCost>623400</cbc:AccountingCost>
+    <cac:OrderLineReference>
+      <cbc:LineID>DV843873</cbc:LineID>
+    </cac:OrderLineReference>
+    <cac:DocumentReference>
+      <cbc:ID schemeID="MWB">AWB129871</cbc:ID>
+      <cbc:DocumentTypeCode>130</cbc:DocumentTypeCode>
+    </cac:DocumentReference>
+    <cac:Item>
+      <cbc:Name>Nougats en cubes</cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID>NOUGATCUBES</cbc:ID>
+      </cac:SellersItemIdentification>
+      <cac:StandardItemIdentification>
+        <cbc:ID schemeID="0160">3518370400049</cbc:ID>
+      </cac:StandardItemIdentification>
+      <cac:OriginCountry>
+        <cbc:IdentificationCode>FR</cbc:IdentificationCode>
+      </cac:OriginCountry>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>20.00</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">6.90</cbc:PriceAmount>
+      <cac:AllowanceCharge>
+        <cbc:ChargeIndicator>false</cbc:ChargeIndicator>
+        <cbc:Amount currencyID="EUR">1.05</cbc:Amount>
+        <cbc:BaseAmount currencyID="EUR">7.95</cbc:BaseAmount>
+      </cac:AllowanceCharge>
+    </cac:Price>
+  </cac:InvoiceLine>
+</Invoice>

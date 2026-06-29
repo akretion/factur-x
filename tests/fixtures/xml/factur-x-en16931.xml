@@ -1,0 +1,704 @@
+﻿<?xml version='1.0' encoding='UTF-8'?>
+<rsm:CrossIndustryInvoice xmlns:qdt="urn:un:unece:uncefact:data:standard:QualifiedDataType:100"
+xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100"
+xmlns:rsm="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100"
+xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+     <rsm:ExchangedDocumentContext>
+          <ram:BusinessProcessSpecifiedDocumentContextParameter>
+               <ram:ID>S1</ram:ID>  <!-- BT-23 (Identifiant de type de processus métier) : S1 -->
+          </ram:BusinessProcessSpecifiedDocumentContextParameter>
+          <ram:GuidelineSpecifiedDocumentContextParameter>
+               <ram:ID>urn:cen.eu:en16931:2017</ram:ID>  <!-- BT-24 (Identification de spécification) : urn:cen.eu:en16931:2017 -->
+          </ram:GuidelineSpecifiedDocumentContextParameter>
+     </rsm:ExchangedDocumentContext>
+     <rsm:ExchangedDocument>
+          <ram:ID>F20260023</ram:ID>  <!-- BT-1 (Numéro de facture) : F20260023 -->
+          <ram:TypeCode>380</ram:TypeCode>  <!-- BT-3 (Type de facture en code) : 380 -->
+          <ram:IssueDateTime>
+               <udt:DateTimeString format="102">20260131</udt:DateTimeString>  <!-- BT-2 (Date d'émission de la facture) : 20260131 -->
+          </ram:IssueDateTime>
+          <ram:IncludedNote>
+               <ram:Content>FOURNISSEUR F SARL au capital de 50 000 EUR</ram:Content>  <!-- BT-22 (Note de facture) : FOURNISSEUR F SARL au capital de 50 000 EUR -->
+               <ram:SubjectCode>REG</ram:SubjectCode>  <!-- BT-21 (Sujet de la note de facture en code) : REG -->
+          </ram:IncludedNote>
+          <ram:IncludedNote>
+               <ram:Content>RCS MAVILLE 123 456 782</ram:Content>  <!-- BT-22 (Note de facture) : RCS MAVILLE 123 456 782 -->
+               <ram:SubjectCode>ABL</ram:SubjectCode>  <!-- BT-21 (Sujet de la note de facture en code) : ABL -->
+          </ram:IncludedNote>
+          <ram:IncludedNote>
+               <ram:Content>35 ma rue a moi, code postal Ville Pays – contact@masociete.fr - www.masociete.fr  – N° TVA : FR32 123 456 789</ram:Content>  <!-- BT-22 (Note de facture) : 35 ma rue a moi, code postal Ville Pays – contact@masociete.fr - www.masociete.fr  – N° TVA : FR32 123 456 789 -->
+               <ram:SubjectCode>AAI</ram:SubjectCode>  <!-- BT-21 (Sujet de la note de facture en code) : AAI -->
+          </ram:IncludedNote>
+          <ram:IncludedNote>
+               <ram:Content>Tout retard de paiement engendre une pénalité exigible à compter de la date d'échéance, calculée sur la base de trois fois le taux d'intérêt légal. </ram:Content>  <!-- BT-22 (Note de facture) : Tout retard de paiement engendre une pénalité exigible à compter de la date d'échéance, calculée sur la base de trois fois le taux d'intérêt légal.  -->
+               <ram:SubjectCode>PMD</ram:SubjectCode>  <!-- BT-21 (Sujet de la note de facture en code) : PMD -->
+          </ram:IncludedNote>
+          <ram:IncludedNote>
+               <ram:Content>Indemnité forfaitaire pour frais de recouvrement en cas de retard de paiement : 40 €.</ram:Content>  <!-- BT-22 (Note de facture) : Indemnité forfaitaire pour frais de recouvrement en cas de retard de paiement : 40 €. -->
+               <ram:SubjectCode>PMT</ram:SubjectCode>  <!-- BT-21 (Sujet de la note de facture en code) : PMT -->
+          </ram:IncludedNote>
+          <ram:IncludedNote>
+               <ram:Content>Les réglements reçus avant la date d'échéance ne donneront pas lieu à escompte.</ram:Content>  <!-- BT-22 (Note de facture) : Les réglements reçus avant la date d'échéance ne donneront pas lieu à escompte. -->
+               <ram:SubjectCode>AAB</ram:SubjectCode>  <!-- BT-21 (Sujet de la note de facture en code) : AAB -->
+          </ram:IncludedNote>
+     </rsm:ExchangedDocument>
+     <rsm:SupplyChainTradeTransaction>
+          <ram:IncludedSupplyChainTradeLineItem>
+               <ram:AssociatedDocumentLineDocument>
+                    <ram:LineID>1</ram:LineID>  <!-- BT-126 (Identifiant de ligne de facture) : 1 -->
+                    <ram:IncludedNote>
+                         <ram:Content>DONT 0,50 EUR de DEEE</ram:Content>  <!-- BT-127 (Note de ligne de facture) : DONT 0,50 EUR de DEEE -->
+                    </ram:IncludedNote>
+               </ram:AssociatedDocumentLineDocument>
+               <ram:SpecifiedTradeProduct>
+                    <ram:GlobalID schemeID="0160">598785412598745</ram:GlobalID>  <!-- BT-157 (Identifiant standard de l'article) : 598785412598745 -->
+                    <ram:SellerAssignedID>ART_1254</ram:SellerAssignedID>  <!-- BT-155 (Identifiant du vendeur de l'article) : ART_1254 -->
+                    <ram:BuyerAssignedID>REF5487</ram:BuyerAssignedID>  <!-- BT-156 (Identifiant de l'acheteur de l'article) : REF5487 -->
+                    <ram:Name>PRESTATION SUPPORT</ram:Name>  <!-- BT-153 (Nom de l'article) : PRESTATION SUPPORT -->
+                    <ram:Description>Description</ram:Description>  <!-- BT-154 (Description de l'article) : Description -->
+                    <ram:ApplicableProductCharacteristic>
+                         <ram:Description>CATEGORIE</ram:Description>  <!-- BT-160 (Nom d'attribut d'article) : CATEGORIE -->
+                         <ram:Value>JOUR 8H-20H</ram:Value>  <!-- BT-161 (Valeur d'attribut d'article) : JOUR 8H-20H -->
+                    </ram:ApplicableProductCharacteristic>
+                    <ram:DesignatedProductClassification>
+                         <ram:ClassCode listID="SK">SKU2578</ram:ClassCode>  <!-- BT-158 (Code de classification de l'article) : SKU2578 -->
+                    </ram:DesignatedProductClassification>
+               </ram:SpecifiedTradeProduct>
+               <ram:SpecifiedLineTradeAgreement>
+                    <ram:BuyerOrderReferencedDocument>
+                         <ram:LineID>1</ram:LineID>  <!-- BT-132 (Identifiant de ligne de bon de commande référencée) : 1 -->
+                    </ram:BuyerOrderReferencedDocument>
+                     <ram:GrossPriceProductTradePrice>
+                         <ram:ChargeAmount>65.0000</ram:ChargeAmount>  <!-- BT-148 (Prix brut de l'article) : 65.0000 -->
+                         <ram:BasisQuantity unitCode="C62">1.0000</ram:BasisQuantity>  <!-- BT-149 (Quantité de base du prix de l'article) : 1.0000 -->
+                          <ram:AppliedTradeAllowanceCharge>
+                              <ram:ChargeIndicator>
+                                   <udt:Indicator>false</udt:Indicator>  <!-- BT-147-02 (Indicateur de remise pour rabais (false)) : false -->
+                              </ram:ChargeIndicator>
+                              <ram:ActualAmount>5.0000</ram:ActualAmount>  <!-- BT-147 (Rabais sur le prix de l'article) : 5.0000 -->
+                          </ram:AppliedTradeAllowanceCharge>
+                     </ram:GrossPriceProductTradePrice>
+                    <ram:NetPriceProductTradePrice>
+                         <ram:ChargeAmount>60.0000</ram:ChargeAmount>  <!-- BT-146 (Prix net de l'article) : 60.0000 -->
+                         <ram:BasisQuantity unitCode="C62">1.0000</ram:BasisQuantity>  <!-- BT-149 (Quantité de base du prix de l'article) : 1.0000 -->
+                    </ram:NetPriceProductTradePrice>
+               </ram:SpecifiedLineTradeAgreement>
+               <ram:SpecifiedLineTradeDelivery>
+                    <ram:BilledQuantity unitCode="C62">1.0000</ram:BilledQuantity>  <!-- BT-129 (Quantité facturée) : 1.0000 -->
+               </ram:SpecifiedLineTradeDelivery>
+               <ram:SpecifiedLineTradeSettlement>
+                    <ram:ApplicableTradeTax>
+                         <ram:TypeCode>VAT</ram:TypeCode>  <!-- BT-151-0 (Type Taxe en code) : VAT -->
+                         <ram:CategoryCode>E</ram:CategoryCode>  <!-- BT-151 (Code de type de TVA de l'article facturé) : E -->
+                         <ram:RateApplicablePercent>0.00</ram:RateApplicablePercent>  <!-- BT-152 (Taux de TVA de l'article facturé) : 0.00 -->
+                    </ram:ApplicableTradeTax>
+                    <ram:BillingSpecifiedPeriod>
+                         <ram:StartDateTime>
+                              <udt:DateTimeString format="102">20260101</udt:DateTimeString>  <!-- BT-134 (Date de début de période de facturation d'une ligne) : 20260101 -->
+                         </ram:StartDateTime>
+                         <ram:EndDateTime>
+                              <udt:DateTimeString format="102">20260131</udt:DateTimeString>  <!-- BT-135 (Date de fin de période de facturation d'une ligne) : 20260131 -->
+                         </ram:EndDateTime>
+                    </ram:BillingSpecifiedPeriod>
+                    <ram:SpecifiedTradeAllowanceCharge>
+                         <ram:ChargeIndicator>
+                              <udt:Indicator>false</udt:Indicator>  <!-- BG-27-1 (Indicateur de remise) : false -->
+                         </ram:ChargeIndicator>
+                         <ram:CalculationPercent>1.00</ram:CalculationPercent>  <!-- BT-138 (Pourcentage de remise applicable à la ligne de facture) : 1.00 -->
+                         <ram:BasisAmount>100.00</ram:BasisAmount>  <!-- BT-137 (Assiette de la remise applicable à la ligne de facture) : 100.00 -->
+                         <ram:ActualAmount>1.00</ram:ActualAmount>  <!-- BT-136 (Montant de la remise applicable à la ligne de facture) : 1.00 -->
+                         <ram:ReasonCode>71</ram:ReasonCode>  <!-- BT-140 (Code de motif de la remise applicable à la ligne de facture) : 71 -->
+                         <ram:Reason>REMISE VOLUME</ram:Reason>  <!-- BT-139 (Motif de la remise applicable à la ligne de facture) : REMISE VOLUME -->
+                    </ram:SpecifiedTradeAllowanceCharge>
+                    <ram:SpecifiedTradeAllowanceCharge>
+                         <ram:ChargeIndicator>
+                              <udt:Indicator>false</udt:Indicator>  <!-- BG-27-1 (Indicateur de remise) : false -->
+                         </ram:ChargeIndicator>
+                         <ram:ActualAmount>1.00</ram:ActualAmount>  <!-- BT-136 (Montant de la remise applicable à la ligne de facture) : 1.00 -->
+                         <ram:ReasonCode>71</ram:ReasonCode>  <!-- BT-140 (Code de motif de la remise applicable à la ligne de facture) : 71 -->
+                         <ram:Reason>REMISE VOLUME</ram:Reason>  <!-- BT-139 (Motif de la remise applicable à la ligne de facture) : REMISE VOLUME -->
+                    </ram:SpecifiedTradeAllowanceCharge>
+                    <ram:SpecifiedTradeAllowanceCharge>
+                         <ram:ChargeIndicator>
+                              <udt:Indicator>false</udt:Indicator>  <!-- BG-27-1 (Indicateur de remise) : false -->
+                         </ram:ChargeIndicator>
+                         <ram:ActualAmount>1.00</ram:ActualAmount>  <!-- BT-136 (Montant de la remise applicable à la ligne de facture) : 1.00 -->
+                         <ram:ReasonCode>71</ram:ReasonCode>  <!-- BT-140 (Code de motif de la remise applicable à la ligne de facture) : 71 -->
+                         <ram:Reason>REMISE VOLUME</ram:Reason>  <!-- BT-139 (Motif de la remise applicable à la ligne de facture) : REMISE VOLUME -->
+                    </ram:SpecifiedTradeAllowanceCharge>
+                    <ram:SpecifiedTradeAllowanceCharge>
+                         <ram:ChargeIndicator>
+                              <udt:Indicator>false</udt:Indicator>  <!-- BG-27-1 (Indicateur de remise) : false -->
+                         </ram:ChargeIndicator>
+                         <ram:ActualAmount>1.00</ram:ActualAmount>  <!-- BT-136 (Montant de la remise applicable à la ligne de facture) : 1.00 -->
+                         <ram:ReasonCode>100</ram:ReasonCode>  <!-- BT-140 (Code de motif de la remise applicable à la ligne de facture) : 100 -->
+                    </ram:SpecifiedTradeAllowanceCharge>
+                    <ram:SpecifiedTradeAllowanceCharge>
+                         <ram:ChargeIndicator>
+                              <udt:Indicator>true</udt:Indicator>  <!-- BG-28-1 (Indicateur de charge) : true -->
+                         </ram:ChargeIndicator>
+                         <ram:ActualAmount>1.00</ram:ActualAmount>  <!-- BT-141 (Montant des charges et frais applicables à la ligne de facture) : 1.00 -->
+                         <ram:Reason>FRAIS PALETTE</ram:Reason>  <!-- BT-144 (Motif des charges et frais applicables à la ligne de facture) : FRAIS PALETTE -->
+                    </ram:SpecifiedTradeAllowanceCharge>
+                    <ram:SpecifiedTradeAllowanceCharge>
+                         <ram:ChargeIndicator>
+                              <udt:Indicator>true</udt:Indicator>  <!-- BG-28-1 (Indicateur de charge) : true -->
+                         </ram:ChargeIndicator>
+                         <ram:ActualAmount>1.00</ram:ActualAmount>  <!-- BT-141 (Montant des charges et frais applicables à la ligne de facture) : 1.00 -->
+                         <ram:Reason>FRAIS PALETTE</ram:Reason>  <!-- BT-144 (Motif des charges et frais applicables à la ligne de facture) : FRAIS PALETTE -->
+                    </ram:SpecifiedTradeAllowanceCharge>
+                    <ram:SpecifiedTradeAllowanceCharge>
+                         <ram:ChargeIndicator>
+                              <udt:Indicator>true</udt:Indicator>  <!-- BG-28-1 (Indicateur de charge) : true -->
+                         </ram:ChargeIndicator>
+                         <ram:ActualAmount>1.00</ram:ActualAmount>  <!-- BT-141 (Montant des charges et frais applicables à la ligne de facture) : 1.00 -->
+                         <ram:Reason>FRAIS PALETTE</ram:Reason>  <!-- BT-144 (Motif des charges et frais applicables à la ligne de facture) : FRAIS PALETTE -->
+                    </ram:SpecifiedTradeAllowanceCharge>
+                    <ram:SpecifiedTradeAllowanceCharge>
+                         <ram:ChargeIndicator>
+                              <udt:Indicator>true</udt:Indicator>  <!-- BG-28-1 (Indicateur de charge) : true -->
+                         </ram:ChargeIndicator>
+                         <ram:ActualAmount>1.00</ram:ActualAmount>  <!-- BT-141 (Montant des charges et frais applicables à la ligne de facture) : 1.00 -->
+                         <ram:Reason>FRAIS PALETTE</ram:Reason>  <!-- BT-144 (Motif des charges et frais applicables à la ligne de facture) : FRAIS PALETTE -->
+                    </ram:SpecifiedTradeAllowanceCharge>
+                    <ram:SpecifiedTradeSettlementLineMonetarySummation>
+                         <ram:LineTotalAmount>60.00</ram:LineTotalAmount>  <!-- BT-131 (Montant net de ligne de facture) : 60.00 -->
+                    </ram:SpecifiedTradeSettlementLineMonetarySummation>
+                    <ram:AdditionalReferencedDocument>
+                         <ram:IssuerAssignedID>EQUIPE_A</ram:IssuerAssignedID>  <!-- BT-128 (Identifiant de l'objet à la ligne) : EQUIPE_A -->
+                          <ram:TypeCode>130</ram:TypeCode>  <!-- BT-128-0 (Code type fixe (130)) : 130 -->
+                         <ram:ReferenceTypeCode>AOP</ram:ReferenceTypeCode>  <!-- BT-128-1 (Identifiant du schéma) : AOP -->
+                    </ram:AdditionalReferencedDocument>
+                    <ram:ReceivableSpecifiedTradeAccountingAccount>
+                         <ram:ID>BUY_ACC_REF</ram:ID>  <!-- BT-133 (Référence comptable de l'acheteur) : BUY_ACC_REF -->
+                    </ram:ReceivableSpecifiedTradeAccountingAccount>
+               </ram:SpecifiedLineTradeSettlement>
+          </ram:IncludedSupplyChainTradeLineItem>
+          <ram:IncludedSupplyChainTradeLineItem>
+               <ram:AssociatedDocumentLineDocument>
+                    <ram:LineID>2</ram:LineID>  <!-- BT-126 (Identifiant de ligne de facture) : 2 -->
+                    <ram:IncludedNote>
+                         <ram:Content>DONT 0,50 EUR de DEEE</ram:Content>  <!-- BT-127 (Note de ligne de facture) : DONT 0,50 EUR de DEEE -->
+                    </ram:IncludedNote>
+               </ram:AssociatedDocumentLineDocument>
+               <ram:SpecifiedTradeProduct>
+                    <ram:SellerAssignedID>ART_9874</ram:SellerAssignedID>  <!-- BT-155 (Identifiant du vendeur de l'article) : ART_9874 -->
+                    <ram:BuyerAssignedID>REF9854</ram:BuyerAssignedID>  <!-- BT-156 (Identifiant de l'acheteur de l'article) : REF9854 -->
+                    <ram:Name>FOURNITURES PAPIER</ram:Name>  <!-- BT-153 (Nom de l'article) : FOURNITURES PAPIER -->
+                    <ram:Description>Description</ram:Description>  <!-- BT-154 (Description de l'article) : Description -->
+                    <ram:ApplicableProductCharacteristic>
+                         <ram:Description>COULEUR</ram:Description>  <!-- BT-160 (Nom d'attribut d'article) : COULEUR -->
+                         <ram:Value>BLANC</ram:Value>  <!-- BT-161 (Valeur d'attribut d'article) : BLANC -->
+                    </ram:ApplicableProductCharacteristic>
+                    <ram:ApplicableProductCharacteristic>
+                         <ram:Description>GRAMMAGE</ram:Description>  <!-- BT-160 (Nom d'attribut d'article) : GRAMMAGE -->
+                         <ram:Value>80g</ram:Value>  <!-- BT-161 (Valeur d'attribut d'article) : 80g -->
+                    </ram:ApplicableProductCharacteristic>
+                    <ram:DesignatedProductClassification>
+                         <ram:ClassCode listID="BB">LOT6254784</ram:ClassCode>  <!-- BT-158 (Code de classification de l'article) : LOT6254784 -->
+                    </ram:DesignatedProductClassification>
+                    <ram:OriginTradeCountry>
+                         <ram:ID>FR</ram:ID>  <!-- BT-159 (Pays d'origine de l'article) : FR -->
+                    </ram:OriginTradeCountry>
+               </ram:SpecifiedTradeProduct>
+               <ram:SpecifiedLineTradeAgreement>
+                    <ram:BuyerOrderReferencedDocument>
+                         <ram:LineID>3</ram:LineID>  <!-- BT-132 (Identifiant de ligne de bon de commande référencée) : 3 -->
+                    </ram:BuyerOrderReferencedDocument>
+                     <ram:GrossPriceProductTradePrice>
+                         <ram:ChargeAmount>31.0000</ram:ChargeAmount>  <!-- BT-148 (Prix brut de l'article) : 31.0000 -->
+                         <ram:BasisQuantity unitCode="C62">3.0000</ram:BasisQuantity>  <!-- BT-149 (Quantité de base du prix de l'article) : 3.0000 -->
+                          <ram:AppliedTradeAllowanceCharge>
+                              <ram:ChargeIndicator>
+                                   <udt:Indicator>false</udt:Indicator>  <!-- BT-147-02 (Indicateur de remise pour rabais (false)) : false -->
+                              </ram:ChargeIndicator>
+                              <ram:ActualAmount>1.0000</ram:ActualAmount>  <!-- BT-147 (Rabais sur le prix de l'article) : 1.0000 -->
+                          </ram:AppliedTradeAllowanceCharge>
+                     </ram:GrossPriceProductTradePrice>
+                    <ram:NetPriceProductTradePrice>
+                         <ram:ChargeAmount>30.0000</ram:ChargeAmount>  <!-- BT-146 (Prix net de l'article) : 30.0000 -->
+                         <ram:BasisQuantity unitCode="C62">3.0000</ram:BasisQuantity>  <!-- BT-149 (Quantité de base du prix de l'article) : 3.0000 -->
+                    </ram:NetPriceProductTradePrice>
+               </ram:SpecifiedLineTradeAgreement>
+               <ram:SpecifiedLineTradeDelivery>
+                    <ram:BilledQuantity unitCode="C62">3.0000</ram:BilledQuantity>  <!-- BT-129 (Quantité facturée) : 3.0000 -->
+               </ram:SpecifiedLineTradeDelivery>
+               <ram:SpecifiedLineTradeSettlement>
+                    <ram:ApplicableTradeTax>
+                         <ram:TypeCode>VAT</ram:TypeCode>  <!-- BT-151-0 (Type Taxe en code) : VAT -->
+                         <ram:CategoryCode>S</ram:CategoryCode>  <!-- BT-151 (Code de type de TVA de l'article facturé) : S -->
+                         <ram:RateApplicablePercent>10.00</ram:RateApplicablePercent>  <!-- BT-152 (Taux de TVA de l'article facturé) : 10.00 -->
+                    </ram:ApplicableTradeTax>
+                    <ram:BillingSpecifiedPeriod>
+                         <ram:StartDateTime>
+                              <udt:DateTimeString format="102">20260101</udt:DateTimeString>  <!-- BT-134 (Date de début de période de facturation d'une ligne) : 20260101 -->
+                         </ram:StartDateTime>
+                         <ram:EndDateTime>
+                              <udt:DateTimeString format="102">20260131</udt:DateTimeString>  <!-- BT-135 (Date de fin de période de facturation d'une ligne) : 20260131 -->
+                         </ram:EndDateTime>
+                    </ram:BillingSpecifiedPeriod>
+                    <ram:SpecifiedTradeAllowanceCharge>
+                         <ram:ChargeIndicator>
+                              <udt:Indicator>false</udt:Indicator>  <!-- BG-27-1 (Indicateur de remise) : false -->
+                         </ram:ChargeIndicator>
+                         <ram:ActualAmount>2.00</ram:ActualAmount>  <!-- BT-136 (Montant de la remise applicable à la ligne de facture) : 2.00 -->
+                         <ram:ReasonCode>71</ram:ReasonCode>  <!-- BT-140 (Code de motif de la remise applicable à la ligne de facture) : 71 -->
+                         <ram:Reason>REMISE VOLUME</ram:Reason>  <!-- BT-139 (Motif de la remise applicable à la ligne de facture) : REMISE VOLUME -->
+                    </ram:SpecifiedTradeAllowanceCharge>
+                    <ram:SpecifiedTradeAllowanceCharge>
+                         <ram:ChargeIndicator>
+                              <udt:Indicator>false</udt:Indicator>  <!-- BG-27-1 (Indicateur de remise) : false -->
+                         </ram:ChargeIndicator>
+                         <ram:ActualAmount>1.00</ram:ActualAmount>  <!-- BT-136 (Montant de la remise applicable à la ligne de facture) : 1.00 -->
+                         <ram:ReasonCode>71</ram:ReasonCode>  <!-- BT-140 (Code de motif de la remise applicable à la ligne de facture) : 71 -->
+                         <ram:Reason>REMISE VOLUME</ram:Reason>  <!-- BT-139 (Motif de la remise applicable à la ligne de facture) : REMISE VOLUME -->
+                    </ram:SpecifiedTradeAllowanceCharge>
+                    <ram:SpecifiedTradeAllowanceCharge>
+                         <ram:ChargeIndicator>
+                              <udt:Indicator>false</udt:Indicator>  <!-- BG-27-1 (Indicateur de remise) : false -->
+                         </ram:ChargeIndicator>
+                         <ram:ActualAmount>1.00</ram:ActualAmount>  <!-- BT-136 (Montant de la remise applicable à la ligne de facture) : 1.00 -->
+                         <ram:ReasonCode>71</ram:ReasonCode>  <!-- BT-140 (Code de motif de la remise applicable à la ligne de facture) : 71 -->
+                         <ram:Reason>REMISE VOLUME</ram:Reason>  <!-- BT-139 (Motif de la remise applicable à la ligne de facture) : REMISE VOLUME -->
+                    </ram:SpecifiedTradeAllowanceCharge>
+                    <ram:SpecifiedTradeAllowanceCharge>
+                         <ram:ChargeIndicator>
+                              <udt:Indicator>false</udt:Indicator>  <!-- BG-27-1 (Indicateur de remise) : false -->
+                         </ram:ChargeIndicator>
+                         <ram:ActualAmount>1.00</ram:ActualAmount>  <!-- BT-136 (Montant de la remise applicable à la ligne de facture) : 1.00 -->
+                         <ram:ReasonCode>100</ram:ReasonCode>  <!-- BT-140 (Code de motif de la remise applicable à la ligne de facture) : 100 -->
+                    </ram:SpecifiedTradeAllowanceCharge>
+                    <ram:SpecifiedTradeAllowanceCharge>
+                         <ram:ChargeIndicator>
+                              <udt:Indicator>true</udt:Indicator>  <!-- BG-28-1 (Indicateur de charge) : true -->
+                         </ram:ChargeIndicator>
+                         <ram:ActualAmount>1.00</ram:ActualAmount>  <!-- BT-141 (Montant des charges et frais applicables à la ligne de facture) : 1.00 -->
+                         <ram:ReasonCode>ADL</ram:ReasonCode>  <!-- BT-145 (Code de motif des charges et frais applicables à la ligne de facture) : ADL -->
+                    </ram:SpecifiedTradeAllowanceCharge>
+                    <ram:SpecifiedTradeAllowanceCharge>
+                         <ram:ChargeIndicator>
+                              <udt:Indicator>true</udt:Indicator>  <!-- BG-28-1 (Indicateur de charge) : true -->
+                         </ram:ChargeIndicator>
+                         <ram:ActualAmount>1.00</ram:ActualAmount>  <!-- BT-141 (Montant des charges et frais applicables à la ligne de facture) : 1.00 -->
+                         <ram:Reason>FRAIS PALETTE</ram:Reason>  <!-- BT-144 (Motif des charges et frais applicables à la ligne de facture) : FRAIS PALETTE -->
+                    </ram:SpecifiedTradeAllowanceCharge>
+                    <ram:SpecifiedTradeAllowanceCharge>
+                         <ram:ChargeIndicator>
+                              <udt:Indicator>true</udt:Indicator>  <!-- BG-28-1 (Indicateur de charge) : true -->
+                         </ram:ChargeIndicator>
+                         <ram:ActualAmount>1.00</ram:ActualAmount>  <!-- BT-141 (Montant des charges et frais applicables à la ligne de facture) : 1.00 -->
+                         <ram:Reason>FRAIS PALETTE</ram:Reason>  <!-- BT-144 (Motif des charges et frais applicables à la ligne de facture) : FRAIS PALETTE -->
+                    </ram:SpecifiedTradeAllowanceCharge>
+                    <ram:SpecifiedTradeSettlementLineMonetarySummation>
+                         <ram:LineTotalAmount>28.00</ram:LineTotalAmount>  <!-- BT-131 (Montant net de ligne de facture) : 28.00 -->
+                    </ram:SpecifiedTradeSettlementLineMonetarySummation>
+                    <ram:AdditionalReferencedDocument>
+                         <ram:IssuerAssignedID>TARIF_2022</ram:IssuerAssignedID>  <!-- BT-128 (Identifiant de l'objet à la ligne) : TARIF_2022 -->
+                          <ram:TypeCode>130</ram:TypeCode>  <!-- BT-128-0 (Code type fixe (130)) : 130 -->
+                         <ram:ReferenceTypeCode>AFG</ram:ReferenceTypeCode>  <!-- BT-128-1 (Identifiant du schéma) : AFG -->
+                    </ram:AdditionalReferencedDocument>
+                    <ram:ReceivableSpecifiedTradeAccountingAccount>
+                         <ram:ID>BUY_ACC_REF</ram:ID>  <!-- BT-133 (Référence comptable de l'acheteur) : BUY_ACC_REF -->
+                    </ram:ReceivableSpecifiedTradeAccountingAccount>
+               </ram:SpecifiedLineTradeSettlement>
+          </ram:IncludedSupplyChainTradeLineItem>
+          <ram:IncludedSupplyChainTradeLineItem>
+               <ram:AssociatedDocumentLineDocument>
+                    <ram:LineID>3</ram:LineID>  <!-- BT-126 (Identifiant de ligne de facture) : 3 -->
+                    <ram:IncludedNote>
+                         <ram:Content>DONT 0,50 EUR de DEEE</ram:Content>  <!-- BT-127 (Note de ligne de facture) : DONT 0,50 EUR de DEEE -->
+                    </ram:IncludedNote>
+               </ram:AssociatedDocumentLineDocument>
+               <ram:SpecifiedTradeProduct>
+                    <ram:Name>APPEL</ram:Name>  <!-- BT-153 (Nom de l'article) : APPEL -->
+                    <ram:Description>Description</ram:Description>  <!-- BT-154 (Description de l'article) : Description -->
+               </ram:SpecifiedTradeProduct>
+               <ram:SpecifiedLineTradeAgreement>
+                    <ram:BuyerOrderReferencedDocument>
+                         <ram:LineID>2</ram:LineID>  <!-- BT-132 (Identifiant de ligne de bon de commande référencée) : 2 -->
+                    </ram:BuyerOrderReferencedDocument>
+                     <ram:GrossPriceProductTradePrice>
+                         <ram:ChargeAmount>7.0000</ram:ChargeAmount>  <!-- BT-148 (Prix brut de l'article) : 7.0000 -->
+                          <ram:AppliedTradeAllowanceCharge>
+                              <ram:ChargeIndicator>
+                                   <udt:Indicator>false</udt:Indicator>  <!-- BT-147-02 (Indicateur de remise pour rabais (false)) : false -->
+                              </ram:ChargeIndicator>
+                              <ram:ActualAmount>0.0000</ram:ActualAmount>  <!-- BT-147 (Rabais sur le prix de l'article) : 0.0000 -->
+                          </ram:AppliedTradeAllowanceCharge>
+                     </ram:GrossPriceProductTradePrice>
+                    <ram:NetPriceProductTradePrice>
+                         <ram:ChargeAmount>7.0000</ram:ChargeAmount>  <!-- BT-146 (Prix net de l'article) : 7.0000 -->
+                    </ram:NetPriceProductTradePrice>
+               </ram:SpecifiedLineTradeAgreement>
+               <ram:SpecifiedLineTradeDelivery>
+                    <ram:BilledQuantity unitCode="C62">1.0000</ram:BilledQuantity>  <!-- BT-129 (Quantité facturée) : 1.0000 -->
+               </ram:SpecifiedLineTradeDelivery>
+               <ram:SpecifiedLineTradeSettlement>
+                    <ram:ApplicableTradeTax>
+                         <ram:TypeCode>VAT</ram:TypeCode>  <!-- BT-151-0 (Type Taxe en code) : VAT -->
+                         <ram:CategoryCode>S</ram:CategoryCode>  <!-- BT-151 (Code de type de TVA de l'article facturé) : S -->
+                         <ram:RateApplicablePercent>20.00</ram:RateApplicablePercent>  <!-- BT-152 (Taux de TVA de l'article facturé) : 20.00 -->
+                    </ram:ApplicableTradeTax>
+                    <ram:SpecifiedTradeSettlementLineMonetarySummation>
+                         <ram:LineTotalAmount>7.00</ram:LineTotalAmount>  <!-- BT-131 (Montant net de ligne de facture) : 7.00 -->
+                    </ram:SpecifiedTradeSettlementLineMonetarySummation>
+                    <ram:ReceivableSpecifiedTradeAccountingAccount>
+                         <ram:ID>BUY_ACC_REF</ram:ID>  <!-- BT-133 (Référence comptable de l'acheteur) : BUY_ACC_REF -->
+                    </ram:ReceivableSpecifiedTradeAccountingAccount>
+               </ram:SpecifiedLineTradeSettlement>
+          </ram:IncludedSupplyChainTradeLineItem>
+          <ram:ApplicableHeaderTradeAgreement>
+               <ram:BuyerReference>SERVEXEC</ram:BuyerReference>  <!-- BT-10 (Référence de l’acheteur) : SERVEXEC -->
+               <ram:SellerTradeParty>
+                    <ram:ID>123</ram:ID>  <!-- BT-29 (Identifiant du vendeur) : 123 -->
+                    <ram:GlobalID schemeID="0088">587451236587</ram:GlobalID>  <!-- BT-29-0 (Identifiant du vendeur (Global ID)) : 587451236587 -->
+                    <ram:GlobalID schemeID="0009">12345678200077</ram:GlobalID>  <!-- BT-29-0 (Identifiant du vendeur (Global ID)) : 12345678200077 -->
+                    <ram:GlobalID schemeID="0060">DUNS1235487</ram:GlobalID>  <!-- BT-29-0 (Identifiant du vendeur (Global ID)) : DUNS1235487 -->
+                    <ram:GlobalID schemeID="0177">ODETTE254879</ram:GlobalID>  <!-- BT-29-0 (Identifiant du vendeur (Global ID)) : ODETTE254879 -->
+                    <ram:Name>LE FOURNISSEUR</ram:Name>  <!-- BT-27 (Raison sociale du vendeur) : LE FOURNISSEUR -->
+                    <ram:Description>SARL AU CAPITAL DE 50 000 EUROS</ram:Description>  <!-- BT-33 (Informations juridiques additionnelles sur le vendeur) : SARL AU CAPITAL DE 50 000 EUROS -->
+                    <ram:SpecifiedLegalOrganization>
+                         <ram:ID schemeID="0002">123456782</ram:ID>  <!-- BT-30 (Identifiant d’enregistrement légal du vendeur) : 123456782 -->
+                         <ram:TradingBusinessName>SELLER TRADE NAME</ram:TradingBusinessName>  <!-- BT-28 (Appellation commerciale du vendeur) : SELLER TRADE NAME -->
+                    </ram:SpecifiedLegalOrganization>
+                    <ram:DefinedTradeContact>
+                         <ram:PersonName>M. CONTACT</ram:PersonName>  <!-- BT-41 (Point de contact vendeur) : M. CONTACT -->
+                         <ram:TelephoneUniversalCommunication>
+                              <ram:CompleteNumber>01 02 03 54 87</ram:CompleteNumber>  <!-- BT-42 (Numéro de téléphone du contact vendeur) : 01 02 03 54 87 -->
+                         </ram:TelephoneUniversalCommunication>
+                         <ram:EmailURIUniversalCommunication>
+                              <ram:URIID>seller@seller.com</ram:URIID>  <!-- BT-43 (Adresse électronique du contact vendeur) : seller@seller.com -->
+                         </ram:EmailURIUniversalCommunication>
+                    </ram:DefinedTradeContact>
+                    <ram:PostalTradeAddress>
+                         <ram:PostcodeCode>75018</ram:PostcodeCode>  <!-- BT-38 (Code postal du vendeur) : 75018 -->
+                         <ram:LineOne>35 rue d'ici</ram:LineOne>  <!-- BT-35 (Adresse du vendeur - Ligne 1) : 35 rue d'ici -->
+                         <ram:LineTwo>Seller line 2</ram:LineTwo>  <!-- BT-36 (Adresse du vendeur - Ligne 2) : Seller line 2 -->
+                         <ram:LineThree>Seller line 3</ram:LineThree>  <!-- BT-162 (Adresse du vendeur - Ligne 3) : Seller line 3 -->
+                         <ram:CityName>PARIS</ram:CityName>  <!-- BT-37 (Localité du vendeur) : PARIS -->
+                         <ram:CountryID>FR</ram:CountryID>  <!-- BT-40 (Code de pays du vendeur) : FR -->
+                    </ram:PostalTradeAddress>
+                    <ram:URIUniversalCommunication>
+                         <ram:URIID schemeID="EM">moi@seller.com</ram:URIID>  <!-- BT-34 (Adresse électronique du vendeur ) : moi@seller.com -->
+                    </ram:URIUniversalCommunication>
+                    <ram:SpecifiedTaxRegistration>
+                         <ram:ID schemeID="VA">FR11123456782</ram:ID>  <!-- BT-31 (Identifiant à la TVA du vendeur) : FR11123456782 -->
+                    </ram:SpecifiedTaxRegistration>
+               </ram:SellerTradeParty>
+               <ram:BuyerTradeParty>
+                    <ram:GlobalID schemeID="0088">3654789851</ram:GlobalID>  <!-- BT-46-0 (Identifiant de l'acheteur (GlobalID)) : 3654789851 -->
+                    <ram:Name>LE CLIENT</ram:Name>  <!-- BT-44 (Raison sociale de l'acheteur) : LE CLIENT -->
+                    <ram:SpecifiedLegalOrganization>
+                         <ram:ID schemeID="0002">987654321</ram:ID>  <!-- BT-47 (Identifiant d’enregistrement  légal de l'acheteur) : 987654321 -->
+                    </ram:SpecifiedLegalOrganization>
+                    <ram:DefinedTradeContact>
+                         <ram:PersonName>Buyer contact name</ram:PersonName>  <!-- BT-56 (Point de contact acheteur) : Buyer contact name -->
+                         <ram:TelephoneUniversalCommunication>
+                              <ram:CompleteNumber>01 01 25 45 87</ram:CompleteNumber>  <!-- BT-57 (Numéro de téléphone du contact acheteur) : 01 01 25 45 87 -->
+                         </ram:TelephoneUniversalCommunication>
+                         <ram:EmailURIUniversalCommunication>
+                              <ram:URIID>buyer@buyer.com</ram:URIID>  <!-- BT-58 (Adresse électronique du contact acheteur) : buyer@buyer.com -->
+                         </ram:EmailURIUniversalCommunication>
+                    </ram:DefinedTradeContact>
+                    <ram:PostalTradeAddress>
+                         <ram:PostcodeCode>06000</ram:PostcodeCode>  <!-- BT-53 (Code postal de l'acheteur) : 06000 -->
+                         <ram:LineOne>MON ADRESSE LIGNE 1</ram:LineOne>  <!-- BT-50 (Adresse de l'acheteur - Ligne 1) : MON ADRESSE LIGNE 1 -->
+                         <ram:LineTwo>Buyer line 2</ram:LineTwo>  <!-- BT-51 (Adresse de l'acheteur - Ligne 2) : Buyer line 2 -->
+                         <ram:LineThree>Buyer line 3</ram:LineThree>  <!-- BT-163 (Adresse de l'acheteur - Ligne 3) : Buyer line 3 -->
+                         <ram:CityName>MA VILLE</ram:CityName>  <!-- BT-52 (Localité de l'acheteur) : MA VILLE -->
+                         <ram:CountryID>FR</ram:CountryID>  <!-- BT-55 (Code de pays de l'acheteur) : FR -->
+                    </ram:PostalTradeAddress>
+                    <ram:URIUniversalCommunication>
+                         <ram:URIID schemeID="EM">me@buyer.com</ram:URIID>  <!-- BT-49 (Adresse électronique de l'acheteur) : me@buyer.com -->
+                    </ram:URIUniversalCommunication>
+                    <ram:SpecifiedTaxRegistration>
+                         <ram:ID schemeID="VA">FR 05 987 654 321</ram:ID>  <!-- BT-48 (Identifiant à la TVA de l'acheteur) : FR 05 987 654 321 -->
+                    </ram:SpecifiedTaxRegistration>
+               </ram:BuyerTradeParty>
+               <ram:SellerTaxRepresentativeTradeParty>
+                    <ram:Name>SELLER TAX REP</ram:Name>  <!-- BT-62 (Nom du représentant fiscal du vendeur) : SELLER TAX REP -->
+                    <ram:PostalTradeAddress>
+                         <ram:PostcodeCode>75018</ram:PostcodeCode>  <!-- BT-67 (Code postal du représentant fiscal) : 75018 -->
+                         <ram:LineOne>35 rue d'ici</ram:LineOne>  <!-- BT-64 (Adresse du représentant fiscal - Ligne 1) : 35 rue d'ici -->
+                         <ram:LineTwo>Seller line 2</ram:LineTwo>  <!-- BT-65 (Adresse du représentant fiscal - Ligne 2) : Seller line 2 -->
+                         <ram:LineThree>Seller line 3</ram:LineThree>  <!-- BT-164 (Adresse du représentant fiscal - Ligne 3) : Seller line 3 -->
+                         <ram:CityName>PARIS</ram:CityName>  <!-- BT-66 (Localité du représentant fiscal) : PARIS -->
+                         <ram:CountryID>FR</ram:CountryID>  <!-- BT-69 (Code de pays du représentant fiscal) : FR -->
+                    </ram:PostalTradeAddress>
+                    <ram:SpecifiedTaxRegistration>
+                         <ram:ID schemeID="VA">FR 05 987 654 321</ram:ID>  <!-- BT-63 (Identifiant à la TVA du représentant fiscal du vendeur) : FR 05 987 654 321 -->
+                    </ram:SpecifiedTaxRegistration>
+               </ram:SellerTaxRepresentativeTradeParty>
+               <ram:SellerOrderReferencedDocument>
+                    <ram:IssuerAssignedID>SALES REF 2547</ram:IssuerAssignedID>  <!-- BT-14 (Identifiant d'un bon de commande de vente) : SALES REF 2547 -->
+               </ram:SellerOrderReferencedDocument>
+               <ram:BuyerOrderReferencedDocument>
+                    <ram:IssuerAssignedID>PO201925478</ram:IssuerAssignedID>  <!-- BT-13 (Identifiant de bon de commande) : PO201925478 -->
+               </ram:BuyerOrderReferencedDocument>
+               <ram:ContractReferencedDocument>
+                    <ram:IssuerAssignedID>CT2018120802</ram:IssuerAssignedID>  <!-- BT-12 (Identifiant de contrat) : CT2018120802 -->
+               </ram:ContractReferencedDocument>
+               <ram:AdditionalReferencedDocument>
+                    <ram:IssuerAssignedID>SUPPort doc</ram:IssuerAssignedID>  <!-- BT-122 (Identifiant de document justificatif) : SUPPort doc -->
+                    <ram:URIID>url:gffter</ram:URIID>  <!-- BT-124 (Emplacement de document externe) : url:gffter -->
+                    <ram:TypeCode>916</ram:TypeCode>  <!-- BT-122-0 (Code type (916)) : 916 -->
+                    <ram:Name>DOCUMENT_ANNEXE</ram:Name>  <!-- BT-123 (Description de document justificatif) : DOCUMENT_ANNEXE -->
+               </ram:AdditionalReferencedDocument>
+               <ram:AdditionalReferencedDocument>
+                    <ram:IssuerAssignedID>TENDER-002</ram:IssuerAssignedID>  <!-- BT-17 (Identifiant d'appel d'offres ou de lot) : TENDER-002 -->
+                    <ram:TypeCode>50</ram:TypeCode>  <!-- BT-17-0 (Code type (50)) : 50 -->
+               </ram:AdditionalReferencedDocument>
+               <ram:AdditionalReferencedDocument>
+                    <ram:IssuerAssignedID>REFCLI0215</ram:IssuerAssignedID>  <!-- BT-18 (Identifiant d'objet facturé) : REFCLI0215 -->
+                    <ram:TypeCode>130</ram:TypeCode>  <!-- BT-18-0 (Code type (130)) : 130 -->
+                    <ram:ReferenceTypeCode>IT</ram:ReferenceTypeCode>  <!-- BT-18-1 (Identifiant du schéma) : IT -->
+               </ram:AdditionalReferencedDocument>
+               <ram:SpecifiedProcuringProject>
+                    <ram:ID>PROJET2547</ram:ID>  <!-- BT-11 (Référence au projet) : PROJET2547 -->
+                    <ram:Name>Project reference</ram:Name>  <!-- BT-11-0 (Code type projet (valeur "Project reference")) : Project reference -->
+               </ram:SpecifiedProcuringProject>
+          </ram:ApplicableHeaderTradeAgreement>
+          <ram:ApplicableHeaderTradeDelivery>
+               <ram:ShipToTradeParty>
+                    <ram:ID>PRIVATE_ID_DEL</ram:ID>  <!-- BT-71 (Identifiant de l'établissement de livraison) : PRIVATE_ID_DEL -->
+                    <ram:Name>DEL Name</ram:Name>  <!-- BT-70 (Nom de l’intervenant à livrer) : DEL Name -->
+                    <ram:PostalTradeAddress>
+                         <ram:PostcodeCode>06000</ram:PostcodeCode>  <!-- BT-78 (Code postal de livraison) : 06000 -->
+                         <ram:LineOne>DEL ADRESSE LIGNE 1</ram:LineOne>  <!-- BT-75 (Adresse de livraison - Ligne 1) : DEL ADRESSE LIGNE 1 -->
+                         <ram:LineTwo>DEL line 2</ram:LineTwo>  <!-- BT-76 (Adresse de livraison - Ligne 2) : DEL line 2 -->
+                         <ram:CityName>NICE</ram:CityName>  <!-- BT-77 (Localité de livraison) : NICE -->
+                         <ram:CountryID>FR</ram:CountryID>  <!-- BT-80 (Code du pays de livraison) : FR -->
+                    </ram:PostalTradeAddress>
+               </ram:ShipToTradeParty>
+               <ram:ActualDeliverySupplyChainEvent>
+                    <ram:OccurrenceDateTime>
+                         <udt:DateTimeString format="102">20260128</udt:DateTimeString>  <!-- BT-72 (Date effective de livraison) : 20260128 -->
+                    </ram:OccurrenceDateTime>
+               </ram:ActualDeliverySupplyChainEvent>
+               <ram:DespatchAdviceReferencedDocument>
+                    <ram:IssuerAssignedID>DESPADV002</ram:IssuerAssignedID>  <!-- BT-16 (Identifiant d'avis d'expédition) : DESPADV002 -->
+               </ram:DespatchAdviceReferencedDocument>
+               <ram:ReceivingAdviceReferencedDocument>
+                    <ram:IssuerAssignedID>RECEIV-ADV002</ram:IssuerAssignedID>  <!-- BT-15 (Identifiant d'avis de réception) : RECEIV-ADV002 -->
+               </ram:ReceivingAdviceReferencedDocument>
+          </ram:ApplicableHeaderTradeDelivery>
+          <ram:ApplicableHeaderTradeSettlement>
+               <ram:CreditorReferenceID>CREDID</ram:CreditorReferenceID>  <!-- BT-90 (Identifiant bancaire du créancier) : CREDID -->
+               <ram:PaymentReference>F20260023BUYER</ram:PaymentReference>  <!-- BT-83 (Référence End to End de paiement) : F20260023BUYER -->
+               <ram:InvoiceCurrencyCode>EUR</ram:InvoiceCurrencyCode>  <!-- BT-5 (Code de devise de facturation) : EUR -->
+               <ram:PayeeTradeParty>
+                    <ram:GlobalID schemeID="0088">587451236586</ram:GlobalID>  <!-- BT-60-0 (Identifiant du bénéficiaire) : 587451236586 -->
+                    <ram:Name>PAYEE NAME</ram:Name>  <!-- BT-59 (Nom du bénéficiaire) : PAYEE NAME -->
+                    <ram:SpecifiedLegalOrganization>
+                         <ram:ID schemeID="0002">303656847</ram:ID>  <!-- BT-61 (Identifiant d’enregistrement légal du bénéficiaire) : 303656847 -->
+                    </ram:SpecifiedLegalOrganization>
+               </ram:PayeeTradeParty>
+               <ram:SpecifiedTradeSettlementPaymentMeans>
+                    <ram:TypeCode>30</ram:TypeCode>  <!-- BT-81 (Code de type de moyen de paiement) : 30 -->
+                    <ram:Information>Virement</ram:Information>  <!-- BT-82 (Libellé du moyen de paiement) : Virement -->
+                    <ram:ApplicableTradeSettlementFinancialCard>
+                         <ram:ID>4970xx0265</ram:ID>  <!-- BT-87 (Numéro de compte primaire de carte de paiement) : 4970xx0265 -->
+                         <ram:CardholderName>MON NOM MA CARTE</ram:CardholderName>  <!-- BT-88 (Nom du titulaire de la carte de paiement) : MON NOM MA CARTE -->
+                    </ram:ApplicableTradeSettlementFinancialCard>
+                    <ram:PayerPartyDebtorFinancialAccount>
+                         <ram:IBANID>FRDEBIT</ram:IBANID>  <!-- BT-91 (Identifiant du compte débité) : FRDEBIT -->
+                    </ram:PayerPartyDebtorFinancialAccount>
+                    <ram:PayeePartyCreditorFinancialAccount>
+                         <ram:IBANID>FR20 1254 2547 2569 8542 5874 698</ram:IBANID>  <!-- BT-84 (Identifiant (IBAN) du compte bancaire du bénéficiaire) : FR20 1254 2547 2569 8542 5874 698 -->
+                         <ram:AccountName>MON COMPTE BANCAIRE</ram:AccountName>  <!-- BT-85 (Nom du compte bancaire du bénéficiaire) : MON COMPTE BANCAIRE -->
+                    </ram:PayeePartyCreditorFinancialAccount>
+                    <ram:PayeeSpecifiedCreditorFinancialInstitution>
+                         <ram:BICID>BIC_MONCOMPTE</ram:BICID>  <!-- BT-86 (Identifiant d'établissement financier du compte bénéficiaire) : BIC_MONCOMPTE -->
+                    </ram:PayeeSpecifiedCreditorFinancialInstitution>
+               </ram:SpecifiedTradeSettlementPaymentMeans>
+               <ram:ApplicableTradeTax>
+                    <ram:CalculatedAmount>2.20</ram:CalculatedAmount>  <!-- BT-117 (Montant de la taxe pour le type de TVA) : 2.20 -->
+                    <ram:TypeCode>VAT</ram:TypeCode>  <!-- BT-118-0 (Code de type de TVACode type de Taxe (VAT)) : VAT -->
+                    <ram:BasisAmount>11.00</ram:BasisAmount>  <!-- BT-116 (Base d'imposition du type de TVA) : 11.00 -->
+                    <ram:CategoryCode>S</ram:CategoryCode>  <!-- BT-118 (Code de type de TVA) : S -->
+                    <ram:DueDateTypeCode>72</ram:DueDateTypeCode>  <!-- BT-8 (Date d'exigibilité de la taxe sur la valeur ajoutée en code) : 72 -->
+                    <ram:RateApplicablePercent>20.00</ram:RateApplicablePercent>  <!-- BT-119 (Taux de type de TVA) : 20.00 -->
+               </ram:ApplicableTradeTax>
+               <ram:ApplicableTradeTax>
+                    <ram:CalculatedAmount>0.00</ram:CalculatedAmount>  <!-- BT-117 (Montant de la taxe pour le type de TVA) : 0.00 -->
+                    <ram:TypeCode>VAT</ram:TypeCode>  <!-- BT-118-0 (Code de type de TVACode type de Taxe (VAT)) : VAT -->
+                    <ram:ExemptionReason>DEBOURS</ram:ExemptionReason>  <!-- BT-120 (Motif d'exonération de la TVA) : DEBOURS -->
+                    <ram:BasisAmount>60.00</ram:BasisAmount>  <!-- BT-116 (Base d'imposition du type de TVA) : 60.00 -->
+                    <ram:CategoryCode>E</ram:CategoryCode>  <!-- BT-118 (Code de type de TVA) : E -->
+                    <ram:ExemptionReasonCode>VATEX-EU-79-C</ram:ExemptionReasonCode>  <!-- BT-121 (Motif d'exonération de la TVA en code) : VATEX-EU-79-C -->
+                    <ram:RateApplicablePercent>0.00</ram:RateApplicablePercent>  <!-- BT-119 (Taux de type de TVA) : 0.00 -->
+               </ram:ApplicableTradeTax>
+               <ram:ApplicableTradeTax>
+                    <ram:CalculatedAmount>2.70</ram:CalculatedAmount>  <!-- BT-117 (Montant de la taxe pour le type de TVA) : 2.70 -->
+                    <ram:TypeCode>VAT</ram:TypeCode>  <!-- BT-118-0 (Code de type de TVACode type de Taxe (VAT)) : VAT -->
+                    <ram:BasisAmount>27.00</ram:BasisAmount>  <!-- BT-116 (Base d'imposition du type de TVA) : 27.00 -->
+                    <ram:CategoryCode>S</ram:CategoryCode>  <!-- BT-118 (Code de type de TVA) : S -->
+                    <ram:RateApplicablePercent>10.00</ram:RateApplicablePercent>  <!-- BT-119 (Taux de type de TVA) : 10.00 -->
+               </ram:ApplicableTradeTax>
+               <ram:ApplicableTradeTax>
+                    <ram:CalculatedAmount>0.00</ram:CalculatedAmount>  <!-- BT-117 (Montant de la taxe pour le type de TVA) : 0.00 -->
+                    <ram:TypeCode>VAT</ram:TypeCode>  <!-- BT-118-0 (Code de type de TVACode type de Taxe (VAT)) : VAT -->
+                    <ram:ExemptionReason>LIVRAISON INTRACOMMUNAUTAIRE</ram:ExemptionReason>  <!-- BT-120 (Motif d'exonération de la TVA) : LIVRAISON INTRACOMMUNAUTAIRE -->
+                    <ram:BasisAmount>2.00</ram:BasisAmount>  <!-- BT-116 (Base d'imposition du type de TVA) : 2.00 -->
+                    <ram:CategoryCode>K</ram:CategoryCode>  <!-- BT-118 (Code de type de TVA) : K -->
+                    <ram:ExemptionReasonCode>VATEX-EU-IC</ram:ExemptionReasonCode>  <!-- BT-121 (Motif d'exonération de la TVA en code) : VATEX-EU-IC -->
+                    <ram:RateApplicablePercent>0.00</ram:RateApplicablePercent>  <!-- BT-119 (Taux de type de TVA) : 0.00 -->
+               </ram:ApplicableTradeTax>
+               <ram:BillingSpecifiedPeriod>
+                    <ram:StartDateTime>
+                         <udt:DateTimeString format="102">20260101</udt:DateTimeString>  <!-- BT-73 (Date de début de période de facturation) : 20260101 -->
+                    </ram:StartDateTime>
+                    <ram:EndDateTime>
+                         <udt:DateTimeString format="102">20261231</udt:DateTimeString>  <!-- BT-74 (Date de fin de période de facturation) : 20261231 -->
+                    </ram:EndDateTime>
+               </ram:BillingSpecifiedPeriod>
+               <ram:SpecifiedTradeAllowanceCharge>
+                    <ram:ChargeIndicator>
+                         <udt:Indicator>false</udt:Indicator>  <!-- BG-20-1 (Code Remise Document (false)) : false -->
+                    </ram:ChargeIndicator>
+                    <ram:CalculationPercent>5.00</ram:CalculationPercent>  <!-- BT-94 (Pourcentage de remise au niveau du document) : 5.00 -->
+                    <ram:BasisAmount>100.00</ram:BasisAmount>  <!-- BT-93 (Assiette de la remise au niveau du document) : 100.00 -->
+                    <ram:ActualAmount>5.00</ram:ActualAmount>  <!-- BT-92 (Montant de la remise au niveau du document) : 5.00 -->
+                    <ram:ReasonCode>95</ram:ReasonCode>  <!-- BT-98 (Code de motif de la remise au niveau du document) : 95 -->
+                    <ram:Reason>REMISE COMMERCIALE</ram:Reason>  <!-- BT-97 (Motif de la remise au niveau du document) : REMISE COMMERCIALE -->
+                    <ram:CategoryTradeTax>
+                         <ram:TypeCode>VAT</ram:TypeCode>  <!-- BT-95-0 (Code type Taxe (VAT)) : VAT -->
+                         <ram:CategoryCode>S</ram:CategoryCode>  <!-- BT-95 (Code de type de TVA de la remise au niveau du document) : S -->
+                         <ram:RateApplicablePercent>20.00</ram:RateApplicablePercent>  <!-- BT-96 (Taux de TVA de la remise au niveau du document) : 20.00 -->
+                    </ram:CategoryTradeTax>
+               </ram:SpecifiedTradeAllowanceCharge>
+               <ram:SpecifiedTradeAllowanceCharge>
+                    <ram:ChargeIndicator>
+                         <udt:Indicator>false</udt:Indicator>  <!-- BG-20-1 (Code Remise Document (false)) : false -->
+                    </ram:ChargeIndicator>
+                    <ram:CalculationPercent>1.00</ram:CalculationPercent>  <!-- BT-94 (Pourcentage de remise au niveau du document) : 1.00 -->
+                    <ram:BasisAmount>100.00</ram:BasisAmount>  <!-- BT-93 (Assiette de la remise au niveau du document) : 100.00 -->
+                    <ram:ActualAmount>1.00</ram:ActualAmount>  <!-- BT-92 (Montant de la remise au niveau du document) : 1.00 -->
+                    <ram:ReasonCode>100</ram:ReasonCode>  <!-- BT-98 (Code de motif de la remise au niveau du document) : 100 -->
+                    <ram:Reason>REMISE COMMERCIALE</ram:Reason>  <!-- BT-97 (Motif de la remise au niveau du document) : REMISE COMMERCIALE -->
+                    <ram:CategoryTradeTax>
+                         <ram:TypeCode>VAT</ram:TypeCode>  <!-- BT-95-0 (Code type Taxe (VAT)) : VAT -->
+                         <ram:CategoryCode>S</ram:CategoryCode>  <!-- BT-95 (Code de type de TVA de la remise au niveau du document) : S -->
+                         <ram:RateApplicablePercent>20.00</ram:RateApplicablePercent>  <!-- BT-96 (Taux de TVA de la remise au niveau du document) : 20.00 -->
+                    </ram:CategoryTradeTax>
+               </ram:SpecifiedTradeAllowanceCharge>
+               <ram:SpecifiedTradeAllowanceCharge>
+                    <ram:ChargeIndicator>
+                         <udt:Indicator>false</udt:Indicator>  <!-- BG-20-1 (Code Remise Document (false)) : false -->
+                    </ram:ChargeIndicator>
+                    <ram:CalculationPercent>1.00</ram:CalculationPercent>  <!-- BT-94 (Pourcentage de remise au niveau du document) : 1.00 -->
+                    <ram:BasisAmount>100.00</ram:BasisAmount>  <!-- BT-93 (Assiette de la remise au niveau du document) : 100.00 -->
+                    <ram:ActualAmount>1.00</ram:ActualAmount>  <!-- BT-92 (Montant de la remise au niveau du document) : 1.00 -->
+                    <ram:ReasonCode>100</ram:ReasonCode>  <!-- BT-98 (Code de motif de la remise au niveau du document) : 100 -->
+                    <ram:Reason>REMISE COMMERCIALE</ram:Reason>  <!-- BT-97 (Motif de la remise au niveau du document) : REMISE COMMERCIALE -->
+                    <ram:CategoryTradeTax>
+                         <ram:TypeCode>VAT</ram:TypeCode>  <!-- BT-95-0 (Code type Taxe (VAT)) : VAT -->
+                         <ram:CategoryCode>S</ram:CategoryCode>  <!-- BT-95 (Code de type de TVA de la remise au niveau du document) : S -->
+                         <ram:RateApplicablePercent>20.00</ram:RateApplicablePercent>  <!-- BT-96 (Taux de TVA de la remise au niveau du document) : 20.00 -->
+                    </ram:CategoryTradeTax>
+               </ram:SpecifiedTradeAllowanceCharge>
+               <ram:SpecifiedTradeAllowanceCharge>
+                    <ram:ChargeIndicator>
+                         <udt:Indicator>false</udt:Indicator>  <!-- BG-20-1 (Code Remise Document (false)) : false -->
+                    </ram:ChargeIndicator>
+                    <ram:CalculationPercent>2.00</ram:CalculationPercent>  <!-- BT-94 (Pourcentage de remise au niveau du document) : 2.00 -->
+                    <ram:BasisAmount>100.00</ram:BasisAmount>  <!-- BT-93 (Assiette de la remise au niveau du document) : 100.00 -->
+                    <ram:ActualAmount>2.00</ram:ActualAmount>  <!-- BT-92 (Montant de la remise au niveau du document) : 2.00 -->
+                    <ram:Reason>REMISE COMMERCIALE</ram:Reason>  <!-- BT-97 (Motif de la remise au niveau du document) : REMISE COMMERCIALE -->
+                    <ram:CategoryTradeTax>
+                         <ram:TypeCode>VAT</ram:TypeCode>  <!-- BT-95-0 (Code type Taxe (VAT)) : VAT -->
+                         <ram:CategoryCode>S</ram:CategoryCode>  <!-- BT-95 (Code de type de TVA de la remise au niveau du document) : S -->
+                         <ram:RateApplicablePercent>10.00</ram:RateApplicablePercent>  <!-- BT-96 (Taux de TVA de la remise au niveau du document) : 10.00 -->
+                    </ram:CategoryTradeTax>
+               </ram:SpecifiedTradeAllowanceCharge>
+               <ram:SpecifiedTradeAllowanceCharge>
+                    <ram:ChargeIndicator>
+                         <udt:Indicator>true</udt:Indicator>  <!-- BG-21-1 (Code Charges Document (true)) : true -->
+                    </ram:ChargeIndicator>
+                    <ram:CalculationPercent>10.00</ram:CalculationPercent>  <!-- BT-101 (Pourcentage de charges ou frais au niveau du document) : 10.00 -->
+                    <ram:BasisAmount>100.00</ram:BasisAmount>  <!-- BT-100 (Assiette des charges ou frais au niveau du document) : 100.00 -->
+                    <ram:ActualAmount>10.00</ram:ActualAmount>  <!-- BT-99 (Montant des charges ou frais au niveau du document) : 10.00 -->
+                    <ram:ReasonCode>FC</ram:ReasonCode>  <!-- BT-105 (Code de motif des charges ou frais au niveau du document) : FC -->
+                    <ram:Reason>FRAIS DEPLACEMENT</ram:Reason>  <!-- BT-104 (Motif des charges ou frais au niveau du document) : FRAIS DEPLACEMENT -->
+                    <ram:CategoryTradeTax>
+                         <ram:TypeCode>VAT</ram:TypeCode>  <!-- BT-102-0 (Code type Taxe (VAT)) : VAT -->
+                         <ram:CategoryCode>S</ram:CategoryCode>  <!-- BT-102 (Code de type de TVA des charges ou frais au niveau du document) : S -->
+                         <ram:RateApplicablePercent>20.00</ram:RateApplicablePercent>  <!-- BT-103 (Taux de TVA des charges ou frais au niveau du document) : 20.00 -->
+                    </ram:CategoryTradeTax>
+               </ram:SpecifiedTradeAllowanceCharge>
+               <ram:SpecifiedTradeAllowanceCharge>
+                    <ram:ChargeIndicator>
+                         <udt:Indicator>true</udt:Indicator>  <!-- BG-21-1 (Code Charges Document (true)) : true -->
+                    </ram:ChargeIndicator>
+                    <ram:CalculationPercent>1.00</ram:CalculationPercent>  <!-- BT-101 (Pourcentage de charges ou frais au niveau du document) : 1.00 -->
+                    <ram:BasisAmount>100.00</ram:BasisAmount>  <!-- BT-100 (Assiette des charges ou frais au niveau du document) : 100.00 -->
+                    <ram:ActualAmount>1.00</ram:ActualAmount>  <!-- BT-99 (Montant des charges ou frais au niveau du document) : 1.00 -->
+                    <ram:ReasonCode>ADR</ram:ReasonCode>  <!-- BT-105 (Code de motif des charges ou frais au niveau du document) : ADR -->
+                    <ram:Reason>FRAIS DEPLACEMENT</ram:Reason>  <!-- BT-104 (Motif des charges ou frais au niveau du document) : FRAIS DEPLACEMENT -->
+                    <ram:CategoryTradeTax>
+                         <ram:TypeCode>VAT</ram:TypeCode>  <!-- BT-102-0 (Code type Taxe (VAT)) : VAT -->
+                         <ram:CategoryCode>S</ram:CategoryCode>  <!-- BT-102 (Code de type de TVA des charges ou frais au niveau du document) : S -->
+                         <ram:RateApplicablePercent>20.00</ram:RateApplicablePercent>  <!-- BT-103 (Taux de TVA des charges ou frais au niveau du document) : 20.00 -->
+                    </ram:CategoryTradeTax>
+               </ram:SpecifiedTradeAllowanceCharge>
+               <ram:SpecifiedTradeAllowanceCharge>
+                    <ram:ChargeIndicator>
+                         <udt:Indicator>true</udt:Indicator>  <!-- BG-21-1 (Code Charges Document (true)) : true -->
+                    </ram:ChargeIndicator>
+                    <ram:CalculationPercent>2.00</ram:CalculationPercent>  <!-- BT-101 (Pourcentage de charges ou frais au niveau du document) : 2.00 -->
+                    <ram:BasisAmount>100.00</ram:BasisAmount>  <!-- BT-100 (Assiette des charges ou frais au niveau du document) : 100.00 -->
+                    <ram:ActualAmount>2.00</ram:ActualAmount>  <!-- BT-99 (Montant des charges ou frais au niveau du document) : 2.00 -->
+                    <ram:ReasonCode>FC</ram:ReasonCode>  <!-- BT-105 (Code de motif des charges ou frais au niveau du document) : FC -->
+                    <ram:Reason>FRAIS DEPLACEMENT</ram:Reason>  <!-- BT-104 (Motif des charges ou frais au niveau du document) : FRAIS DEPLACEMENT -->
+                    <ram:CategoryTradeTax>
+                         <ram:TypeCode>VAT</ram:TypeCode>  <!-- BT-102-0 (Code type Taxe (VAT)) : VAT -->
+                         <ram:CategoryCode>K</ram:CategoryCode>  <!-- BT-102 (Code de type de TVA des charges ou frais au niveau du document) : K -->
+                         <ram:RateApplicablePercent>0.00</ram:RateApplicablePercent>  <!-- BT-103 (Taux de TVA des charges ou frais au niveau du document) : 0.00 -->
+                    </ram:CategoryTradeTax>
+               </ram:SpecifiedTradeAllowanceCharge>
+               <ram:SpecifiedTradeAllowanceCharge>
+                    <ram:ChargeIndicator>
+                         <udt:Indicator>true</udt:Indicator>  <!-- BG-21-1 (Code Charges Document (true)) : true -->
+                    </ram:ChargeIndicator>
+                    <ram:CalculationPercent>1.00</ram:CalculationPercent>  <!-- BT-101 (Pourcentage de charges ou frais au niveau du document) : 1.00 -->
+                    <ram:BasisAmount>100.00</ram:BasisAmount>  <!-- BT-100 (Assiette des charges ou frais au niveau du document) : 100.00 -->
+                    <ram:ActualAmount>1.00</ram:ActualAmount>  <!-- BT-99 (Montant des charges ou frais au niveau du document) : 1.00 -->
+                    <ram:ReasonCode>FC</ram:ReasonCode>  <!-- BT-105 (Code de motif des charges ou frais au niveau du document) : FC -->
+                    <ram:Reason>FRAIS DEPLACEMENT</ram:Reason>  <!-- BT-104 (Motif des charges ou frais au niveau du document) : FRAIS DEPLACEMENT -->
+                    <ram:CategoryTradeTax>
+                         <ram:TypeCode>VAT</ram:TypeCode>  <!-- BT-102-0 (Code type Taxe (VAT)) : VAT -->
+                         <ram:CategoryCode>S</ram:CategoryCode>  <!-- BT-102 (Code de type de TVA des charges ou frais au niveau du document) : S -->
+                         <ram:RateApplicablePercent>10.00</ram:RateApplicablePercent>  <!-- BT-103 (Taux de TVA des charges ou frais au niveau du document) : 10.00 -->
+                    </ram:CategoryTradeTax>
+               </ram:SpecifiedTradeAllowanceCharge>
+               <ram:SpecifiedTradePaymentTerms>
+                    <ram:Description>PAIEMENT 30 JOURS NET</ram:Description>  <!-- BT-20 (Conditions de paiement) : PAIEMENT 30 JOURS NET -->
+                    <ram:DueDateDateTime>
+                         <udt:DateTimeString format="102">20260302</udt:DateTimeString>  <!-- BT-9 (Date d'échéance) : 20260302 -->
+                    </ram:DueDateDateTime>
+                    <ram:DirectDebitMandateID>MANDATE PT</ram:DirectDebitMandateID>  <!-- BT-89 (Identifiant de référence de mandat (RUM)) : MANDATE PT -->
+               </ram:SpecifiedTradePaymentTerms>
+               <ram:SpecifiedTradeSettlementHeaderMonetarySummation>
+                    <ram:LineTotalAmount>95.00</ram:LineTotalAmount>  <!-- BT-106 (Somme du montant net des lignes de facture) : 95.00 -->
+                    <ram:ChargeTotalAmount>14.00</ram:ChargeTotalAmount>  <!-- BT-108 (Somme des charges ou frais au niveau du document) : 14.00 -->
+                    <ram:AllowanceTotalAmount>9.00</ram:AllowanceTotalAmount>  <!-- BT-107 (Somme des remises au niveau du document) : 9.00 -->
+                    <ram:TaxBasisTotalAmount>100.00</ram:TaxBasisTotalAmount>  <!-- BT-109 (Montant total de la facture hors TVA) : 100.00 -->
+                    <ram:TaxTotalAmount currencyID="EUR">4.90</ram:TaxTotalAmount>  <!-- BT-110 (Montant total de TVA) : 4.90 -->
+                     <ram:RoundingAmount>0.00</ram:RoundingAmount>  <!-- BT-114 (Montant de l'arrondi) : 0.00 -->
+                    <ram:GrandTotalAmount>104.90</ram:GrandTotalAmount>  <!-- BT-112 (Montant total de la facture avec TVA comprise) : 104.90 -->
+                    <ram:TotalPrepaidAmount>0.00</ram:TotalPrepaidAmount>  <!-- BT-113 (Montant payé) : 0.00 -->
+                    <ram:DuePayableAmount>104.90</ram:DuePayableAmount>  <!-- BT-115 (Montant à payer) : 104.90 -->
+               </ram:SpecifiedTradeSettlementHeaderMonetarySummation>
+               <ram:InvoiceReferencedDocument>
+                    <ram:IssuerAssignedID>F20260003</ram:IssuerAssignedID>  <!-- BT-25 (Numéro de facture antérieure) : F20260003 -->
+                    <ram:FormattedIssueDateTime>
+                         <qdt:DateTimeString format="102">20260101</qdt:DateTimeString>  <!-- BT-26 (Date d'émission de facture antérieure) : 20260101 -->
+                    </ram:FormattedIssueDateTime>
+               </ram:InvoiceReferencedDocument>
+               <ram:ReceivableSpecifiedTradeAccountingAccount>
+                    <ram:ID>BUYER ACCOUNT REF</ram:ID>  <!-- BT-19 (Référence comptable de l'acheteur) : BUYER ACCOUNT REF -->
+               </ram:ReceivableSpecifiedTradeAccountingAccount>
+          </ram:ApplicableHeaderTradeSettlement>
+     </rsm:SupplyChainTradeTransaction>
+</rsm:CrossIndustryInvoice>

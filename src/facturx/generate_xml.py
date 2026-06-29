@@ -1987,6 +1987,8 @@ def generate_ubl_xml(
                 data_dict["BT-29"]["SEPA"] = data_dict["BT-90"]
 
     UBL_NAMESPACES = get_xml_namespaces("ubl-2.1")
+    default_urn = UBL_NAMESPACES.pop("default")
+    UBL_NAMESPACES[None] = default_urn
 
     if prefixed_namespaces:
         CAC = objectify.ElementMaker(

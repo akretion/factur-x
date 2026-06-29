@@ -153,7 +153,7 @@ XML_NAMESPACES = {
         "xsi": "http://www.w3.org/2001/XMLSchema-instance",
     },
     "ubl-2.1": {
-        None: "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2",
+        "default": "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2",
         "cac": "urn:oasis:names:specification:ubl:schema:xsd:"
         "CommonAggregateComponents-2",
         "cbc": "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2",
@@ -1055,7 +1055,7 @@ def get_xml_namespaces(flavor):
         flavor = "factur-x"
     elif flavor == "orderx":
         flavor = "order-x"
-    return XML_NAMESPACES[flavor]
+    return dict(XML_NAMESPACES[flavor])  # dict() to make a copy
 
 
 def get_facturx_level(facturx_xml_etree):
@@ -1072,34 +1072,33 @@ def get_level(xml_etree, flavor="autodetect"):
         "order-x",
         "orderx",
         "zugferd",
+        "ubl-2.1",
     ):
         raise ValueError("Wrong value for flavor argument.")
     if flavor == "autodetect":
         flavor = get_flavor(xml_etree)
     namespaces = get_xml_namespaces(flavor)
-    # Factur-X and Order-X
-    doc_id_xpath = xml_etree.xpath(
-        "//rsm:ExchangedDocumentContext"
-        "/ram:GuidelineSpecifiedDocumentContextParameter"
-        "/ram:ID",
-        namespaces=namespaces,
-    )
-    if not doc_id_xpath:
-        # ZUGFeRD 1.0
-        doc_id_xpath = xml_etree.xpath(
+    if flavor in ("factur-x", "facturx", "order-x", "orderx"):
+        xpath = (
+            "//rsm:ExchangedDocumentContext"
+            "/ram:GuidelineSpecifiedDocumentContextParameter"
+            "/ram:ID"
+        )
+    elif flavor == "zugferd":
+        xpath = (
             "//rsm:SpecifiedExchangedDocumentContext"
             "/ram:GuidelineSpecifiedDocumentContextParameter"
-            "/ram:ID",
-            namespaces=namespaces,
+            "/ram:ID"
         )
+    elif flavor == "ubl-2.1":
+        xpath = "/default:Invoice/cbc:CustomizationID"
+    else:
+        raise ValueError(f"Wrong flavor '{flavor}'")
+    doc_id_xpath = xml_etree.xpath(xpath, namespaces=namespaces)
     if not doc_id_xpath:
         raise ValueError(
-            "This XML is not a Factur-X nor Order-X XML because it misses the XML tag "
-            "ExchangedDocumentContext/"
-            "GuidelineSpecifiedDocumentContextParameter/ID. It is not a ZUGFeRD 1.0 "
-            "XML either because it misses the XML tag "
-            "SpecifiedExchangedDocumentContext/"
-            "GuidelineSpecifiedDocumentContextParameter/ID."
+            f"This {flavor} XML misses the XML tag {xpath}, "
+            "although this XML tag is required"
         )
     doc_id = doc_id_xpath[0].text
     # Content of the ID field per level for Factur-X:
@@ -1118,7 +1117,7 @@ def get_level(xml_etree, flavor="autodetect"):
     possible_values = dict(FACTURX_LEVEL2xsd)
     possible_values.update(ORDERX_LEVEL2xsd)
     level = doc_id.split(":")[-1]
-    if level == "extended-ctc-fr":
+    if level == "extended-ctc-fr" and flavor == "factur-x":
         level = "extended"
     if level not in possible_values:
         # Ignore what is after the first "#"
@@ -1141,6 +1140,8 @@ def get_flavor(xml_etree):
         flavor = "zugferd"
     elif xml_etree.tag.endswith("SCRDMCCBDACIOMessageStructure"):
         flavor = "order-x"
+    elif xml_etree.tag.endswith("Invoice"):
+        flavor = "ubl-2.1"
     else:
         raise Exception(
             "Could not detect if the document is a Factur-X, ZUGFeRD 1.0 "
