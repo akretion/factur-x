@@ -141,7 +141,17 @@ Contributors
 Changelog
 =========
 
-* Version 5.0 dated 2026-06-25 : UBL has just arrived!
+* Version 5.1 dated 2026-06-30: UBL is gaining maturity. New dependency on `python-stdnum <https://arthurdejong.org/python-stdnum/>`_
+
+  * Add support for UBL in get_flavor(), get_level() and get_xml_namespace()
+  * in generate_xml(), stop using BT-84-0 which is Factur-x specific
+  * Add extended fields used in XP-Z12-014 in UBL and Factur-X
+  * generate_xml(): replace BT-X-xxx by EXT-FR-FE-xxx, which are used both by CII and UBL
+  * New option in generate_xml() to use prefixed namespaces or default namespaces
+  * Improve tests on generate_xml, add tests on get_flavor() and get_level()
+  * Fix double logging (fix designed by Baptiste Ravier)
+
+* Version 5.0 dated 2026-06-25: UBL has just arrived!
 
   * 3 new methods **generate_ubl_xml()**, **generate_cii_xml()** and **generate_xml()**. The method generate_xml() is a simple wrapper to call either generate_cii_xml() or generate_ubl_xml(). These methods take a python dictionnary with EN16931 tags as keys (BT-1, BT-2, BG-25, ...) and generate the corresponding XML in the profile you asked for. See tests/test_generate_xml.py to have an example of the data structure to use.
   * xml_check_xsd(): add support for UBL 2.1. To use it, set argument flavor='ubl-2.1'.
