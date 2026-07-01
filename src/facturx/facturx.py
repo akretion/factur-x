@@ -278,6 +278,7 @@ def xml_check_schematron(
     level="autodetect",
     check_option="base",
     saxon_server_url=None,
+    raise_if_http_error=False,
 ):
     """
     Validate the XML file against the schematron
@@ -302,6 +303,10 @@ def xml_check_schematron(
     :param saxon_server_url: URL of the Saxon Server. If not set, the lib
     will use the default URL http://localhost:5000/transform
     :type saxon_server_url: string
+    :param raise_if_http_error: raise an exception if the HTTP POST request
+    to the saxon server fails. If False, a failure in the communication with
+    the saxon server will not raise any error (it will just be logged)
+    :type raise_if_http_error: bool
     :return: True if the XML is valid against the schematron
     raise an error if it is not valid against the schematron
     """
@@ -391,18 +396,19 @@ def xml_check_schematron(
     error_nr = 1
     xml_str_no_bom = xml_str.lstrip("\ufeff")
     for check_type, xsl_file in xsl_files.items():
-        absolute_xsl_file = str(
-            importlib_resources.files(__package__).joinpath(xsl_file)
+        absolute_xsl_file_path = importlib_resources.files(__package__).joinpath(
+            xsl_file
         )
         logger.debug(
-            "Schematron check '%s': using XSL file %s", check_type, absolute_xsl_file
+            "Schematron check '%s': using XSL file %s",
+            check_type,
+            absolute_xsl_file_path,
         )
-        with open(absolute_xsl_file, "rb") as xslfile:
-            xsl_file_bytes = xslfile.read()
+        xsl_file_str = absolute_xsl_file_path.read_text(encoding="utf-8")
 
         rfiles = {
             "xml": ("file_to_check.xml", xml_str_no_bom, "text/xml"),
-            "xsl": (xsl_file, xsl_file_bytes, "text/xml"),
+            "xsl": (xsl_file, xsl_file_str, "text/xml"),
         }
         req_start_chrono = datetime.now()
         logger.info(
@@ -412,23 +418,28 @@ def xml_check_schematron(
         try:
             res = requests.post(url, files=rfiles, timeout=SAXON_SERVER_TIMEOUT)
         except Exception as err:
-            logger.warning(
-                f"Failure in the POST request to saxon server on {url}: " f"{str(err)}"
+            error_msg = (
+                f"Failure in the POST request to saxon server on {url}: {str(err)}"
             )
+            logger.warning(error_msg)
+            if raise_if_http_error:
+                raise RuntimeError(error_msg) from err
             logger.warning(f"Skipping schematron check '{check_type}'")
             continue
         req_end_chrono = datetime.now()
         req_duration = (req_end_chrono - req_start_chrono).total_seconds()
 
-        logger.info(
-            f"Saxon server returned HTTP code {res.status_code} in {req_duration} sec"
-        )
         if res.status_code != 200:
-            logger.warning(
-                f"Skipping schematron check '{check_type}' because "
-                f"saxon server returned an HTTP code != 200."
+            error_msg = (
+                f"Saxon server returned HTTP code {res.status_code} "
+                "(expected HTTP code: 200)"
             )
+            logger.warning(error_msg)
+            if raise_if_http_error:
+                raise RuntimeError(error_msg)
+            logger.warning(f"Skipping schematron check '{check_type}'")
             continue
+        logger.info(f"Saxon server answered successfully in {req_duration} sec")
         result_str = res.text
         logger.debug("schematron result_str=%s", result_str)
 
