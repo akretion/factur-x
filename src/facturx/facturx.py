@@ -491,27 +491,39 @@ def xml_check_schematron(
     return True
 
 
-def get_facturx_xml_from_pdf(pdf_file, check_xsd=True, check_schematron=False):
+def get_facturx_xml_from_pdf(
+    pdf_file, check_xsd=True, check_schematron=False, saxon_server_url=None
+):
     filenames = [FACTURX_FILENAME] + ZUGFERD_FILENAMES
     return get_xml_from_pdf(
         pdf_file,
         check_xsd=check_xsd,
         check_schematron=check_schematron,
+        saxon_server_url=saxon_server_url,
         filenames=filenames,
     )
 
 
-def get_orderx_xml_from_pdf(pdf_file, check_xsd=True, check_schematron=False):
+def get_orderx_xml_from_pdf(
+    pdf_file, check_xsd=True, check_schematron=False, saxon_server_url=None
+):
     filenames = [ORDERX_FILENAME]
     return get_xml_from_pdf(
         pdf_file,
         check_xsd=check_xsd,
         check_schematron=check_schematron,
+        saxon_server_url=saxon_server_url,
         filenames=filenames,
     )
 
 
-def get_xml_from_pdf(pdf_file, check_xsd=True, check_schematron=False, filenames=None):
+def get_xml_from_pdf(
+    pdf_file,
+    check_xsd=True,
+    check_schematron=False,
+    saxon_server_url=None,
+    filenames=None,
+):
     logger.debug("get_xml_from_pdf with factur-x lib %s", VERSION)
     if filenames is None:
         filenames = []
@@ -591,7 +603,12 @@ def get_xml_from_pdf(pdf_file, check_xsd=True, check_schematron=False, filenames
                     continue
             if check_schematron and level:
                 try:
-                    xml_check_schematron(xml_root, flavor=flavor, level=level)
+                    xml_check_schematron(
+                        xml_root,
+                        flavor=flavor,
+                        level=level,
+                        saxon_server_url=saxon_server_url,
+                    )
                 except Exception:
                     logger.warning(
                         "Skipping %s: not valid against the schematron", filename
@@ -1224,6 +1241,7 @@ def generate_from_binary(
     orderx_type="autodetect",
     check_xsd=True,
     check_schematron=False,
+    saxon_server_url=None,
     pdf_metadata=None,
     lang=None,
     attachments=None,
@@ -1262,6 +1280,9 @@ def generate_from_binary(
     beforehand, you should disable this feature to avoid a double check
     and get a small performance improvement.
     :type check_schematron: boolean
+    :param saxon_server_url: URL of the Saxon server for schematron validation.
+    If None, the default Saxon server URL is used.
+    :type saxon_server_url: boolean
     :param pdf_metadata: Specify the metadata of the generated PDF.
     If pdf_metadata is None (default value), this lib will generate some
     metadata in English by extracting relevant info from the Factur-X/Order-X XML.
@@ -1318,6 +1339,7 @@ def generate_from_binary(
             orderx_type=orderx_type,
             check_xsd=check_xsd,
             check_schematron=check_schematron,
+            saxon_server_url=saxon_server_url,
             pdf_metadata=pdf_metadata,
             lang=lang,
             attachments=attachments,
@@ -1338,6 +1360,7 @@ def generate_from_file(
     orderx_type="autodetect",
     check_xsd=True,
     check_schematron=False,
+    saxon_server_url=None,
     pdf_metadata=None,
     lang=None,
     output_pdf_file=None,
@@ -1378,6 +1401,9 @@ def generate_from_file(
     beforehand, you should disable this feature to avoid a double check
     and get a small performance improvement.
     :type check_schematron: boolean
+    :param saxon_server_url: URL of the Saxon server for schematron validation.
+    If None, the default Saxon server URL is used.
+    :type saxon_server_url: boolean
     :param pdf_metadata: Specify the metadata of the generated PDF.
     If pdf_metadata is None (default value), this lib will generate some
     metadata in English by extracting relevant info from the Factur-X/Order-X XML.
@@ -1594,7 +1620,9 @@ def generate_from_file(
     if check_xsd:
         xml_check_xsd(xml_bytes, flavor=flavor, level=level)
     if flavor in ("factur-x", "order-x") and check_schematron:
-        xml_check_schematron(xml_bytes, flavor=flavor, level=level)
+        xml_check_schematron(
+            xml_bytes, flavor=flavor, level=level, saxon_server_url=saxon_server_url
+        )
     if pdf_metadata is None:
         if xml_root is None:
             xml_root = etree.fromstring(xml_bytes)
