@@ -165,6 +165,13 @@ CREATOR = f"factur-x Python lib v{VERSION} by Alexis de Lattre"
 # We stopped using saxonche because of https://github.com/akretion/pyfrctc/issues/3
 SAXON_SERVER_DEFAULT_URL = "http://localhost:5000/transform"
 SAXON_SERVER_TIMEOUT = 5
+SAXON_SERVER_CODEDB2URL = {
+    "FACTUR-X_MINIMUM_codedb.xml": "https://raw.githubusercontent.com/akretion/factur-x/refs/heads/master/src/facturx/xsd_and_schematron/facturx-minimum/FACTUR-X_MINIMUM_codedb.xml",
+    "FACTUR-X_BASIC-WL_codedb.xml": "https://raw.githubusercontent.com/akretion/factur-x/refs/heads/master/src/facturx/xsd_and_schematron/facturx-basicwl/FACTUR-X_BASIC-WL_codedb.xml",
+    "FACTUR-X_BASIC_codedb.xml": "https://raw.githubusercontent.com/akretion/factur-x/refs/heads/master/src/facturx/xsd_and_schematron/facturx-basic/FACTUR-X_BASIC_codedb.xml",
+    "FACTUR-X_EN16931_codedb.xml": "https://raw.githubusercontent.com/akretion/factur-x/refs/heads/master/src/facturx/xsd_and_schematron/facturx-en16931/FACTUR-X_EN16931_codedb.xml",
+    "FACTUR-X_EXTENDED_codedb.xml": "https://raw.githubusercontent.com/akretion/factur-x/refs/heads/master/src/facturx/xsd_and_schematron/facturx-extended/FACTUR-X_EXTENDED_codedb.xml",
+}
 
 
 def xml_check_xsd(xml, flavor="autodetect", level="autodetect"):
@@ -405,6 +412,8 @@ def xml_check_schematron(
             absolute_xsl_file_path,
         )
         xsl_file_str = absolute_xsl_file_path.read_text(encoding="utf-8")
+        for codedb_file, codedb_url in SAXON_SERVER_CODEDB2URL.items():
+            xsl_file_str = xsl_file_str.replace(codedb_file, codedb_url)
 
         rfiles = {
             "xml": ("file_to_check.xml", xml_str_no_bom, "text/xml"),
@@ -413,13 +422,14 @@ def xml_check_schematron(
         req_start_chrono = datetime.now()
         logger.info(
             f"Sending HTTP POST request on {url} to validate "
-            f"against schematron (check '{check_type}')"
+            f"against schematron '{check_type}'"
         )
         try:
             res = requests.post(url, files=rfiles, timeout=SAXON_SERVER_TIMEOUT)
         except Exception as err:
             error_msg = (
-                f"Failure in the POST request to saxon server on {url}: {str(err)}"
+                f"Check '{check_type}' failed in the POST request to saxon server "
+                f"on {url}: {str(err)}"
             )
             logger.warning(error_msg)
             if raise_if_http_error:
@@ -431,17 +441,20 @@ def xml_check_schematron(
 
         if res.status_code != 200:
             error_msg = (
-                f"Saxon server returned HTTP code {res.status_code} "
-                "(expected HTTP code: 200)"
+                f"Saxon server returned HTTP code {res.status_code} for check "
+                f"'{check_type}' (expected HTTP code: 200)"
             )
             logger.warning(error_msg)
             if raise_if_http_error:
                 raise RuntimeError(error_msg)
             logger.warning(f"Skipping schematron check '{check_type}'")
             continue
-        logger.info(f"Saxon server answered successfully in {req_duration} sec")
+        logger.info(
+            f"Saxon server answered successfully for check '{check_type}' "
+            f"in {req_duration} sec"
+        )
         result_str = res.text
-        logger.debug("schematron result_str=%s", result_str)
+        logger.debug(f"schematron '{check_type}' result_str={result_str}")
 
         try:
             svrl_root = etree.fromstring(result_str.encode("utf-8"))
