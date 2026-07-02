@@ -32,10 +32,7 @@ from datetime import datetime
 from io import BytesIO, IOBase
 from tempfile import NamedTemporaryFile
 
-try:
-    import saxonche
-except ImportError:
-    saxonche = None
+import requests
 from lxml import etree
 from pypdf import PdfReader, PdfWriter
 from pypdf.generic import (
@@ -164,6 +161,17 @@ XML_NAMESPACES = {
     },
 }
 CREATOR = f"factur-x Python lib v{VERSION} by Alexis de Lattre"
+# Saxon server available from https://github.com/willemvlh/saxon-server
+# We stopped using saxonche because of https://github.com/akretion/pyfrctc/issues/3
+SAXON_SERVER_DEFAULT_URL = "http://localhost:5000/transform"
+SAXON_SERVER_TIMEOUT = 5
+SAXON_SERVER_CODEDB2URL = {
+    "FACTUR-X_MINIMUM_codedb.xml": "https://raw.githubusercontent.com/akretion/factur-x/refs/heads/master/src/facturx/xsd_and_schematron/facturx-minimum/FACTUR-X_MINIMUM_codedb.xml",
+    "FACTUR-X_BASIC-WL_codedb.xml": "https://raw.githubusercontent.com/akretion/factur-x/refs/heads/master/src/facturx/xsd_and_schematron/facturx-basicwl/FACTUR-X_BASIC-WL_codedb.xml",
+    "FACTUR-X_BASIC_codedb.xml": "https://raw.githubusercontent.com/akretion/factur-x/refs/heads/master/src/facturx/xsd_and_schematron/facturx-basic/FACTUR-X_BASIC_codedb.xml",
+    "FACTUR-X_EN16931_codedb.xml": "https://raw.githubusercontent.com/akretion/factur-x/refs/heads/master/src/facturx/xsd_and_schematron/facturx-en16931/FACTUR-X_EN16931_codedb.xml",
+    "FACTUR-X_EXTENDED_codedb.xml": "https://raw.githubusercontent.com/akretion/factur-x/refs/heads/master/src/facturx/xsd_and_schematron/facturx-extended/FACTUR-X_EXTENDED_codedb.xml",
+}
 
 
 def xml_check_xsd(xml, flavor="autodetect", level="autodetect"):
@@ -272,7 +280,12 @@ def xml_check_xsd(xml, flavor="autodetect", level="autodetect"):
 
 
 def xml_check_schematron(
-    xml, flavor="autodetect", level="autodetect", check_option="base"
+    xml,
+    flavor="autodetect",
+    level="autodetect",
+    check_option="base",
+    saxon_server_url=None,
+    raise_if_http_error=False,
 ):
     """
     Validate the XML file against the schematron
@@ -287,24 +300,33 @@ def xml_check_schematron(
     of using the autodetection is for a small perf improvement.
     Possible values for Factur-X: minimum, basicwl, basic, en16931, extended.
     Possible values for Order-X: basic, comfort, extended.
-    :type check_option: string
     :param check_option: keyword that designate the list of schematons to use.
     "base" (default value) will only check against the base schematon.
     "fr-ctc" will check against both the base schematron and France CTC
     schematon.
     "fr-chorus" will check against the base schematron, France CTC schematon
     and the Chorus-specific schematron (not available yet)
+    :type check_option: string
+    :param saxon_server_url: URL of the Saxon Server. If not set, the lib
+    will use the default URL http://localhost:5000/transform
+    :type saxon_server_url: string
+    :param raise_if_http_error: raise an exception if the HTTP POST request
+    to the saxon server fails. If False, a failure in the communication with
+    the saxon server will not raise any error (it will just be logged)
+    :type raise_if_http_error: bool
     :return: True if the XML is valid against the schematron
     raise an error if it is not valid against the schematron
     """
-    if not saxonche:
-        logger.info("Missing saxonche module, schematron validation skipped")
-        return True
     logger.debug("xml_check_schematron with factur-x lib %s", VERSION)
     if not isinstance(flavor, str):
         raise ValueError("Wrong type for flavor argument")
     if not isinstance(level, (type(None), str)):
         raise ValueError("Wrong type for level argument")
+    if not isinstance(saxon_server_url, (type(None), str)):
+        raise ValueError("Wrong type for saxon_server_url argument")
+    url = saxon_server_url
+    if url is None:
+        url = SAXON_SERVER_DEFAULT_URL
     start_chrono = datetime.now()
     xml_etree = None
     if isinstance(xml, bytes):
@@ -381,21 +403,58 @@ def xml_check_schematron(
     error_nr = 1
     xml_str_no_bom = xml_str.lstrip("\ufeff")
     for check_type, xsl_file in xsl_files.items():
-        absolute_xsl_file = str(
-            importlib_resources.files(__package__).joinpath(xsl_file)
+        absolute_xsl_file_path = importlib_resources.files(__package__).joinpath(
+            xsl_file
         )
         logger.debug(
-            "Schematron check '%s': using XSL file %s", check_type, absolute_xsl_file
+            "Schematron check '%s': using XSL file %s",
+            check_type,
+            absolute_xsl_file_path,
         )
-        with saxonche.PySaxonProcessor() as saxproc:
-            xslt_proc = saxproc.new_xslt30_processor()
-            xdm_node = saxproc.parse_xml(xml_text=xml_str_no_bom)
-            # compile_stylesheet() is the slow/heavy part
-            # It can be optimized by generating stylesheet export files using saxon EE
-            # stylesheet export files can then be used by saxon HE
-            executable = xslt_proc.compile_stylesheet(stylesheet_file=absolute_xsl_file)
-            result_str = executable.transform_to_string(xdm_node=xdm_node)
-            logger.debug("schematron result_str=%s", result_str)
+        xsl_file_str = absolute_xsl_file_path.read_text(encoding="utf-8")
+        for codedb_file, codedb_url in SAXON_SERVER_CODEDB2URL.items():
+            xsl_file_str = xsl_file_str.replace(codedb_file, codedb_url)
+
+        rfiles = {
+            "xml": ("file_to_check.xml", xml_str_no_bom, "text/xml"),
+            "xsl": (xsl_file, xsl_file_str, "text/xml"),
+        }
+        req_start_chrono = datetime.now()
+        logger.info(
+            f"Sending HTTP POST request on {url} to validate "
+            f"against schematron '{check_type}'"
+        )
+        try:
+            res = requests.post(url, files=rfiles, timeout=SAXON_SERVER_TIMEOUT)
+        except Exception as err:
+            error_msg = (
+                f"Check '{check_type}' failed in the POST request to saxon server "
+                f"on {url}: {str(err)}"
+            )
+            logger.warning(error_msg)
+            if raise_if_http_error:
+                raise RuntimeError(error_msg) from err
+            logger.warning(f"Skipping schematron check '{check_type}'")
+            continue
+        req_end_chrono = datetime.now()
+        req_duration = (req_end_chrono - req_start_chrono).total_seconds()
+
+        if res.status_code != 200:
+            error_msg = (
+                f"Saxon server returned HTTP code {res.status_code} for check "
+                f"'{check_type}' (expected HTTP code: 200)"
+            )
+            logger.warning(error_msg)
+            if raise_if_http_error:
+                raise RuntimeError(error_msg)
+            logger.warning(f"Skipping schematron check '{check_type}'")
+            continue
+        logger.info(
+            f"Saxon server answered successfully for check '{check_type}' "
+            f"in {req_duration} sec"
+        )
+        result_str = res.text
+        logger.debug(f"schematron '{check_type}' result_str={result_str}")
 
         try:
             svrl_root = etree.fromstring(result_str.encode("utf-8"))
@@ -445,27 +504,39 @@ def xml_check_schematron(
     return True
 
 
-def get_facturx_xml_from_pdf(pdf_file, check_xsd=True, check_schematron=True):
+def get_facturx_xml_from_pdf(
+    pdf_file, check_xsd=True, check_schematron=False, saxon_server_url=None
+):
     filenames = [FACTURX_FILENAME] + ZUGFERD_FILENAMES
     return get_xml_from_pdf(
         pdf_file,
         check_xsd=check_xsd,
         check_schematron=check_schematron,
+        saxon_server_url=saxon_server_url,
         filenames=filenames,
     )
 
 
-def get_orderx_xml_from_pdf(pdf_file, check_xsd=True, check_schematron=True):
+def get_orderx_xml_from_pdf(
+    pdf_file, check_xsd=True, check_schematron=False, saxon_server_url=None
+):
     filenames = [ORDERX_FILENAME]
     return get_xml_from_pdf(
         pdf_file,
         check_xsd=check_xsd,
         check_schematron=check_schematron,
+        saxon_server_url=saxon_server_url,
         filenames=filenames,
     )
 
 
-def get_xml_from_pdf(pdf_file, check_xsd=True, check_schematron=True, filenames=None):
+def get_xml_from_pdf(
+    pdf_file,
+    check_xsd=True,
+    check_schematron=False,
+    saxon_server_url=None,
+    filenames=None,
+):
     logger.debug("get_xml_from_pdf with factur-x lib %s", VERSION)
     if filenames is None:
         filenames = []
@@ -545,7 +616,12 @@ def get_xml_from_pdf(pdf_file, check_xsd=True, check_schematron=True, filenames=
                     continue
             if check_schematron and level:
                 try:
-                    xml_check_schematron(xml_root, flavor=flavor, level=level)
+                    xml_check_schematron(
+                        xml_root,
+                        flavor=flavor,
+                        level=level,
+                        saxon_server_url=saxon_server_url,
+                    )
                 except Exception:
                     logger.warning(
                         "Skipping %s: not valid against the schematron", filename
@@ -1177,7 +1253,8 @@ def generate_from_binary(
     level="autodetect",
     orderx_type="autodetect",
     check_xsd=True,
-    check_schematron=True,
+    check_schematron=False,
+    saxon_server_url=None,
     pdf_metadata=None,
     lang=None,
     attachments=None,
@@ -1216,6 +1293,9 @@ def generate_from_binary(
     beforehand, you should disable this feature to avoid a double check
     and get a small performance improvement.
     :type check_schematron: boolean
+    :param saxon_server_url: URL of the Saxon server for schematron validation.
+    If None, the default Saxon server URL is used.
+    :type saxon_server_url: boolean
     :param pdf_metadata: Specify the metadata of the generated PDF.
     If pdf_metadata is None (default value), this lib will generate some
     metadata in English by extracting relevant info from the Factur-X/Order-X XML.
@@ -1272,6 +1352,7 @@ def generate_from_binary(
             orderx_type=orderx_type,
             check_xsd=check_xsd,
             check_schematron=check_schematron,
+            saxon_server_url=saxon_server_url,
             pdf_metadata=pdf_metadata,
             lang=lang,
             attachments=attachments,
@@ -1291,7 +1372,8 @@ def generate_from_file(
     level="autodetect",
     orderx_type="autodetect",
     check_xsd=True,
-    check_schematron=True,
+    check_schematron=False,
+    saxon_server_url=None,
     pdf_metadata=None,
     lang=None,
     output_pdf_file=None,
@@ -1332,6 +1414,9 @@ def generate_from_file(
     beforehand, you should disable this feature to avoid a double check
     and get a small performance improvement.
     :type check_schematron: boolean
+    :param saxon_server_url: URL of the Saxon server for schematron validation.
+    If None, the default Saxon server URL is used.
+    :type saxon_server_url: boolean
     :param pdf_metadata: Specify the metadata of the generated PDF.
     If pdf_metadata is None (default value), this lib will generate some
     metadata in English by extracting relevant info from the Factur-X/Order-X XML.
@@ -1548,7 +1633,9 @@ def generate_from_file(
     if check_xsd:
         xml_check_xsd(xml_bytes, flavor=flavor, level=level)
     if flavor in ("factur-x", "order-x") and check_schematron:
-        xml_check_schematron(xml_bytes, flavor=flavor, level=level)
+        xml_check_schematron(
+            xml_bytes, flavor=flavor, level=level, saxon_server_url=saxon_server_url
+        )
     if pdf_metadata is None:
         if xml_root is None:
             xml_root = etree.fromstring(xml_bytes)

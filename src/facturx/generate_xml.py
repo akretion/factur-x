@@ -745,6 +745,7 @@ def generate_cii_xml(
     level="autodetect",
     check_xsd=True,
     check_schematron="base",
+    saxon_server_url=None,
     prefixed_namespaces=True,
 ):
     # in data_dict, the key names use ID CII and not ID Modèle AFNOR FE
@@ -1407,7 +1408,11 @@ def generate_cii_xml(
         xml_check_xsd(xml_root, flavor="factur-x", level=level)
     if check_schematron:
         xml_check_schematron(
-            xml_bytes, flavor="factur-x", level=level, check_option=check_schematron
+            xml_bytes,
+            flavor="factur-x",
+            level=level,
+            check_option=check_schematron,
+            saxon_server_url=saxon_server_url,
         )
     return xml_bytes
 
@@ -1943,6 +1948,7 @@ def generate_ubl_xml(
     level="autodetect",
     check_xsd=True,
     check_schematron="base",
+    saxon_server_url=None,
     prefixed_namespaces=True,
 ):
     if not isinstance(data_dict, dict):
@@ -2547,7 +2553,11 @@ def generate_ubl_xml(
         xml_check_xsd(xml_root, flavor="ubl-2.1")
     if check_schematron:
         xml_check_schematron(
-            xml_bytes, flavor="ubl-2.1", level=level, check_option=check_schematron
+            xml_bytes,
+            flavor="ubl-2.1",
+            level=level,
+            check_option=check_schematron,
+            saxon_server_url=saxon_server_url,
         )
     return xml_bytes
 
@@ -2558,6 +2568,7 @@ def generate_xml(
     level="autodetect",
     check_xsd=True,
     check_schematron="base",
+    saxon_server_url=None,
     prefixed_namespaces=True,
 ):
     if flavor not in ("factur-x", "facturx", "ubl-2.1"):
@@ -2568,6 +2579,7 @@ def generate_xml(
             level=level,
             check_xsd=check_xsd,
             check_schematron=check_schematron,
+            saxon_server_url=saxon_server_url,
             prefixed_namespaces=prefixed_namespaces,
         )
     else:
@@ -2576,5 +2588,6 @@ def generate_xml(
             level=level,
             check_xsd=check_xsd,
             check_schematron=check_schematron,
+            saxon_server_url=saxon_server_url,
             prefixed_namespaces=prefixed_namespaces,
         )
