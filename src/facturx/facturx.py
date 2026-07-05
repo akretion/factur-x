@@ -198,40 +198,33 @@ def xml_check_xsd(xml, flavor="autodetect", level="autodetect"):
         raise ValueError("Wrong type for level argument")
     start_chrono = datetime.now()
     xml_etree = None
-    if isinstance(xml, bytes):
-        xml_bytes = xml
-    elif isinstance(xml, str):
-        xml_bytes = xml.encode("utf8")
+    if isinstance(xml, (bytes, str)):
+        try:
+            xml_etree = etree.fromstring(xml)
+        except Exception as err:
+            raise Exception(
+                f"The file to check is not a valid XML file. Error: {err}"
+            ) from err
     elif isinstance(xml, type(etree.Element("pouet"))):
         xml_etree = xml
-        xml_bytes = etree.tostring(
-            xml, pretty_print=True, encoding="UTF-8", xml_declaration=True
-        )
     elif isinstance(xml, IOBase):
         xml.seek(0)
         xml_bytes = xml.read()
         xml.close()
+        try:
+            xml_etree = etree.fromstring(xml_bytes)
+        except Exception as err:
+            raise Exception(
+                f"The file to check is not a valid XML file. Error: {err}"
+            ) from err
     else:
         raise ValueError("Wrong type for xml argument")
 
-    if not xml_bytes:
-        raise ValueError("xml argument is empty")
-
     # autodetect
     if flavor not in ("factur-x", "facturx", "zugferd", "order-x", "orderx", "ubl-2.1"):
-        if xml_etree is None:
-            try:
-                xml_etree = etree.fromstring(xml_bytes)
-            except Exception as e:
-                raise Exception(f"The XML syntax is invalid: {e}.") from e
         flavor = get_flavor(xml_etree)
     if flavor in ("factur-x", "facturx"):
         if level not in FACTURX_LEVEL2xsd:
-            if xml_etree is None:
-                try:
-                    xml_etree = etree.fromstring(xml_bytes)
-                except Exception as e:
-                    raise Exception(f"The XML syntax is invalid: {e}.") from e
             level = get_level(xml_etree, flavor)
         if level not in FACTURX_LEVEL2xsd:
             raise ValueError(f"Wrong level '{level}' for Factur-X invoice.")
@@ -240,11 +233,6 @@ def xml_check_xsd(xml, flavor="autodetect", level="autodetect"):
         xsd_file = f"xsd_and_schematron/{ZUGFERD_xsd}"
     elif flavor in ("order-x", "orderx"):
         if level not in ORDERX_LEVEL2xsd:
-            if xml_etree is None:
-                try:
-                    xml_etree = etree.fromstring(xml_bytes)
-                except Exception as e:
-                    raise Exception(f"The XML syntax is invalid: {e}.") from e
             level = get_level(xml_etree, flavor)
         if level not in ORDERX_LEVEL2xsd:
             raise ValueError(f"Wrong level '{level}' for Order-X document.")
@@ -259,17 +247,16 @@ def xml_check_xsd(xml, flavor="autodetect", level="autodetect"):
     # str is added to be compatible with lxml 4.6.5
     official_schema = etree.XMLSchema(file=str(xsd_absolute_filepath))
     try:
-        t = etree.parse(BytesIO(xml_bytes))
-        official_schema.assertValid(t)
-    except Exception as e:
+        official_schema.assertValid(xml_etree)
+    except Exception as err:
         # if the validation of the XSD fails, we arrive here
         logger.error("The XML file is invalid against the XML Schema Definition")
-        logger.error("XSD Error: %s", e)
+        logger.error("XSD Error: %s", err)
         raise Exception(
             f"The {flavor.capitalize()} XML file is not valid against the official "
             f"XML Schema Definition. Here is the error, which may give you an idea on "
-            f"the cause of the problem: {e}."
-        ) from e
+            f"the cause of the problem: {err}."
+        ) from err
     end_chrono = datetime.now()
     logger.info(
         "%s XML file successfully validated against XSD in %s sec",
@@ -1631,7 +1618,9 @@ def generate_from_file(
             xml_root = etree.fromstring(xml_bytes)
         orderx_type = get_orderx_type(xml_root)
     if check_xsd:
-        xml_check_xsd(xml_bytes, flavor=flavor, level=level)
+        if xml_root is None:
+            xml_root = etree.fromstring(xml_bytes)
+        xml_check_xsd(xml_root, flavor=flavor, level=level)
     if flavor in ("factur-x", "order-x") and check_schematron:
         xml_check_schematron(
             xml_bytes, flavor=flavor, level=level, saxon_server_url=saxon_server_url
