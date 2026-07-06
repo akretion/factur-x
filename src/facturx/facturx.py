@@ -480,6 +480,8 @@ def xml_check_schematron(
             f"The {flavor} {level} XML file is not valid against the {len(xsl_files)} "
             f"schematron(s). {len(errors)} errors found:\n{error_list_str}"
         )
+        logger.error("Dumping the XML file that has the above schematron error:")
+        logger.error(xml_str)
         raise Exception(full_error)
     end_chrono = datetime.now()
     logger.info(

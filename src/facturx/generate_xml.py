@@ -194,7 +194,9 @@ def _check_data_dict(data_dict, flavor, level):
 def _remove_extended_keys(data_dict, level):
     if isinstance(data_dict, dict):
         for key in list(data_dict.keys()):
-            if isinstance(key, str) and key.startswith("EXT-FR-FE-"):
+            if isinstance(key, str) and (
+                key.startswith("EXT-FR-FE-") or key in ("BT-193", "BT-177")
+            ):
                 data_dict.pop(key)  # Supprime la clé
                 logger.warning(
                     f"field {key} removed from data_dict because "
@@ -433,11 +435,26 @@ def _cii_generate_single_allowance_charge(namespaces, type, indicator, **kwargs)
             for _ in [1]
             if kwargs.get("reason_code")
         ],
+        *[
+            RAM.ReasonCode(kwargs["reason_code_uncl5153"], listID="5153")
+            for _ in [1]
+            if kwargs.get("reason_code_uncl5153") and not kwargs.get("reason_code")
+        ],
         *[RAM.Reason(kwargs["reason"]) for _ in [1] if kwargs.get("reason")],
         *[
             RAM.CategoryTradeTax(
                 RAM.TypeCode("VAT"),
+                *[
+                    RAM.ExemptionReason(kwargs["tax_vatex_label"])
+                    for _ in [1]
+                    if kwargs.get("tax_vatex_label")
+                ],
                 RAM.CategoryCode(kwargs["tax_categ"]),
+                *[
+                    RAM.ExemptionReasonCode(kwargs["tax_vatex_code"])
+                    for _ in [1]
+                    if kwargs.get("tax_vatex_code")
+                ],
                 *[
                     RAM.RateApplicablePercent(kwargs["tax_rate"])
                     for _ in [1]
@@ -630,7 +647,17 @@ def _cii_generate_single_invoice_line(namespaces, line_dict):
         RAM.SpecifiedLineTradeSettlement(
             RAM.ApplicableTradeTax(
                 RAM.TypeCode("VAT"),
+                *[
+                    RAM.ExemptionReason(line_dict["EXT-FR-FE-178"])
+                    for _ in [1]
+                    if line_dict.get("EXT-FR-FE-178")
+                ],
                 RAM.CategoryCode(line_dict["BT-151"]),
+                *[
+                    RAM.ExemptionReasonCode(line_dict["EXT-FR-FE-179"])
+                    for _ in [1]
+                    if line_dict.get("EXT-FR-FE-179")
+                ],
                 *[
                     RAM.RateApplicablePercent(line_dict["BT-152"])
                     for _ in [1]
@@ -681,6 +708,7 @@ def _cii_generate_single_invoice_line(namespaces, line_dict):
                     "true",
                     amount=charge["BT-141"],
                     reason_code=charge.get("BT-145"),
+                    reason_code_uncl5153=charge.get("BT-193"),
                     reason=charge.get("BT-144"),
                     percent=charge.get("BT-143"),
                     base_amount=charge.get("BT-142"),
@@ -1290,6 +1318,8 @@ def generate_cii_xml(
                         base_amount=charge.get("BT-93"),
                         tax_categ=charge["BT-95"],
                         tax_rate=charge.get("BT-96"),
+                        tax_vatex_label=charge.get("EXT-FR-FE-187"),
+                        tax_vatex_code=charge.get("EXT-FR-FE-188"),
                     )
                     for charge in (data_dict.get("BG-20") or [])
                 ],
@@ -1300,11 +1330,14 @@ def generate_cii_xml(
                         "true",
                         amount=charge["BT-99"],
                         reason_code=charge.get("BT-105"),
+                        reason_code_uncl5153=charge.get("BT-177"),
                         reason=charge.get("BT-104"),
                         percent=charge.get("BT-101"),
                         base_amount=charge.get("BT-100"),
                         tax_categ=charge["BT-102"],
                         tax_rate=charge.get("BT-103"),
+                        tax_vatex_label=charge.get("EXT-FR-FE-189"),
+                        tax_vatex_code=charge.get("EXT-FR-FE-190"),
                     )
                     for charge in (data_dict.get("BG-21") or [])
                 ],
@@ -1687,6 +1720,11 @@ def _ubl_generate_single_allowance_charge(namespaces, type, indicator, **kwargs)
             if kwargs.get("reason_code")
         ],
         *[
+            CBC.AllowanceChargeReasonCode(kwargs["reason_code_uncl5153"], listID="5153")
+            for _ in [1]
+            if kwargs.get("reason_code_uncl5153") and not kwargs.get("reason_code")
+        ],
+        *[
             CBC.AllowanceChargeReason(kwargs["reason"])
             for _ in [1]
             if kwargs.get("reason")
@@ -1709,6 +1747,16 @@ def _ubl_generate_single_allowance_charge(namespaces, type, indicator, **kwargs)
                     CBC.Percent(kwargs["tax_rate"])
                     for _ in [1]
                     if kwargs.get("tax_rate")
+                ],
+                *[
+                    CBC.TaxExemptionReasonCode(kwargs["tax_vatex_code"])
+                    for _ in [1]
+                    if kwargs.get("tax_vatex_code")
+                ],
+                *[
+                    CBC.TaxExemptionReason(kwargs["tax_vatex_label"])
+                    for _ in [1]
+                    if kwargs.get("tax_vatex_label")
                 ],
                 CAC.TaxScheme(CBC.ID("VAT")),
             )
@@ -1849,6 +1897,7 @@ def _ubl_generate_single_invoice_line(namespaces, line_dict, invoice_currency):
                 currency_code=invoice_currency,
                 amount=charge["BT-141"],
                 reason_code=charge.get("BT-145"),
+                reason_code_uncl5153=charge.get("BT-193"),
                 reason=charge.get("BT-144"),
                 percent=charge.get("BT-143"),
                 base_amount=charge.get("BT-142"),
@@ -1908,6 +1957,16 @@ def _ubl_generate_single_invoice_line(namespaces, line_dict, invoice_currency):
                     CBC.Percent(line_dict["BT-152"])
                     for _ in [1]
                     if line_dict.get("BT-152")
+                ],
+                *[
+                    CBC.TaxExemptionReasonCode(line_dict["EXT-FR-FE-179"])
+                    for _ in [1]
+                    if line_dict.get("EXT-FR-FE-179")
+                ],
+                *[
+                    CBC.TaxExemptionReason(line_dict["EXT-FR-FE-178"])
+                    for _ in [1]
+                    if line_dict.get("EXT-FR-FE-178")
                 ],
                 CAC.TaxScheme(CBC.ID("VAT")),
             ),
@@ -2454,6 +2513,8 @@ def generate_ubl_xml(
                 base_amount=charge.get("BT-93"),
                 tax_categ=charge["BT-95"],
                 tax_rate=charge.get("BT-96"),
+                tax_vatex_label=charge.get("EXT-FR-FE-187"),
+                tax_vatex_code=charge.get("EXT-FR-FE-188"),
             )
             for charge in (data_dict.get("BG-20") or [])
         ],
@@ -2465,11 +2526,14 @@ def generate_ubl_xml(
                 currency_code=data_dict["BT-5"],
                 amount=charge["BT-99"],
                 reason_code=charge.get("BT-105"),
+                reason_code_uncl5153=charge.get("BT-177"),
                 reason=charge.get("BT-104"),
                 percent=charge.get("BT-101"),
                 base_amount=charge.get("BT-100"),
                 tax_categ=charge["BT-102"],
                 tax_rate=charge.get("BT-103"),
+                tax_vatex_label=charge.get("EXT-FR-FE-189"),
+                tax_vatex_code=charge.get("EXT-FR-FE-190"),
             )
             for charge in (data_dict.get("BG-21") or [])
         ],
