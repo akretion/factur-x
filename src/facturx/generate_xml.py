@@ -195,7 +195,8 @@ def _remove_extended_keys(data_dict, level):
     if isinstance(data_dict, dict):
         for key in list(data_dict.keys()):
             if isinstance(key, str) and (
-                key.startswith("EXT-FR-FE-") or key in ("BT-193", "BT-177")
+                key.startswith("EXT-FR-FE-")
+                or key in ("BT-173", "BT-174", "BT-175", "BT-176", "BT-177", "BT-193")
             ):
                 data_dict.pop(key)  # Supprime la clé
                 logger.warning(
@@ -1319,8 +1320,8 @@ def generate_cii_xml(
                         base_amount=charge.get("BT-93"),
                         tax_categ=charge["BT-95"],
                         tax_rate=charge.get("BT-96"),
-                        tax_vatex_label=charge.get("EXT-FR-FE-187"),
-                        tax_vatex_code=charge.get("EXT-FR-FE-188"),
+                        tax_vatex_label=charge.get("BT-173"),
+                        tax_vatex_code=charge.get("BT-174"),
                     )
                     for charge in (data_dict.get("BG-20") or [])
                 ],
@@ -1337,8 +1338,8 @@ def generate_cii_xml(
                         base_amount=charge.get("BT-100"),
                         tax_categ=charge["BT-102"],
                         tax_rate=charge.get("BT-103"),
-                        tax_vatex_label=charge.get("EXT-FR-FE-189"),
-                        tax_vatex_code=charge.get("EXT-FR-FE-190"),
+                        tax_vatex_label=charge.get("BT-175"),
+                        tax_vatex_code=charge.get("BT-176"),
                     )
                     for charge in (data_dict.get("BG-21") or [])
                 ],
@@ -2516,8 +2517,8 @@ def generate_ubl_xml(
                 base_amount=charge.get("BT-93"),
                 tax_categ=charge["BT-95"],
                 tax_rate=charge.get("BT-96"),
-                tax_vatex_label=charge.get("EXT-FR-FE-187"),
-                tax_vatex_code=charge.get("EXT-FR-FE-188"),
+                tax_vatex_label=charge.get("BT-173"),
+                tax_vatex_code=charge.get("BT-174"),
             )
             for charge in (data_dict.get("BG-20") or [])
         ],
@@ -2535,8 +2536,8 @@ def generate_ubl_xml(
                 base_amount=charge.get("BT-100"),
                 tax_categ=charge["BT-102"],
                 tax_rate=charge.get("BT-103"),
-                tax_vatex_label=charge.get("EXT-FR-FE-189"),
-                tax_vatex_code=charge.get("EXT-FR-FE-190"),
+                tax_vatex_label=charge.get("BT-175"),
+                tax_vatex_code=charge.get("BT-176"),
             )
             for charge in (data_dict.get("BG-21") or [])
         ],

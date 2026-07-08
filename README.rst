@@ -141,6 +141,10 @@ Contributors
 Changelog
 =========
 
+* Version 6.1 dated 2026-07-08:
+
+  * generate_xml(): replace EXT-FR-FE-187 by BT-173, EXT-FR-FE-188 by BT-174, EXT-FR-FE-189 by BT-175 and EXT-FR-FE-190 by BT-176
+
 * Version 6.0 dated 2026-07-08: Remove saxonche and query Saxon Server via HTTP POST request
 
   * Stop using `saxonche <https://pypi.org/project/saxonche/>`_ (to know why, read `bug #77 <https://github.com/akretion/factur-x/issues/77>`_). Replaced by an HTTP POST query to a `Saxon Server <https://github.com/willemvlh/saxon-server>`_. For Factur-X, there is a small issue linked to the fact that the Factur-X schematron uses an external codeDB XML file, cf `this issue <https://github.com/willemvlh/saxon-server/issues/23>`_. 2 solutions have been implémented to workaround this issue. First solution (by default): replace the CodeDB XML file by a public URL to that the Saxon Server can retreive the CodeDB XML file. This first solution is not ideal because it adds extra latency and requires an Internet connection. The second solution: put a copy of the CodeDB files on the Saxon Server and indicate the path to the directory that contains the CodeDB XML files (via the argument **saxon_server_codedb_dir**). This second solution is better because it doesn't add extra latency and doesn't require an Internet connexion, but it requires some extra work to setup the directory that contains the CodeDB files on the Saxon Server.
