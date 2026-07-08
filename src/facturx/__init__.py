@@ -1,6 +1,6 @@
 import logging
 
-__version__ = "5.1"
+__version__ = "6.0"
 from .facturx import (
     generate_from_binary,
     generate_from_file,

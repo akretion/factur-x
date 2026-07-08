@@ -165,12 +165,12 @@ CREATOR = f"factur-x Python lib v{VERSION} by Alexis de Lattre"
 # We stopped using saxonche because of https://github.com/akretion/pyfrctc/issues/3
 SAXON_SERVER_DEFAULT_URL = "http://localhost:5000/transform"
 SAXON_SERVER_TIMEOUT = 5
-SAXON_SERVER_CODEDB2URL = {
-    "FACTUR-X_MINIMUM_codedb.xml": "https://raw.githubusercontent.com/akretion/factur-x/refs/heads/master/src/facturx/xsd_and_schematron/facturx-minimum/FACTUR-X_MINIMUM_codedb.xml",
-    "FACTUR-X_BASIC-WL_codedb.xml": "https://raw.githubusercontent.com/akretion/factur-x/refs/heads/master/src/facturx/xsd_and_schematron/facturx-basicwl/FACTUR-X_BASIC-WL_codedb.xml",
-    "FACTUR-X_BASIC_codedb.xml": "https://raw.githubusercontent.com/akretion/factur-x/refs/heads/master/src/facturx/xsd_and_schematron/facturx-basic/FACTUR-X_BASIC_codedb.xml",
-    "FACTUR-X_EN16931_codedb.xml": "https://raw.githubusercontent.com/akretion/factur-x/refs/heads/master/src/facturx/xsd_and_schematron/facturx-en16931/FACTUR-X_EN16931_codedb.xml",
-    "FACTUR-X_EXTENDED_codedb.xml": "https://raw.githubusercontent.com/akretion/factur-x/refs/heads/master/src/facturx/xsd_and_schematron/facturx-extended/FACTUR-X_EXTENDED_codedb.xml",
+CODEDB_FACTURX_LEVEL2URL = {
+    "minimum": "https://raw.githubusercontent.com/akretion/factur-x/refs/heads/master/src/facturx/xsd_and_schematron/facturx-minimum/FACTUR-X_MINIMUM_codedb.xml",
+    "basicwl": "https://raw.githubusercontent.com/akretion/factur-x/refs/heads/master/src/facturx/xsd_and_schematron/facturx-basicwl/FACTUR-X_BASIC-WL_codedb.xml",
+    "basic": "https://raw.githubusercontent.com/akretion/factur-x/refs/heads/master/src/facturx/xsd_and_schematron/facturx-basic/FACTUR-X_BASIC_codedb.xml",
+    "en16931": "https://raw.githubusercontent.com/akretion/factur-x/refs/heads/master/src/facturx/xsd_and_schematron/facturx-en16931/FACTUR-X_EN16931_codedb.xml",
+    "extended": "https://raw.githubusercontent.com/akretion/factur-x/refs/heads/master/src/facturx/xsd_and_schematron/facturx-extended/FACTUR-X_EXTENDED_codedb.xml",
 }
 
 
@@ -272,6 +272,7 @@ def xml_check_schematron(
     level="autodetect",
     check_option="base",
     saxon_server_url=None,
+    saxon_server_codedb_dir=None,
     raise_if_http_error=False,
 ):
     """
@@ -311,6 +312,8 @@ def xml_check_schematron(
         raise ValueError("Wrong type for level argument")
     if not isinstance(saxon_server_url, (type(None), str)):
         raise ValueError("Wrong type for saxon_server_url argument")
+    if not isinstance(saxon_server_codedb_dir, (type(None), str)):
+        raise ValueError("Wrong type for saxon_server_codedb_dir argument")
     url = saxon_server_url
     if url is None:
         url = SAXON_SERVER_DEFAULT_URL
@@ -399,8 +402,31 @@ def xml_check_schematron(
             absolute_xsl_file_path,
         )
         xsl_file_str = absolute_xsl_file_path.read_text(encoding="utf-8")
-        for codedb_file, codedb_url in SAXON_SERVER_CODEDB2URL.items():
-            xsl_file_str = xsl_file_str.replace(codedb_file, codedb_url)
+        if (
+            check_type == "base"
+            and flavor in ("factur-x", "facturx")
+            and level in CODEDB_FACTURX_LEVEL2URL
+        ):
+            codedb_url = CODEDB_FACTURX_LEVEL2URL[level]
+            codedb_file = os.path.basename(codedb_url)
+            if saxon_server_codedb_dir:
+                saxon_server_codedb_file = os.path.join(
+                    saxon_server_codedb_dir, codedb_file
+                )
+                xsl_file_str = xsl_file_str.replace(
+                    codedb_file, saxon_server_codedb_file
+                )
+                logger.info(
+                    f"Replaced {codedb_file} by {saxon_server_codedb_file} in "
+                    "schematron XSL file"
+                )
+            else:
+                logger.info(
+                    "Replacing codedb XML files by public URLs in schematron file, "
+                    "which will add latency to schematron validation. Use the "
+                    "saxon_server_codedb_dir argument to reduce latency."
+                )
+                xsl_file_str = xsl_file_str.replace(codedb_file, codedb_url)
 
         rfiles = {
             "xml": ("file_to_check.xml", xml_str_no_bom, "text/xml"),
@@ -494,7 +520,11 @@ def xml_check_schematron(
 
 
 def get_facturx_xml_from_pdf(
-    pdf_file, check_xsd=True, check_schematron=False, saxon_server_url=None
+    pdf_file,
+    check_xsd=True,
+    check_schematron=False,
+    saxon_server_url=None,
+    saxon_server_codedb_dir=None,
 ):
     filenames = [FACTURX_FILENAME] + ZUGFERD_FILENAMES
     return get_xml_from_pdf(
@@ -502,12 +532,17 @@ def get_facturx_xml_from_pdf(
         check_xsd=check_xsd,
         check_schematron=check_schematron,
         saxon_server_url=saxon_server_url,
+        saxon_server_codedb_dir=saxon_server_codedb_dir,
         filenames=filenames,
     )
 
 
 def get_orderx_xml_from_pdf(
-    pdf_file, check_xsd=True, check_schematron=False, saxon_server_url=None
+    pdf_file,
+    check_xsd=True,
+    check_schematron=False,
+    saxon_server_url=None,
+    saxon_server_codedb_dir=None,
 ):
     filenames = [ORDERX_FILENAME]
     return get_xml_from_pdf(
@@ -515,6 +550,7 @@ def get_orderx_xml_from_pdf(
         check_xsd=check_xsd,
         check_schematron=check_schematron,
         saxon_server_url=saxon_server_url,
+        saxon_server_codedb_dir=saxon_server_codedb_dir,
         filenames=filenames,
     )
 
@@ -524,6 +560,7 @@ def get_xml_from_pdf(
     check_xsd=True,
     check_schematron=False,
     saxon_server_url=None,
+    saxon_server_codedb_dir=None,
     filenames=None,
 ):
     logger.debug("get_xml_from_pdf with factur-x lib %s", VERSION)
@@ -610,6 +647,7 @@ def get_xml_from_pdf(
                         flavor=flavor,
                         level=level,
                         saxon_server_url=saxon_server_url,
+                        saxon_server_codedb_dir=saxon_server_codedb_dir,
                     )
                 except Exception:
                     logger.warning(
@@ -1244,6 +1282,7 @@ def generate_from_binary(
     check_xsd=True,
     check_schematron=False,
     saxon_server_url=None,
+    saxon_server_codedb_dir=None,
     pdf_metadata=None,
     lang=None,
     attachments=None,
@@ -1342,6 +1381,7 @@ def generate_from_binary(
             check_xsd=check_xsd,
             check_schematron=check_schematron,
             saxon_server_url=saxon_server_url,
+            saxon_server_codedb_dir=saxon_server_codedb_dir,
             pdf_metadata=pdf_metadata,
             lang=lang,
             attachments=attachments,
@@ -1363,6 +1403,7 @@ def generate_from_file(
     check_xsd=True,
     check_schematron=False,
     saxon_server_url=None,
+    saxon_server_codedb_dir=None,
     pdf_metadata=None,
     lang=None,
     output_pdf_file=None,
@@ -1625,7 +1666,11 @@ def generate_from_file(
         xml_check_xsd(xml_root, flavor=flavor, level=level)
     if flavor in ("factur-x", "order-x") and check_schematron:
         xml_check_schematron(
-            xml_bytes, flavor=flavor, level=level, saxon_server_url=saxon_server_url
+            xml_bytes,
+            flavor=flavor,
+            level=level,
+            saxon_server_url=saxon_server_url,
+            saxon_server_codedb_dir=saxon_server_codedb_dir,
         )
     if pdf_metadata is None:
         if xml_root is None:

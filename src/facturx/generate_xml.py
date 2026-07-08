@@ -774,6 +774,7 @@ def generate_cii_xml(
     check_xsd=True,
     check_schematron="base",
     saxon_server_url=None,
+    saxon_server_codedb_dir=None,
     prefixed_namespaces=True,
 ):
     # in data_dict, the key names use ID CII and not ID Modèle AFNOR FE
@@ -1381,16 +1382,16 @@ def generate_cii_xml(
                         if data_dict.get("BT-107")
                     ],
                     RAM.TaxBasisTotalAmount(data_dict["BT-109"]),
+                    RAM.TaxTotalAmount(
+                        data_dict["BT-110"], currencyID=data_dict["BT-110-1"]
+                    ),
                     *[
                         RAM.TaxTotalAmount(
-                            data_dict["BT-110"], currencyID=data_dict["BT-110-1"]
+                            data_dict["BT-111"], currencyID=data_dict["BT-111-1"]
                         )
                         for _ in [1]
-                        if data_dict.get("BT-110") and data_dict.get("BT-110-1")
+                        if data_dict.get("BT-111") and data_dict.get("BT-111-1")
                     ],
-                    RAM.TaxTotalAmount(
-                        data_dict["BT-111"], currencyID=data_dict["BT-111-1"]
-                    ),
                     *[
                         RAM.RoundingAmount(data_dict["BT-114"])
                         for _ in [1]
@@ -1446,6 +1447,7 @@ def generate_cii_xml(
             level=level,
             check_option=check_schematron,
             saxon_server_url=saxon_server_url,
+            saxon_server_codedb_dir=saxon_server_codedb_dir,
         )
     return xml_bytes
 
@@ -2008,6 +2010,7 @@ def generate_ubl_xml(
     check_xsd=True,
     check_schematron="base",
     saxon_server_url=None,
+    saxon_server_codedb_dir=None,
     prefixed_namespaces=True,
 ):
     if not isinstance(data_dict, dict):
@@ -2537,23 +2540,19 @@ def generate_ubl_xml(
             )
             for charge in (data_dict.get("BG-21") or [])
         ],
-        *[
-            CAC.TaxTotal(
-                CBC.TaxAmount(data_dict["BT-110"], currencyID=data_dict["BT-110-1"])
-            )
-            for _ in [1]
-            if data_dict.get("BT-110") and data_dict.get("BT-110-1")
-        ],
         CAC.TaxTotal(
-            CBC.TaxAmount(data_dict["BT-111"], currencyID=data_dict["BT-111-1"]),
+            CBC.TaxAmount(data_dict["BT-110"], currencyID=data_dict["BT-110-1"]),
+            *[
+                CBC.TaxAmount(data_dict["BT-111"], currencyID=data_dict["BT-111-1"])
+                for _ in [1]
+                if data_dict.get("BT-111") and data_dict.get("BT-111-1")
+            ],
             *[
                 CAC.TaxSubtotal(
                     CBC.TaxableAmount(
                         tax_dict["BT-116"], currencyID=tax_dict["BT-116-1"]
-                    ),  # TODO BT-5 or BT-6
-                    CBC.TaxAmount(
-                        tax_dict["BT-117"], currencyID=tax_dict["BT-117-1"]
-                    ),  # TODO BT-5 or BT-6
+                    ),
+                    CBC.TaxAmount(tax_dict["BT-117"], currencyID=tax_dict["BT-117-1"]),
                     CAC.TaxCategory(
                         CBC.ID(tax_dict["BT-118"]),
                         *[
@@ -2575,8 +2574,12 @@ def generate_ubl_xml(
                     ),
                 )
                 for tax_dict in data_dict["BG-23"]
+                if tax_dict["BT-116-1"] == data_dict["BT-5"]
+                and tax_dict["BT-117-1"] == data_dict["BT-5"]
             ],
         ),
+        # TODO: do we want to handle the case where BT-116-1 and BT-117-1 use BT-6
+        # and not BT-5 ? seems that this scenario is not supported in Factur-X
         CAC.LegalMonetaryTotal(
             CBC.LineExtensionAmount(data_dict["BT-106"], currencyID=data_dict["BT-5"]),
             CBC.TaxExclusiveAmount(data_dict["BT-109"], currencyID=data_dict["BT-5"]),
@@ -2633,6 +2636,7 @@ def generate_xml(
     check_xsd=True,
     check_schematron="base",
     saxon_server_url=None,
+    saxon_server_codedb_dir=None,
     prefixed_namespaces=True,
 ):
     if flavor not in ("factur-x", "facturx", "ubl-2.1"):
@@ -2644,6 +2648,7 @@ def generate_xml(
             check_xsd=check_xsd,
             check_schematron=check_schematron,
             saxon_server_url=saxon_server_url,
+            saxon_server_codedb_dir=saxon_server_codedb_dir,
             prefixed_namespaces=prefixed_namespaces,
         )
     else:
@@ -2653,5 +2658,6 @@ def generate_xml(
             check_xsd=check_xsd,
             check_schematron=check_schematron,
             saxon_server_url=saxon_server_url,
+            saxon_server_codedb_dir=saxon_server_codedb_dir,
             prefixed_namespaces=prefixed_namespaces,
         )
