@@ -141,6 +141,14 @@ Contributors
 Changelog
 =========
 
+* Version 6.0 dated 2026-07-08: Remove saxonche and query Saxon Server via HTTP POST request
+
+  * Stop using `saxonche <https://pypi.org/project/saxonche/>`_ (to know why, read `bug #77 <https://github.com/akretion/factur-x/issues/77>`_). Replaced by an HTTP POST query to a `Saxon Server <https://github.com/willemvlh/saxon-server>`_. For Factur-X, there is a small issue linked to the fact that the Factur-X schematron uses an external codeDB XML file, cf `this issue <https://github.com/willemvlh/saxon-server/issues/23>`_. 2 solutions have been implémented to workaround this issue. First solution (by default): replace the CodeDB XML file by a public URL to that the Saxon Server can retreive the CodeDB XML file. This first solution is not ideal because it adds extra latency and requires an Internet connection. The second solution: put a copy of the CodeDB files on the Saxon Server and indicate the path to the directory that contains the CodeDB XML files (via the argument **saxon_server_codedb_dir**). This second solution is better because it doesn't add extra latency and doesn't require an Internet connexion, but it requires some extra work to setup the directory that contains the CodeDB files on the Saxon Server.
+  * generate_xml(): Add support for BT-193, BT-177, EXT-FR-FE-178, EXT-FR-FE-179, EXT-FR-FE-187, EXT-FR-FE-188, EXT-FR-FE-189 and EXT-FR-FE-190.
+  * generate_xml(): change behavior for BT-110 and BT-111: BT-110 is required, BT-111 is optional (some countries like France make it required when invoicing in a foreign currency)
+  * Improve XSD verification code, which should improve performances.
+  * Log the XML file when the schematron check fails, to ease debugging.
+
 * Version 5.1 dated 2026-06-30: UBL is gaining maturity. New dependency on `python-stdnum <https://arthurdejong.org/python-stdnum/>`_
 
   * Add support for UBL in get_flavor(), get_level() and get_xml_namespace()

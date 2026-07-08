@@ -31,7 +31,7 @@ class TestGenerateXML(unittest.TestCase):
             "BT-19": "401HOF",
             "BT-20": "30 jours net",
             "BT-23": "S1",
-            # START Seller
+            # START Seller BG-4
             "BT-27": "Au bon moulin",
             "BT-28": "L'huile d'olive en folie",
             "BT-29": {
@@ -57,7 +57,7 @@ class TestGenerateXML(unittest.TestCase):
             "BT-41": "M. Rémi Dupont",
             "BT-42": "+33 6 12 42 12 42",
             "BT-43": "commercial@aubonmoulin.com",
-            # START Buyer
+            # START Buyer  BG-7
             "BT-44": "Ma jolie boutique SARL",
             "BT-45": "Ma jolie Trading Brand",
             "BT-46": {
@@ -196,8 +196,8 @@ class TestGenerateXML(unittest.TestCase):
             "BT-107": "5.50",
             "BT-108": "5.50",
             "BT-109": "273.00",
-            "BT-111": "35.03",
-            "BT-111-1": "EUR",
+            "BT-110": "35.03",
+            "BT-110-1": "EUR",
             "BT-112": "308.03",
             "BT-113": "100.00",
             "BT-115": "208.03",
