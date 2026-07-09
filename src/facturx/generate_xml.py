@@ -53,6 +53,21 @@ BT_8toUBL = {
     "delivery": "35",
     "payment": "432",
 }
+CREDIT_NOTE_TYPE_CODES = (
+    "81",
+    "83",
+    "261",
+    "262",
+    "296",
+    "308",
+    "381",
+    "396",
+    "420",
+    "458",
+    "502",
+    "503",
+    "532",
+)
 
 
 VERSION = importlib.metadata.version("factur-x")
@@ -1769,19 +1784,21 @@ def _ubl_generate_single_allowance_charge(namespaces, type, indicator, **kwargs)
     )
 
 
-def _ubl_generate_single_invoice_line(namespaces, line_dict, invoice_currency):
+def _ubl_generate_single_invoice_line(namespaces, line_dict, invoice_currency, refund):
     if not isinstance(line_dict, dict):
         raise ValueError("BG-25 must be a list of dicts")
     CAC = namespaces["cac"]
     CBC = namespaces["cbc"]
+    invoice_line_builder = getattr(CAC, "CreditNoteLine" if refund else "InvoiceLine")
+    qty_builder = getattr(CBC, "CreditedQuantity" if refund else "InvoicedQuantity")
     # BT-127 is 0..1 in EN16931 but 0..n in extended
     # so we accept it both as a string and a list
     if line_dict.get("BT-127") and not isinstance("BT-127", list):
         line_dict["BT-127"] = [line_dict["BT-127"]]
-    return CAC.InvoiceLine(
+    return invoice_line_builder(
         CBC.ID(line_dict["BT-126"]),
         *[CBC.Note(note) for note in (line_dict.get("BT-127") or [])],
-        CBC.InvoicedQuantity(line_dict["BT-129"], unitCode=line_dict["BT-130"]),
+        qty_builder(line_dict["BT-129"], unitCode=line_dict["BT-130"]),
         CBC.LineExtensionAmount(line_dict["BT-131"], currencyID=invoice_currency),
         *[
             CBC.AccountingCost(line_dict["BT-133"])
@@ -2055,7 +2072,10 @@ def generate_ubl_xml(
             else:
                 data_dict["BT-29"]["SEPA"] = data_dict["BT-90"]
 
-    UBL_NAMESPACES = get_xml_namespaces("ubl-2.1")
+    refund = bool(data_dict["BT-3"] in CREDIT_NOTE_TYPE_CODES)
+    UBL_NAMESPACES = get_xml_namespaces(
+        "ubl-2.1-creditnote" if refund else "ubl-2.1-invoice"
+    )
     default_urn = UBL_NAMESPACES.pop("default")
     UBL_NAMESPACES[None] = default_urn
 
@@ -2090,8 +2110,12 @@ def generate_ubl_xml(
         "cac": CAC,
         "cbc": CBC,
     }
+    root_builder = getattr(DEFAULT, "CreditNote" if refund else "Invoice")
+    type_code_builder = getattr(
+        CBC, "CreditNoteTypeCode" if refund else "InvoiceTypeCode"
+    )
 
-    xml_root = DEFAULT.Invoice(
+    xml_root = root_builder(
         CBC.UBLVersionID("2.1"),
         CBC.CustomizationID(data_dict["BT-24"]),
         *[CBC.ProfileID(data_dict["BT-23"]) for _ in [1] if data_dict.get("BT-23")],
@@ -2100,9 +2124,9 @@ def generate_ubl_xml(
         *[
             CBC.DueDate(_ubl_date_to_string(data_dict["BT-9"]))
             for _ in [1]
-            if data_dict.get("BT-9")
+            if data_dict.get("BT-9") and not refund
         ],
-        CBC.InvoiceTypeCode(data_dict["BT-3"]),
+        type_code_builder(data_dict["BT-3"]),
         *[
             CBC.Note(
                 note_dict.get("BT-21")
@@ -2192,7 +2216,7 @@ def generate_ubl_xml(
         *[
             CAC.OriginatorDocumentReference(CBC.ID(data_dict["BT-17"]))
             for _ in [1]
-            if data_dict.get("BT-17")
+            if data_dict.get("BT-17") and not refund
         ],
         *[
             CAC.ContractDocumentReference(CBC.ID(data_dict["BT-12"]))
@@ -2203,7 +2227,20 @@ def generate_ubl_xml(
         *[
             CAC.ProjectReference(CBC.ID(data_dict["BT-11"]))
             for _ in [1]
-            if data_dict.get("BT-11")
+            if data_dict.get("BT-11") and not refund
+        ],
+        *[
+            CAC.AdditionalDocumentReference(
+                CBC.ID(data_dict["BT-11"]),
+                CBC.DocumentTypeCode("50"),
+            )
+            for _ in [1]
+            if data_dict.get("BT-11") and refund
+        ],
+        *[
+            CAC.OriginatorDocumentReference(CBC.ID(data_dict["BT-17"]))
+            for _ in [1]
+            if data_dict.get("BT-17") and refund
         ],
         # SELLER  BG-4
         CAC.AccountingSupplierParty(
@@ -2425,6 +2462,11 @@ def generate_ubl_xml(
                     for _ in [1]
                 ],
                 *[
+                    CBC.PaymentDueDate(_ubl_date_to_string(data_dict["BT-9"]))
+                    for _ in [1]
+                    if data_dict.get("BT-9") and refund
+                ],
+                *[
                     CBC.PaymentID(data_dict["BT-83"])
                     for _ in [1]
                     if data_dict.get("BT-83")
@@ -2610,19 +2652,22 @@ def generate_ubl_xml(
             CBC.PayableAmount(data_dict["BT-115"], currencyID=data_dict["BT-5"]),
         ),
         *[
-            _ubl_generate_single_invoice_line(namespaces, iline, data_dict["BT-5"])
+            _ubl_generate_single_invoice_line(
+                namespaces, iline, data_dict["BT-5"], refund
+            )
             for iline in (data_dict.get("BG-25") or [])
         ],
     )  # Close Invoice
     xml_bytes = etree.tostring(
         xml_root, pretty_print=True, xml_declaration=True, encoding="UTF-8"
     )
+    flavor = refund and "ubl-2.1-creditnote" or "ubl-2.1-invoice"
     if check_xsd:
-        xml_check_xsd(xml_root, flavor="ubl-2.1")
+        xml_check_xsd(xml_root, flavor=flavor)
     if check_schematron:
         xml_check_schematron(
             xml_bytes,
-            flavor="ubl-2.1",
+            flavor=flavor,
             level=level,
             check_option=check_schematron,
             saxon_server_url=saxon_server_url,

@@ -78,7 +78,10 @@ ORDERX_LEVEL2xsd = {
     "comfort": "orderx-comfort/SCRDMCCBDACIOMessageStructure_100pD20B.xsd",
     "extended": "orderx-extended/SCRDMCCBDACIOMessageStructure_100pD20B.xsd",
 }
-UBL_21_xsd = "ubl-2.1/maindoc/UBL-Invoice-2.1.xsd"
+UBL_21_xsd = {
+    "ubl-2.1-invoice": "ubl-2.1/maindoc/UBL-Invoice-2.1.xsd",
+    "ubl-2.1-creditnote": "ubl-2.1/maindoc/UBL-CreditNote-2.1.xsd",
+}
 # SCHEMATON "BASE" files
 FACTURX_LEVEL2schematron = {
     "minimum": "facturx-minimum/Factur-X_1.09_MINIMUM.xsl",
@@ -149,8 +152,18 @@ XML_NAMESPACES = {
         "udt": "urn:un:unece:uncefact:data:standard:UnqualifiedDataType:15",
         "xsi": "http://www.w3.org/2001/XMLSchema-instance",
     },
-    "ubl-2.1": {
+    "ubl-2.1-invoice": {
         "default": "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2",
+        "cac": "urn:oasis:names:specification:ubl:schema:xsd:"
+        "CommonAggregateComponents-2",
+        "cbc": "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2",
+        "xsi": "http://www.w3.org/2001/XMLSchema-instance",
+        "ccts": "urn:un:unece:uncefact:documentation:2",
+        "qdt": "urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2",
+        "udt": "urn:oasis:names:specification:ubl:schema:xsd:UnqualifiedDataTypes-2",
+    },
+    "ubl-2.1-creditnote": {
+        "default": "urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2",
         "cac": "urn:oasis:names:specification:ubl:schema:xsd:"
         "CommonAggregateComponents-2",
         "cbc": "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2",
@@ -179,7 +192,8 @@ def xml_check_xsd(xml, flavor="autodetect", level="autodetect"):
     Validate the XML file against the XSD
     :param xml: the Factur-X or Order-X XML
     :type xml: string, file or etree object
-    :param flavor: possible values: 'factur-x', 'zugferd', 'order-x', 'ubl-2.1'
+    :param flavor: possible values: 'factur-x', 'zugferd', 'order-x',
+    'ubl-2.1-invoice', 'ubl-2.1-creditnote'
     or 'autodetect'.
     Value 'zugferd' means ZUGFeRD 1.0.
     :type flavor: string
@@ -221,7 +235,15 @@ def xml_check_xsd(xml, flavor="autodetect", level="autodetect"):
         raise ValueError("Wrong type for xml argument")
 
     # autodetect
-    if flavor not in ("factur-x", "facturx", "zugferd", "order-x", "orderx", "ubl-2.1"):
+    if flavor not in (
+        "factur-x",
+        "facturx",
+        "zugferd",
+        "order-x",
+        "orderx",
+        "ubl-2.1-invoice",
+        "ubl-2.1-creditnote",
+    ):
         flavor = get_flavor(xml_etree)
     if flavor in ("factur-x", "facturx"):
         if level not in FACTURX_LEVEL2xsd:
@@ -237,8 +259,8 @@ def xml_check_xsd(xml, flavor="autodetect", level="autodetect"):
         if level not in ORDERX_LEVEL2xsd:
             raise ValueError(f"Wrong level '{level}' for Order-X document.")
         xsd_file = f"xsd_and_schematron/{ORDERX_LEVEL2xsd[level]}"
-    elif flavor == "ubl-2.1":
-        xsd_file = f"xsd_and_schematron/{UBL_21_xsd}"
+    elif flavor in ("ubl-2.1-invoice", "ubl-2.1-creditnote"):
+        xsd_file = f"xsd_and_schematron/{UBL_21_xsd[flavor]}"
     else:
         raise ValueError(f"Flavor '{flavor}' doesn't exist")
 
@@ -279,7 +301,8 @@ def xml_check_schematron(
     Validate the XML file against the schematron
     :param xml: the Factur-X or Order-X XML
     :type xml: string, file or etree object
-    :param flavor: possible values: 'factur-x', 'zugferd', 'order-x', 'ubl-2.1'
+    :param flavor: possible values: 'factur-x', 'zugferd', 'order-x', 'ubl-2.1',
+    'ubl-2.1-invoice', 'ubl-2.1-creditnote'
     or 'autodetect'.
     Value 'zugferd' means ZUGFeRD 1.0.
     :type flavor: string
@@ -343,7 +366,16 @@ def xml_check_schematron(
         raise ValueError("xml argument is empty")
 
     # autodetect
-    if flavor not in ("factur-x", "facturx", "zugferd", "order-x", "orderx", "ubl-2.1"):
+    if flavor not in (
+        "factur-x",
+        "facturx",
+        "zugferd",
+        "order-x",
+        "orderx",
+        "ubl-2.1",
+        "ubl-2.1-invoice",
+        "ubl-2.1-creditnote",
+    ):
         if xml_etree is None:
             try:
                 xml_etree = etree.fromstring(xml_bytes)
@@ -374,7 +406,7 @@ def xml_check_schematron(
         if level not in ORDERX_LEVEL2schematron:
             raise ValueError(f"Wrong level '{level}' for Order-X document.")
         xsl_files = {"base": f"xsd_and_schematron/{ORDERX_LEVEL2schematron[level]}"}
-    elif flavor == "ubl-2.1":
+    elif flavor in ("ubl-2.1", "ubl-2.1-invoice", "ubl-2.1-creditnote"):
         if level not in UBL_21_LEVEL2schematron:
             raise ValueError(f"Wrong level '{level}' for UBL 2.1")
         xsl_files = {"base": f"xsd_and_schematron/{UBL_21_LEVEL2schematron[level]}"}
@@ -1152,7 +1184,15 @@ def _base_info2pdf_metadata(base_info):
 
 
 def get_xml_namespaces(flavor):
-    if flavor not in ("factur-x", "facturx", "order-x", "orderx", "zugferd", "ubl-2.1"):
+    if flavor not in (
+        "factur-x",
+        "facturx",
+        "order-x",
+        "orderx",
+        "zugferd",
+        "ubl-2.1-invoice",
+        "ubl-2.1-creditnote",
+    ):
         raise ValueError("Wrong value for flavor argument.")
     if flavor == "facturx":
         flavor = "factur-x"
@@ -1175,7 +1215,8 @@ def get_level(xml_etree, flavor="autodetect"):
         "order-x",
         "orderx",
         "zugferd",
-        "ubl-2.1",
+        "ubl-2.1-invoice",
+        "ubl-2.1-creditnote",
     ):
         raise ValueError("Wrong value for flavor argument.")
     if flavor == "autodetect":
@@ -1193,8 +1234,10 @@ def get_level(xml_etree, flavor="autodetect"):
             "/ram:GuidelineSpecifiedDocumentContextParameter"
             "/ram:ID"
         )
-    elif flavor == "ubl-2.1":
+    elif flavor == "ubl-2.1-invoice":
         xpath = "/default:Invoice/cbc:CustomizationID"
+    elif flavor == "ubl-2.1-creditnote":
+        xpath = "/default:CreditNote/cbc:CustomizationID"
     else:
         raise ValueError(f"Wrong flavor '{flavor}'")
     doc_id_xpath = xml_etree.xpath(xpath, namespaces=namespaces)
@@ -1244,7 +1287,9 @@ def get_flavor(xml_etree):
     elif xml_etree.tag.endswith("SCRDMCCBDACIOMessageStructure"):
         flavor = "order-x"
     elif xml_etree.tag.endswith("Invoice"):
-        flavor = "ubl-2.1"
+        flavor = "ubl-2.1-invoice"
+    elif xml_etree.tag.endswith("CreditNote"):
+        flavor = "ubl-2.1-creditnote"
     else:
         raise Exception(
             "Could not detect if the document is a Factur-X, ZUGFeRD 1.0 "

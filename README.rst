@@ -141,6 +141,10 @@ Contributors
 Changelog
 =========
 
+* Version 6.2 dated 2026-07-10:
+
+  * add support for UBL 2.1 CreditNote in generate_xml(), xml_check_xsd() and get_xml_namespaces(). Beware that flavor "ubl-2.1" is replaced by "ubl-2.1-invoice" and "ubl-2.1-creditnote"
+
 * Version 6.1 dated 2026-07-08:
 
   * generate_xml(): replace EXT-FR-FE-187 by BT-173, EXT-FR-FE-188 by BT-174, EXT-FR-FE-189 by BT-175 and EXT-FR-FE-190 by BT-176

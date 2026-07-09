@@ -349,7 +349,7 @@ class TestGenerateXML(unittest.TestCase):
                 elif isinstance(value, datetime.date):
                     if flavor == "factur-x":
                         value_str = value.strftime("%Y%m%d")
-                    elif flavor == "ubl-2.1":
+                    elif flavor in ("ubl-2.1-invoice", "ubl-2.1-creditnote"):
                         value_str = value.strftime("%Y-%m-%d")
                     self.assertIn(value_str, xml_str)
                 else:
@@ -361,72 +361,34 @@ class TestGenerateXML(unittest.TestCase):
     def test_generate_cii_xml(self):
         # I need to re-generate data_dict before every call to generate_cii_xml()
         # because generate_cii_xml modifies data_dict
-        data_dict = self._prepare_data_dict()
-        # bug in specific extended sch ?
-        data_dict["BT-18-00"].pop("AHO")
-        xml_bytes = generate_cii_xml(
-            data_dict,
-            level="extended",
-            check_schematron="fr-ctc",
-            prefixed_namespaces=True,
-        )
-        xml_str = xml_bytes.decode("utf-8")
-        self._check_data_in_xml(data_dict, xml_str)
-
-        data_dict = self._prepare_data_dict()
-        xml_bytes = generate_cii_xml(
-            data_dict,
-            level="en16931",
-            check_schematron="fr-ctc",
-            prefixed_namespaces=True,
-        )
-        xml_str = xml_bytes.decode("utf-8")
-        self._check_data_in_xml(data_dict, xml_str)
-
-        data_dict = self._prepare_data_dict()
-        xml_bytes = generate_cii_xml(
-            data_dict,
-            level="basicwl",
-            check_schematron="fr-ctc",
-            prefixed_namespaces=True,
-        )
-        xml_str = xml_bytes.decode("utf-8")
-        self._check_data_in_xml(data_dict, xml_str)
-
-        data_dict = self._prepare_data_dict()
-        data_dict["BT-18-00"].pop("AHO")  # bug in schematron ?
-        xml_bytes = generate_cii_xml(
-            data_dict,
-            level="extended-ctc-fr",
-            check_schematron="fr-ctc",
-            prefixed_namespaces=True,
-        )
-        xml_str = xml_bytes.decode("utf-8")
-        self._check_data_in_xml(data_dict, xml_str)
+        for level in ("extended", "en16931", "basicwl", "extended-ctc-fr"):
+            data_dict = self._prepare_data_dict()
+            # bug in specific extended sch ?
+            if "extended" in level:
+                data_dict["BT-18-00"].pop("AHO")
+            xml_bytes = generate_cii_xml(
+                data_dict,
+                level=level,
+                check_schematron="fr-ctc",
+                prefixed_namespaces=True,
+            )
+            xml_str = xml_bytes.decode("utf-8")
+            self._check_data_in_xml(data_dict, xml_str)
 
     def test_generate_ubl(self):
-        data_dict = self._prepare_data_dict()
-        data_dict["BT-18-00"].pop("AHO")
-        # To avoid schematron bug https://github.com/fnfempe/France_RFE/issues/1
-        data_dict.pop("BG-24")
-        xml_bytes = generate_ubl_xml(
-            data_dict,
-            level="extended-ctc-fr",
-            check_schematron="fr-ctc",
-            prefixed_namespaces=True,
-        )
-        xml_str = xml_bytes.decode("utf-8")
-        self._check_data_in_xml(data_dict, xml_str, flavor="ubl-2.1")
-
-        data_dict = self._prepare_data_dict()
-        data_dict["BT-18-00"].pop("AHO")
-        # To avoid schematron bug https://github.com/fnfempe/France_RFE/issues/1
-        data_dict.pop("BG-24")
-        xml_bytes = generate_ubl_xml(
-            data_dict,
-            level="en16931",
-            check_schematron="fr-ctc",
-            prefixed_namespaces=True,
-        )
-        xml_str = xml_bytes.decode("utf-8")
-        self._check_data_in_xml(data_dict, xml_str, flavor="ubl-2.1")
+        for bt3 in ("380", "381"):
+            for level in ("en16931", "extended-ctc-fr"):
+                data_dict = self._prepare_data_dict()
+                data_dict["BT-18-00"].pop("AHO")
+                # To avoid schematron bug https://github.com/fnfempe/France_RFE/issues/1
+                data_dict.pop("BG-24")
+                data_dict["BT-3"] = bt3
+                xml_bytes = generate_ubl_xml(
+                    data_dict,
+                    level=level,
+                    check_schematron="fr-ctc",
+                    prefixed_namespaces=True,
+                )
+                xml_str = xml_bytes.decode("utf-8")
+                flavor = bt3 == "381" and "ubl-2.1-creditnote" or "ubl-2.1-invoice"
+                self._check_data_in_xml(data_dict, xml_str, flavor=flavor)
