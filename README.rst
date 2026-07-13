@@ -141,6 +141,13 @@ Contributors
 Changelog
 =========
 
+* Version 6.3 dated 2026-07-13:
+
+  * generate_xml(): change processing of BT-8, to avoid changing the value in data_dict, to allow double use of data_dict to generate both UBL and Factur-X/CII XML.
+  * generate_xml(): fix BG-24 in UBL (no DocumentTypeCode=916 like in CII)
+  * Update schematron and XSD files from the new `FNFE Github repo <https://github.com/fnfempe/France_RFE>`_ It includes important fixes in UBL schematrons.
+  * Fix tests
+
 * Version 6.2 dated 2026-07-10:
 
   * add support for UBL 2.1 CreditNote in generate_xml(), xml_check_xsd() and get_xml_namespaces(). Beware that flavor "ubl-2.1" is replaced by "ubl-2.1-invoice" and "ubl-2.1-creditnote"

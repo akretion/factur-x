@@ -469,12 +469,12 @@
   <xs:complexType name="TradeTaxType">
     <xs:sequence>
       <xs:element name="CalculatedAmount" type="udt:AmountType" minOccurs="0"/>
-      <xs:element name="TypeCode" type="qdt:TaxTypeCodeType"/>
+      <xs:element name="TypeCode" type="qdt:TaxTypeCodeType" minOccurs="0"/>
       <xs:element name="ExemptionReason" type="udt:TextType" minOccurs="0"/>
       <xs:element name="BasisAmount" type="udt:AmountType" minOccurs="0"/>
       <xs:element name="LineTotalBasisAmount" type="udt:AmountType" minOccurs="0"/>
       <xs:element name="AllowanceChargeBasisAmount" type="udt:AmountType" minOccurs="0"/>
-      <xs:element name="CategoryCode" type="qdt:TaxCategoryCodeType"/>
+      <xs:element name="CategoryCode" type="qdt:TaxCategoryCodeType" minOccurs="0"/>
       <xs:element name="ExemptionReasonCode" type="udt:CodeType" minOccurs="0"/>
       <xs:element name="TaxPointDate" type="udt:DateType" minOccurs="0"/>
       <xs:element name="DueDateTypeCode" type="qdt:TimeReferenceCodeType" minOccurs="0"/>

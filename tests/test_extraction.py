@@ -28,8 +28,8 @@ class TestAPI(unittest.TestCase):
             "zugferd-extended.xml": ("zugferd", "extended"),
             "order-x-basic.xml": ("order-x", "basic"),
             "order-x-comfort.xml": ("order-x", "comfort"),
-            "ubl-21-en16931.xml": ("ubl-2.1", "en16931"),
-            "ubl-21-extended-ctc-fr.xml": ("ubl-2.1", "extended-ctc-fr"),
+            "ubl-21-en16931.xml": ("ubl-2.1-invoice", "en16931"),
+            "ubl-21-extended-ctc-fr.xml": ("ubl-2.1-invoice", "extended-ctc-fr"),
         }
         for filename, (flavor, level) in files2flavor_level.items():
             test_file_path = os.path.join(current_dir, f"fixtures/xml/{filename}")

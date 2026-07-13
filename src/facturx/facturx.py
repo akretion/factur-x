@@ -64,11 +64,11 @@ ORDERX_FILENAME = "order-x.xml"
 ALL_FILENAMES = [FACTURX_FILENAME] + ZUGFERD_FILENAMES + [ORDERX_FILENAME]
 # XSD files
 FACTURX_LEVEL2xsd = {
-    "minimum": "facturx-minimum/Factur-X_1.09_MINIMUM.xsd",
-    "basicwl": "facturx-basicwl/Factur-X_1.09_BASICWL.xsd",
-    "basic": "facturx-basic/Factur-X_1.09_BASIC.xsd",
-    "en16931": "facturx-en16931/Factur-X_1.09_EN16931.xsd",
-    "extended": "facturx-extended/Factur-X_1.09_EXTENDED.xsd",
+    "minimum": "facturx-minimum/Factur-X_MINIMUM.xsd",
+    "basicwl": "facturx-basicwl/Factur-X_BASICWL.xsd",
+    "basic": "facturx-basic/Factur-X_BASIC.xsd",
+    "en16931": "facturx-en16931/Factur-X_EN16931.xsd",
+    "extended": "facturx-extended/Factur-X_EXTENDED.xsd",
     # CII only
     "extended-ctc-fr": "cii-extended-ctc-fr/CrossIndustryInvoice_100pD22B.xsd",
 }
@@ -90,7 +90,7 @@ FACTURX_LEVEL2schematron = {
     "en16931": "facturx-en16931/Factur-X_1.09_EN16931.xsl",
     "extended": "facturx-extended/Factur-X_1.09_EXTENDED.xsl",
     # CII only
-    "extended-ctc-fr": "cii-extended-ctc-fr/EXTENDED-CTC-FR-CII-V1.4.0.xsl",
+    "extended-ctc-fr": "cii-extended-ctc-fr/EXTENDED-CTC-FR-CII.xslt",
 }
 ORDERX_LEVEL2schematron = {
     "basic": "orderx-basic/SCRDMCCBDACIOMessageStructure_100pD20B-compiled.xsl",
@@ -98,14 +98,12 @@ ORDERX_LEVEL2schematron = {
     "extended": "orderx-extended/SCRDMCCBDACIOMessageStructure_100pD20B-compiled.xsl",
 }
 UBL_21_LEVEL2schematron = {
-    "en16931": "ubl-2.1/EN16931-UBL-validation-V1.3.16.xsl",
-    "extended-ctc-fr": "ubl-2.1/EXTENDED-CTC-FR-UBL-V1.4.0.xsl",
+    "en16931": "ubl-2.1/EN16931-UBL-validation.xslt",
+    "extended-ctc-fr": "ubl-2.1/EXTENDED-CTC-FR-UBL.xslt",
 }
 # SCHEMATRON "fr-ctc" files
-UBL_21_FR_CTC_schematron = "ubl-2.1/BR-FR-Flux2-Schematron-UBL_V1.4.0.xsl"
-CII_FR_CTC_schematron = (
-    "cii-schematron-fr-ctc/20260430_BR-FR-Flux2-Schematron-CII_V1.3.1.xsl"
-)
+UBL_21_FR_CTC_schematron = "ubl-2.1/BR-FR-Flux2-Schematron-UBL.xslt"
+CII_FR_CTC_schematron = "cii-schematron-fr-ctc/BR-FR-Flux2-Schematron-CII.xslt"
 
 FACTURX_LEVEL2xmp = {
     "minimum": "MINIMUM",

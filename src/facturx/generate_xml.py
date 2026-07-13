@@ -198,12 +198,6 @@ def _check_data_dict(data_dict, flavor, level):
                 f"BT-134 ({line_dict['BT-134']}) must be before or identical "
                 f"to BT-135 ({line_dict['BT-135']})."
             )
-    # special treatment for BT-8
-    if data_dict.get("BT-8") and data_dict["BT-8"] in BT_8toUBL:
-        if flavor == "ubl-2.1":
-            data_dict["BT-8"] = BT_8toUBL[data_dict["BT-8"]]
-        else:
-            data_dict["BT-8"] = BT_8toCII[data_dict["BT-8"]]
 
 
 def _remove_extended_keys(data_dict, level):
@@ -1285,7 +1279,9 @@ def generate_cii_xml(
                             if tax_dict.get("BT-7")
                         ],  # not used in France
                         *[
-                            RAM.DueDateTypeCode(data_dict["BT-8"])
+                            RAM.DueDateTypeCode(
+                                BT_8toCII.get(data_dict["BT-8"], data_dict["BT-8"])
+                            )
                             for _ in [1]
                             if data_dict.get("BT-8")
                         ],
@@ -1647,7 +1643,6 @@ def _ubl_generate_additional_doc_ref(data_dict, namespaces):
         if entry.get("BT-122"):
             refdocs.append(
                 {
-                    "type_code": "916",
                     "id": entry["BT-122"],
                     "uri": entry.get("BT-124"),
                     "description": entry.get("BT-123"),
@@ -2165,7 +2160,9 @@ def generate_ubl_xml(
                     if data_dict.get("BT-74")
                 ],
                 *[
-                    CBC.DescriptionCode(data_dict["BT-8"])
+                    CBC.DescriptionCode(
+                        BT_8toUBL.get(data_dict["BT-8"], data_dict["BT-8"])
+                    )
                     for _ in [1]
                     if data_dict.get("BT-8")
                 ],
