@@ -1,7 +1,8 @@
 import logging
 
-__version__ = "6.3"
+__version__ = "6.4"
 from .facturx import (
+    facturx_schematron_get_codedb_xml_file,
     generate_from_binary,
     generate_from_file,
     get_facturx_level,
@@ -28,6 +29,7 @@ __all__ = [
     "get_orderx_xml_from_pdf",
     "get_xml_from_pdf",
     "get_xml_namespaces",
+    "facturx_schematron_get_codedb_xml_file",
     "xml_check_schematron",
     "xml_check_xsd",
     "generate_xml",

@@ -141,6 +141,11 @@ Contributors
 Changelog
 =========
 
+* Version 6.4 dated 2026-07-14:
+
+  * add method facturx_schematron_get_codedb_xml_file(level) to get the CodeDB XML file of the Factur-X schematron for a specific level
+  * Add argument saxon_server_codedb_base_url to customize the URL where the Saxon Server can get the CodeDB XML file. This is an alternative to the argument saxon_server_codedb_dir with the same purpose: reduce latency of Factur-X schematron check (the base Factur-X schematron XSLT file depends on an external CodeDB XML file).
+
 * Version 6.3 dated 2026-07-13:
 
   * generate_xml(): change processing of BT-8, to avoid changing the value in data_dict, to allow double use of data_dict to generate both UBL and Factur-X/CII XML.

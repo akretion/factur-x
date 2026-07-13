@@ -784,6 +784,7 @@ def generate_cii_xml(
     check_xsd=True,
     check_schematron="base",
     saxon_server_url=None,
+    saxon_server_codedb_base_url=None,
     saxon_server_codedb_dir=None,
     prefixed_namespaces=True,
 ):
@@ -1459,6 +1460,7 @@ def generate_cii_xml(
             level=level,
             check_option=check_schematron,
             saxon_server_url=saxon_server_url,
+            saxon_server_codedb_base_url=saxon_server_codedb_base_url,
             saxon_server_codedb_dir=saxon_server_codedb_dir,
         )
     return xml_bytes
@@ -2023,7 +2025,6 @@ def generate_ubl_xml(
     check_xsd=True,
     check_schematron="base",
     saxon_server_url=None,
-    saxon_server_codedb_dir=None,
     prefixed_namespaces=True,
 ):
     if not isinstance(data_dict, dict):
@@ -2679,6 +2680,7 @@ def generate_xml(
     check_xsd=True,
     check_schematron="base",
     saxon_server_url=None,
+    saxon_server_codedb_base_url=None,
     saxon_server_codedb_dir=None,
     prefixed_namespaces=True,
 ):
@@ -2691,7 +2693,6 @@ def generate_xml(
             check_xsd=check_xsd,
             check_schematron=check_schematron,
             saxon_server_url=saxon_server_url,
-            saxon_server_codedb_dir=saxon_server_codedb_dir,
             prefixed_namespaces=prefixed_namespaces,
         )
     else:
@@ -2701,6 +2702,7 @@ def generate_xml(
             check_xsd=check_xsd,
             check_schematron=check_schematron,
             saxon_server_url=saxon_server_url,
+            saxon_server_codedb_base_url=saxon_server_codedb_base_url,
             saxon_server_codedb_dir=saxon_server_codedb_dir,
             prefixed_namespaces=prefixed_namespaces,
         )

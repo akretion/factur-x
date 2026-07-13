@@ -4,7 +4,12 @@
 import os
 import unittest
 
-from facturx import get_flavor, get_level, get_xml_from_pdf
+from facturx import (
+    facturx_schematron_get_codedb_xml_file,
+    get_flavor,
+    get_level,
+    get_xml_from_pdf,
+)
 from lxml import etree
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -40,3 +45,9 @@ class TestAPI(unittest.TestCase):
                 self.assertEqual(flavor, flavor_detected)
                 level_detected = get_level(xml_root, flavor=flavor)
                 self.assertEqual(level, level_detected)
+
+    def test_facturx_schematron_get_codedb_xml_file(self):
+        for level in ("minimum", "basicwl", "basic", "en16931", "extended"):
+            codedb_xml_bytes = facturx_schematron_get_codedb_xml_file(level)
+            self.assertEqual(type(codedb_xml_bytes), bytes)
+            etree.fromstring(codedb_xml_bytes)
