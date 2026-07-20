@@ -40,6 +40,7 @@ from pypdf.generic import (
     ByteStringObject,
     DecodedStreamObject,
     DictionaryObject,
+    IndirectObject,
     NameObject,
     NumberObject,
     TextStringObject,
@@ -1129,9 +1130,19 @@ def _facturx_update_metadata_add_attachment(
         metadata_file_entry = metadata_file_entry.flate_encode()
 
     existing_metadata_obj = pdf_writer._root_object.get("/Metadata")
-    if existing_metadata_obj:
-        logger.debug("Found existing /Metadata entry in catalog: replacing it.")
+    if isinstance(existing_metadata_obj, IndirectObject):
+        logger.debug(
+            "Found existing /Metadata entry in catalog as indirect obj: replacing it."
+        )
         pdf_writer._replace_object(existing_metadata_obj, metadata_file_entry)
+    elif (
+        hasattr(existing_metadata_obj, "indirect_reference")
+        and existing_metadata_obj.indirect_reference
+    ):
+        logger.debug("Found existing /Metadata entry in catalog: replacing it.")
+        pdf_writer._replace_object(
+            existing_metadata_obj.indirect_reference, metadata_file_entry
+        )
     else:
         logger.debug("No existing /Metadata entry in catalog: creating one.")
         metadata_obj = pdf_writer._add_object(metadata_file_entry)
@@ -1788,10 +1799,8 @@ def generate_from_file(
         for key, value in pdf_metadata.items():
             if not isinstance(value, str):
                 pdf_metadata[key] = ""
-    pdf_reader = PdfReader(pdf_file)
-    pdf_writer = PdfWriter()
+    pdf_writer = PdfWriter(clone_from=pdf_file)
     pdf_writer._header = b"%PDF-1.6"
-    pdf_writer.clone_document_from_reader(pdf_reader)
 
     _facturx_update_metadata_add_attachment(
         pdf_writer,

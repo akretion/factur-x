@@ -141,6 +141,11 @@ Contributors
 Changelog
 =========
 
+* Version 6.5 dated 2026-07-21:
+
+  * fix crash in _facturx_update_metadata_add_attachment() when existing_metadata_obj is not retreived as an indirect object
+  * simplify code that clone the PDF document to generate the Factur-X PDF
+
 * Version 6.4 dated 2026-07-14:
 
   * add method facturx_schematron_get_codedb_xml_file(level) to get the CodeDB XML file of the Factur-X schematron for a specific level
