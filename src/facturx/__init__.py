@@ -1,6 +1,6 @@
 import logging
 
-__version__ = "6.5"
+__version__ = "6.6"
 from .facturx import (
     facturx_schematron_get_codedb_xml_file,
     generate_from_binary,

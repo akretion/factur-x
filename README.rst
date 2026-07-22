@@ -141,6 +141,10 @@ Contributors
 Changelog
 =========
 
+* Version 6.6 dated 2026-07-22:
+
+  * fix support for BT-83 in generate_xml()
+
 * Version 6.5 dated 2026-07-21:
 
   * fix crash in _facturx_update_metadata_add_attachment() when existing_metadata_obj is not retreived as an indirect object

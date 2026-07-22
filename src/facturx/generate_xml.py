@@ -113,7 +113,6 @@ EN6931_FIELDS = {
     "BT-58": {"min_level": "en16931"},
     "BT-73": {"format": "date"},
     "BT-74": {"format": "date"},
-    "BT-83": {"format": "date"},
     "BT-85": {"min_level": "en16931"},
     "BT-86": {"min_level": "en16931"},
     "BT-26": {"format": "date"},
@@ -1088,7 +1087,7 @@ def generate_cii_xml(
                     if data_dict.get("BT-90")
                 ],
                 *[
-                    RAM.PaymentReference(_cii_date_to_string(data_dict["BT-83"]))
+                    RAM.PaymentReference(data_dict["BT-83"])
                     for _ in [1]
                     if data_dict.get("BT-83")
                 ],
