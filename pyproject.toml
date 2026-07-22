@@ -24,8 +24,9 @@ dependencies = [
     "lxml",
     "python-stdnum",
     "requests",
+    "importlib-resources ; python_version < '3.9'",
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.8"
 dynamic = ["version"]
 
 [project.optional-dependencies]
