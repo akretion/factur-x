@@ -296,7 +296,7 @@ def xml_check_schematron(
     saxon_server_url=None,
     saxon_server_codedb_base_url=None,
     saxon_server_codedb_dir=None,
-    raise_if_http_error=False,
+    saxon_server_raise_if_http_error=False,
 ):
     """
     Validate the XML file against the schematron
@@ -331,10 +331,10 @@ def xml_check_schematron(
     alternative to the argument saxon_server_codedb_base_url (you
     cannot use both at the same time)
     :type saxon_server_codedb_dir: string
-    :param raise_if_http_error: raise an exception if the HTTP POST request
+    :param saxon_server_raise_if_http_error: raise an exception if the HTTP POST request
     to the saxon server fails. If False, a failure in the communication with
     the saxon server will not raise any error (it will just be logged)
-    :type raise_if_http_error: bool
+    :type saxon_server_raise_if_http_error: bool
     :return: True if the XML is valid against the schematron
     raise an error if it is not valid against the schematron
     """
@@ -354,6 +354,9 @@ def xml_check_schematron(
             "Use either saxon_server_codedb_base_url arg or saxon_server_codedb_dir "
             "arg, not both"
         )
+    if not isinstance(saxon_server_raise_if_http_error, bool):
+        raise ValueError("Wrong type for saxon_server_raise_if_http_error argument")
+
     url = saxon_server_url
     if url is None:
         url = SAXON_SERVER_DEFAULT_URL
@@ -439,6 +442,7 @@ def xml_check_schematron(
         )
 
     errors = []
+    skipped_check_types = []
     error_nr = 1
     xml_str_no_bom = xml_str.lstrip("\ufeff")
     for check_type, xsl_file in xsl_files.items():
@@ -502,9 +506,10 @@ def xml_check_schematron(
                 f"on {url}: {str(err)}"
             )
             logger.warning(error_msg)
-            if raise_if_http_error:
+            if saxon_server_raise_if_http_error:
                 raise RuntimeError(error_msg) from err
             logger.warning(f"Skipping schematron check '{check_type}'")
+            skipped_check_types.append(check_type)
             continue
         req_end_chrono = datetime.now()
         req_duration = (req_end_chrono - req_start_chrono).total_seconds()
@@ -515,9 +520,10 @@ def xml_check_schematron(
                 f"'{check_type}' (expected HTTP code: 200)"
             )
             logger.warning(error_msg)
-            if raise_if_http_error:
+            if saxon_server_raise_if_http_error:
                 raise RuntimeError(error_msg)
             logger.warning(f"Skipping schematron check '{check_type}'")
+            skipped_check_types.append(check_type)
             continue
         logger.info(
             f"Saxon server answered successfully for check '{check_type}' "
@@ -567,12 +573,25 @@ def xml_check_schematron(
         logger.error(xml_str)
         raise Exception(full_error)
     end_chrono = datetime.now()
-    logger.info(
-        "%s XML file successfully validated against %s schematron(s) in %s sec",
-        flavor,
-        len(xsl_files),
-        (end_chrono - start_chrono).total_seconds(),
-    )
+    if skipped_check_types:
+        logger.warning(
+            "%s XML file was supposed to be validated against %s schematron(s) "
+            "(%s) but %s schematron(s) have been skipped (%s) because of a technical "
+            "issue with the saxon server. No errors returned because the arg "
+            "saxon_server_raise_if_http_error is False",
+            flavor,
+            len(xsl_files),
+            ", ".join(xsl_files.keys()),
+            len(skipped_check_types),
+            ", ".join(skipped_check_types),
+            )
+    else:
+        logger.info(
+            "%s XML file successfully validated against %s schematron(s) in %s sec",
+            flavor,
+            len(xsl_files),
+            (end_chrono - start_chrono).total_seconds(),
+        )
     return True
 
 
@@ -610,6 +629,7 @@ def get_facturx_xml_from_pdf(
     saxon_server_url=None,
     saxon_server_codedb_base_url=None,
     saxon_server_codedb_dir=None,
+    saxon_server_raise_if_http_error=False,
 ):
     filenames = [FACTURX_FILENAME] + ZUGFERD_FILENAMES
     return get_xml_from_pdf(
@@ -619,6 +639,7 @@ def get_facturx_xml_from_pdf(
         saxon_server_url=saxon_server_url,
         saxon_server_codedb_base_url=saxon_server_codedb_base_url,
         saxon_server_codedb_dir=saxon_server_codedb_dir,
+        saxon_server_raise_if_http_error=saxon_server_raise_if_http_error,
         filenames=filenames,
     )
 
@@ -630,6 +651,7 @@ def get_orderx_xml_from_pdf(
     saxon_server_url=None,
     saxon_server_codedb_base_url=None,
     saxon_server_codedb_dir=None,
+    saxon_server_raise_if_http_error=False,
 ):
     filenames = [ORDERX_FILENAME]
     return get_xml_from_pdf(
@@ -639,6 +661,7 @@ def get_orderx_xml_from_pdf(
         saxon_server_url=saxon_server_url,
         saxon_server_codedb_base_url=saxon_server_codedb_base_url,
         saxon_server_codedb_dir=saxon_server_codedb_dir,
+        saxon_server_raise_if_http_error=saxon_server_raise_if_http_error,
         filenames=filenames,
     )
 
@@ -650,6 +673,7 @@ def get_xml_from_pdf(
     saxon_server_url=None,
     saxon_server_codedb_base_url=None,
     saxon_server_codedb_dir=None,
+    saxon_server_raise_if_http_error=False,
     filenames=None,
 ):
     logger.debug("get_xml_from_pdf with factur-x lib %s", VERSION)
@@ -738,6 +762,7 @@ def get_xml_from_pdf(
                         saxon_server_url=saxon_server_url,
                         saxon_server_codedb_base_url=saxon_server_codedb_base_url,
                         saxon_server_codedb_dir=saxon_server_codedb_dir,
+                        saxon_server_raise_if_http_error=saxon_server_raise_if_http_error,
                     )
                 except Exception:
                     logger.warning(
@@ -1397,6 +1422,7 @@ def generate_from_binary(
     saxon_server_url=None,
     saxon_server_codedb_base_url=None,
     saxon_server_codedb_dir=None,
+    saxon_server_raise_if_http_error=False,
     pdf_metadata=None,
     lang=None,
     attachments=None,
@@ -1497,6 +1523,7 @@ def generate_from_binary(
             saxon_server_url=saxon_server_url,
             saxon_server_codedb_base_url=saxon_server_codedb_base_url,
             saxon_server_codedb_dir=saxon_server_codedb_dir,
+            saxon_server_raise_if_http_error=saxon_server_raise_if_http_error,
             pdf_metadata=pdf_metadata,
             lang=lang,
             attachments=attachments,
@@ -1520,6 +1547,7 @@ def generate_from_file(
     saxon_server_url=None,
     saxon_server_codedb_base_url=None,
     saxon_server_codedb_dir=None,
+    saxon_server_raise_if_http_error=False,
     pdf_metadata=None,
     lang=None,
     output_pdf_file=None,
@@ -1788,6 +1816,7 @@ def generate_from_file(
             saxon_server_url=saxon_server_url,
             saxon_server_codedb_base_url=saxon_server_codedb_base_url,
             saxon_server_codedb_dir=saxon_server_codedb_dir,
+            saxon_server_raise_if_http_error=saxon_server_raise_if_http_error,
         )
     if pdf_metadata is None:
         if xml_root is None:

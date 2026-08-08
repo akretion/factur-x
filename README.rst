@@ -141,6 +141,12 @@ Contributors
 Changelog
 =========
 
+* Version 6.7 dated 2026-08-08:
+
+  * In method xml_check_schematron(), the argument raise_if_http_error has been renamed to saxon_server_raise_if_http_error
+  * In method xml_check_schematron(), the logs have been improved when saxon_server_raise_if_http_error=False and some schematron checks have failed because the saxon server was down or returned an HTTP error: there is now a warning log that lists the skipped schematrons instead of an info logs that wrongly said all schematron checks were successful.
+  * Add argument saxon_server_raise_if_http_error in all methods that have the argument saxon_server_url
+
 * Version 6.6 dated 2026-07-22:
 
   * fix support for BT-83 in generate_xml()

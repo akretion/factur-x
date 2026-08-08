@@ -785,6 +785,7 @@ def generate_cii_xml(
     saxon_server_url=None,
     saxon_server_codedb_base_url=None,
     saxon_server_codedb_dir=None,
+    saxon_server_raise_if_http_error=False,
     prefixed_namespaces=True,
 ):
     # in data_dict, the key names use ID CII and not ID Modèle AFNOR FE
@@ -1461,6 +1462,7 @@ def generate_cii_xml(
             saxon_server_url=saxon_server_url,
             saxon_server_codedb_base_url=saxon_server_codedb_base_url,
             saxon_server_codedb_dir=saxon_server_codedb_dir,
+            saxon_server_raise_if_http_error=saxon_server_raise_if_http_error,
         )
     return xml_bytes
 
@@ -2024,6 +2026,7 @@ def generate_ubl_xml(
     check_xsd=True,
     check_schematron="base",
     saxon_server_url=None,
+    saxon_server_raise_if_http_error=False,
     prefixed_namespaces=True,
 ):
     if not isinstance(data_dict, dict):
@@ -2668,6 +2671,7 @@ def generate_ubl_xml(
             level=level,
             check_option=check_schematron,
             saxon_server_url=saxon_server_url,
+            saxon_server_raise_if_http_error=saxon_server_raise_if_http_error,
         )
     return xml_bytes
 
@@ -2681,6 +2685,7 @@ def generate_xml(
     saxon_server_url=None,
     saxon_server_codedb_base_url=None,
     saxon_server_codedb_dir=None,
+    saxon_server_raise_if_http_error=False,
     prefixed_namespaces=True,
 ):
     if flavor not in ("factur-x", "facturx", "ubl-2.1"):
@@ -2692,6 +2697,7 @@ def generate_xml(
             check_xsd=check_xsd,
             check_schematron=check_schematron,
             saxon_server_url=saxon_server_url,
+            saxon_server_raise_if_http_error=saxon_server_raise_if_http_error,
             prefixed_namespaces=prefixed_namespaces,
         )
     else:
@@ -2703,5 +2709,6 @@ def generate_xml(
             saxon_server_url=saxon_server_url,
             saxon_server_codedb_base_url=saxon_server_codedb_base_url,
             saxon_server_codedb_dir=saxon_server_codedb_dir,
+            saxon_server_raise_if_http_error=saxon_server_raise_if_http_error,
             prefixed_namespaces=prefixed_namespaces,
         )
