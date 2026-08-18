@@ -4,9 +4,8 @@
 import datetime
 import unittest
 
-from lxml import etree
-
 from facturx import generate_cii_xml, generate_ubl_xml, get_xml_namespaces
+from lxml import etree
 
 
 class TestGenerateXML(unittest.TestCase):
@@ -381,12 +380,9 @@ class TestGenerateXML(unittest.TestCase):
             self._check_data_in_xml(data_dict, xml_str)
 
     def test_cii_incoterms(self):
-        # EXT-FR-FE-BG-14: incoterm code (185) and named place (186)
         data_dict = self._prepare_data_dict()
         data_dict["BT-18-00"].pop("AHO")
-        xml_bytes = generate_cii_xml(
-            data_dict, level="extended-ctc-fr", prefixed_namespaces=True
-        )
+        xml_bytes = generate_cii_xml(data_dict, level="extended-ctc-fr")
         ns = get_xml_namespaces("factur-x")
         root = etree.fromstring(xml_bytes)
         terms_xpath = (
@@ -394,15 +390,15 @@ class TestGenerateXML(unittest.TestCase):
             "/ram:ApplicableHeaderTradeAgreement/ram:ApplicableTradeDeliveryTerms"
         )
         self.assertEqual(
-            root.xpath(f"{terms_xpath}/ram:DeliveryTypeCode/text()", namespaces=ns),
-            ["EXW"],
+            root.xpath(f"{terms_xpath}/ram:DeliveryTypeCode/text()", namespaces=ns)[0],
+            data_dict["EXT-FR-FE-185"],
         )
         self.assertEqual(
             root.xpath(
                 f"{terms_xpath}/ram:RelevantTradeLocation/ram:Name/text()",
                 namespaces=ns,
-            ),
-            ["Lunel-Viel"],
+            )[0],
+            data_dict["EXT-FR-FE-186"],
         )
 
     def test_cii_incoterms_absent_below_extended(self):
@@ -418,28 +414,22 @@ class TestGenerateXML(unittest.TestCase):
         )
 
     def test_ubl_incoterms(self):
-        # EXT-FR-FE-BG-14: incoterm code (185) and named place (186)
         data_dict = self._prepare_data_dict()
         data_dict["BT-18-00"].pop("AHO")
         data_dict.pop("BG-24")
-        xml_bytes = generate_ubl_xml(
-            data_dict, level="extended-ctc-fr", prefixed_namespaces=True
-        )
-        ns = {
-            k: v
-            for k, v in get_xml_namespaces("ubl-2.1-invoice").items()
-            if k != "default"
-        }
+        xml_bytes = generate_ubl_xml(data_dict, level="extended-ctc-fr")
+        ns = get_xml_namespaces("ubl-2.1-invoice")
         root = etree.fromstring(xml_bytes)
         self.assertEqual(
-            root.xpath("/*/cac:DeliveryTerms/cbc:ID/text()", namespaces=ns), ["EXW"]
+            root.xpath("//cac:DeliveryTerms/cbc:ID/text()", namespaces=ns)[0],
+            data_dict["EXT-FR-FE-185"],
         )
         self.assertEqual(
             root.xpath(
-                "/*/cac:DeliveryTerms/cac:DeliveryLocation/cbc:Name/text()",
+                "//cac:DeliveryTerms/cac:DeliveryLocation/cbc:Name/text()",
                 namespaces=ns,
-            ),
-            ["Lunel-Viel"],
+            )[0],
+            data_dict["EXT-FR-FE-186"],
         )
 
     def test_generate_ubl(self):

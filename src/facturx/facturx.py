@@ -584,7 +584,7 @@ def xml_check_schematron(
             ", ".join(xsl_files.keys()),
             len(skipped_check_types),
             ", ".join(skipped_check_types),
-            )
+        )
     else:
         logger.info(
             "%s XML file successfully validated against %s schematron(s) in %s sec",

@@ -141,6 +141,10 @@ Contributors
 Changelog
 =========
 
+* Version 6.8 dated 2026-08-18:
+
+  * Add support for Incoterm in UBL and Factur-x XML generation. Contribution by Nicolas Jeudy.
+
 * Version 6.7 dated 2026-08-08:
 
   * In method xml_check_schematron(), the argument raise_if_http_error has been renamed to saxon_server_raise_if_http_error
