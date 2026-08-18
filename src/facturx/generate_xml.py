@@ -981,6 +981,21 @@ def generate_cii_xml(
                     addr_line3=data_dict.get("BT-164"),
                     tax_id=data_dict.get("BT-63"),
                 ),
+                # Incoterms  EXT-FR-FE-BG-14
+                *[
+                    RAM.ApplicableTradeDeliveryTerms(
+                        RAM.DeliveryTypeCode(data_dict["EXT-FR-FE-185"]),
+                        *[
+                            RAM.RelevantTradeLocation(
+                                RAM.Name(data_dict["EXT-FR-FE-186"])
+                            )
+                            for _ in [1]
+                            if data_dict.get("EXT-FR-FE-186")
+                        ],
+                    )
+                    for _ in [1]
+                    if data_dict.get("EXT-FR-FE-185")
+                ],
                 *[
                     RAM.SellerOrderReferencedDocument(
                         RAM.IssuerAssignedID(data_dict["BT-14"])
@@ -2447,6 +2462,19 @@ def generate_ubl_xml(
             or data_dict.get("BT-70")
             or data_dict.get("BT-80")
             or data_dict.get("BT-71")
+        ],
+        # Incoterms  EXT-FR-FE-BG-14
+        *[
+            CAC.DeliveryTerms(
+                CBC.ID(data_dict["EXT-FR-FE-185"]),
+                *[
+                    CAC.DeliveryLocation(CBC.Name(data_dict["EXT-FR-FE-186"]))
+                    for _ in [1]
+                    if data_dict.get("EXT-FR-FE-186")
+                ],
+            )
+            for _ in [1]
+            if data_dict.get("EXT-FR-FE-185")
         ],
         *[
             CAC.PaymentMeans(

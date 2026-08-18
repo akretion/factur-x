@@ -4,7 +4,9 @@
 import datetime
 import unittest
 
-from facturx import generate_cii_xml, generate_ubl_xml
+from lxml import etree
+
+from facturx import generate_cii_xml, generate_ubl_xml, get_xml_namespaces
 
 
 class TestGenerateXML(unittest.TestCase):
@@ -116,6 +118,9 @@ class TestGenerateXML(unittest.TestCase):
             "BT-63": "FR15123456789",
             "BT-73": datetime.datetime.strptime("2026-06-01", date_fmt),
             "BT-74": datetime.datetime.strptime("2026-06-30", date_fmt),
+            # Incoterms EXT-FR-FE-BG-14
+            "EXT-FR-FE-185": "EXW",
+            "EXT-FR-FE-186": "Lunel-Viel",
             # Start Ship to
             "BT-70": "Plateforme logistique FastIT",
             "BT-71": {
@@ -374,6 +379,68 @@ class TestGenerateXML(unittest.TestCase):
             )
             xml_str = xml_bytes.decode("utf-8")
             self._check_data_in_xml(data_dict, xml_str)
+
+    def test_cii_incoterms(self):
+        # EXT-FR-FE-BG-14: incoterm code (185) and named place (186)
+        data_dict = self._prepare_data_dict()
+        data_dict["BT-18-00"].pop("AHO")
+        xml_bytes = generate_cii_xml(
+            data_dict, level="extended-ctc-fr", prefixed_namespaces=True
+        )
+        ns = get_xml_namespaces("factur-x")
+        root = etree.fromstring(xml_bytes)
+        terms_xpath = (
+            "/rsm:CrossIndustryInvoice/rsm:SupplyChainTradeTransaction"
+            "/ram:ApplicableHeaderTradeAgreement/ram:ApplicableTradeDeliveryTerms"
+        )
+        self.assertEqual(
+            root.xpath(f"{terms_xpath}/ram:DeliveryTypeCode/text()", namespaces=ns),
+            ["EXW"],
+        )
+        self.assertEqual(
+            root.xpath(
+                f"{terms_xpath}/ram:RelevantTradeLocation/ram:Name/text()",
+                namespaces=ns,
+            ),
+            ["Lunel-Viel"],
+        )
+
+    def test_cii_incoterms_absent_below_extended(self):
+        # EXT-FR-FE-xx fields are extended-only: no incoterm node in en16931
+        data_dict = self._prepare_data_dict()
+        xml_bytes = generate_cii_xml(
+            data_dict, level="en16931", prefixed_namespaces=True
+        )
+        ns = get_xml_namespaces("factur-x")
+        root = etree.fromstring(xml_bytes)
+        self.assertFalse(
+            root.xpath("//ram:ApplicableTradeDeliveryTerms", namespaces=ns)
+        )
+
+    def test_ubl_incoterms(self):
+        # EXT-FR-FE-BG-14: incoterm code (185) and named place (186)
+        data_dict = self._prepare_data_dict()
+        data_dict["BT-18-00"].pop("AHO")
+        data_dict.pop("BG-24")
+        xml_bytes = generate_ubl_xml(
+            data_dict, level="extended-ctc-fr", prefixed_namespaces=True
+        )
+        ns = {
+            k: v
+            for k, v in get_xml_namespaces("ubl-2.1-invoice").items()
+            if k != "default"
+        }
+        root = etree.fromstring(xml_bytes)
+        self.assertEqual(
+            root.xpath("/*/cac:DeliveryTerms/cbc:ID/text()", namespaces=ns), ["EXW"]
+        )
+        self.assertEqual(
+            root.xpath(
+                "/*/cac:DeliveryTerms/cac:DeliveryLocation/cbc:Name/text()",
+                namespaces=ns,
+            ),
+            ["Lunel-Viel"],
+        )
 
     def test_generate_ubl(self):
         for bt3 in ("380", "381"):
