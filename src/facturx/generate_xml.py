@@ -73,7 +73,7 @@ CREDIT_NOTE_TYPE_CODES = (
 VERSION = importlib.metadata.version("factur-x")
 logger = logging.getLogger("factur-x")
 
-EN6931_FIELDS = {
+EN16931_FIELDS = {
     "BT-1": {
         "required": True,
         "cii_xpath": "/rsm:CrossIndustryInvoice/rsm:ExchangedDocument/ram:ID",
@@ -144,7 +144,7 @@ def _ubl_date_to_string(date):
 
 
 def _check_data_dict(data_dict, flavor, level):
-    for field, props in EN6931_FIELDS.items():
+    for field, props in EN16931_FIELDS.items():
         value = data_dict.get(field)
         if props.get("required"):
             if not value:
