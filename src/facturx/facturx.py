@@ -114,6 +114,9 @@ FACTURX_LEVEL2xmp = {
     "en16931": "EN 16931",
     "extended": "EXTENDED",
 }
+PDFA_ID_NS = "http://www.aiim.org/pdfa/ns/id/"
+VALID_PDFA_CONFORMANCES = {"B": 0, "U": 1, "A": 2}
+VALID_PDFA_PARTS = ("1", "2", "3")
 ORDERX_TYPES = ("order", "order_change", "order_response")
 ORDERX_code2type = {
     "220": "order",
@@ -810,14 +813,15 @@ def _prepare_pdf_metadata_txt(pdf_metadata):
     return info_dict
 
 
-def _prepare_pdf_metadata_xml(flavor, level, orderx_type, pdf_metadata):
+def _prepare_pdf_metadata_xml(
+        flavor, level, orderx_type, pdf_metadata, pdfa_conformance="B"):
     head = """<?xpacket begin="\ufeff" id="W5M0MpCehiHzreSzNTczkc9d"?>"""
     xml_str = """
 <x:xmpmeta xmlns:x="adobe:ns:meta/">
   <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
     <rdf:Description xmlns:pdfaid="http://www.aiim.org/pdfa/ns/id/" rdf:about="">
       <pdfaid:part>3</pdfaid:part>
-      <pdfaid:conformance>B</pdfaid:conformance>
+      <pdfaid:conformance>##pdfaid_conformance</pdfaid:conformance>
     </rdf:Description>
     <rdf:Description xmlns:dc="http://purl.org/dc/elements/1.1/" rdf:about="">
       <dc:title>
@@ -901,6 +905,7 @@ def _prepare_pdf_metadata_xml(flavor, level, orderx_type, pdf_metadata):
         "creator_tool": CREATOR,
         "timestamp": _get_metadata_timestamp(),
         "version": "1.0",
+        "pdfaid_conformance": pdfa_conformance,
     }
 
     if flavor == "order-x":
@@ -931,9 +936,11 @@ def _prepare_pdf_metadata_xml(flavor, level, orderx_type, pdf_metadata):
             "fx": "urn:factur-x:pdfa:CrossIndustryDocument:invoice:1p0#",
             "pdf": "http://ns.adobe.com/pdf/1.3/",
             "xmp": "http://ns.adobe.com/xap/1.0/",
+            "pdfaid": "http://www.aiim.org/pdfa/ns/id/",
         }
     )
     xpath2key = {
+        "/x:xmpmeta/rdf:RDF/rdf:Description/pdfaid:conformance": "pdfaid_conformance",
         "/x:xmpmeta/rdf:RDF/rdf:Description/dc:title//rdf:li": "title",
         "/x:xmpmeta/rdf:RDF/rdf:Description/dc:creator//rdf:li": "author",
         "/x:xmpmeta/rdf:RDF/rdf:Description/dc:description//rdf:li": "subject",
@@ -1028,6 +1035,186 @@ def _filespec_additional_attachments(
     filespec_obj = pdf_writer._add_object(filespec_dict)
     name_arrayobj_cdict[fname_obj] = filespec_obj
 
+def _read_declared_pdfa_conformance(existing_metadata_obj):
+    """Read the pdfaid:part / pdfaid:conformance value DECLARED in the
+    /Metadata object of the PDF being cloned, BEFORE it gets overwritten
+    with the new Factur-X XMP.
+    
+    IMPORTANT: this is only a self-declared label, read from data that
+    could have been hand-edited (e.g. a PDF/A-3b whose XMP was patched to
+    claim pdfaid:conformance=A without the document actually satisfying
+    the accessibility requirements of level A). This value MUST NOT be 
+    trusted as-is: it is only a *candidate* level to be confirmed by 
+    _verify_pdfa_structural_markers() below.
+
+    :param existing_metadata_obj: value of pdf_writer._root_object.get(
+        "/Metadata"), read before it is replaced. Can be None,
+        an IndirectObject, or a resolved stream-like object.
+    :return: 'A', 'B', 'U' or None if nothing valid was declared.
+    :rtype: str or None
+    """ 
+    if existing_metadata_obj is None:
+        return None
+    obj = existing_metadata_obj
+    try:
+        if hasattr(obj, "get_object"):
+            obj = obj.get_object()
+        xmp_bytes = obj.get_data()
+    except Exception as e:
+        logger.debug("Could not read existing /Metadata stream: %s", e)
+        return None
+    try:
+        xmp_root = etree.fromstring(xmp_bytes)
+    except etree.XMLSyntaxError:
+        logger.debug("Existing /Metadata stream is not valid XML: skipping detection")
+        return None
+    ns = {
+        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+        "pdfaid": PDFA_ID_NS,
+    }
+    part_nodes = xmp_root.xpath("//pdfaid:part", namespaces=ns)
+    conformance_nodes = xmp_root.xpath("//pdfaid:conformance", namespaces=ns)
+    part = part_nodes[0].text.strip() if part_nodes and part_nodes[0].text else None
+    conformance = (
+        conformance_nodes[0].text.strip().upper()
+        if conformance_nodes and conformance_nodes[0].text
+        else None
+    )
+    if part in VALID_PDFA_PARTS and conformance in VALID_PDFA_CONFORMANCES:
+        return conformance
+    return None
+
+
+def _verify_pdfa_structural_markers(pdf_writer, declared_level):
+    """Best-effort structural verification of the PDF/A conformance level
+    actually supported by the document content, INDEPENDENTLY of what its
+    XMP metadata claims.
+
+    This is NOT a full ISO 19005-3 validator (that's what veraPDF is for,
+    see the optional `pdfa_validator` hook). It only checks the cheap,
+    load-bearing structural markers that differentiate the levels:
+
+    - Level U requires every font actually used in page content to expose
+      a /ToUnicode CMap.
+    - Level A additionally requires /MarkInfo /Marked = true, a non-empty
+      /StructTreeRoot, and a declared natural language (/Lang).
+
+    These checks are necessary but not sufficient for full ISO 19005-3
+    compliance (they don't check reading order quality, alt text
+    completeness, etc.). However they are enough to reliably reject the
+    "hand-edited XMP" attack: manually changing pdfaid:conformance from
+    B to A does not also fabricate a struct tree, mark info and
+    ToUnicode CMaps, so the forged claim will correctly fail here and
+    fall back to B.
+
+    :param pdf_writer: the pypdf PdfWriter, already cloned from the
+        source PDF (clone_from=pdf_file), i.e. still reflecting the
+        SOURCE document's structure at the point this is called.
+    :param declared_level: candidate level to verify ('A', 'B' or 'U'),
+        as read by _read_declared_pdfa_conformance().
+    :return: the highest level actually confirmed by structural evidence,
+        capped at declared_level (never higher than what was declared).
+    :rtype: str
+    """
+    if declared_level == "B" or declared_level is None:
+        # Nothing beyond baseline PDF/A is claimed: there is nothing
+        # extra to verify. (Verifying baseline PDF/A-B compliance itself
+        # would require a full validator and is out of scope here — the
+        # existing lib already doesn't verify this today.)
+        return "B"
+    root = pdf_writer._root_object
+    unicode_ok = True
+    try:
+        for page in pdf_writer.pages:
+            resources = page.get("/Resources", {})
+            fonts = resources.get("/Font", {})
+            for font_ref in fonts.values():
+                font_obj = font_ref.get_object()
+                if "/ToUnicode" not in font_obj:
+                    unicode_ok = False
+                    break
+            if not unicode_ok:
+                break
+    except Exception as e:
+        logger.debug("Could not verify /ToUnicode coverage: %s", e)
+        unicode_ok = False
+    if not unicode_ok:
+        logger.warning(
+            "Source PDF declares pdfaid:conformance=%s but at least one "
+            "font used in the page content has no /ToUnicode CMap: the "
+            "Unicode-mapping requirement (level U) is not met. Falling "
+            "back to the safer 'B' conformance level instead of trusting "
+            "the declared value.",
+            declared_level
+        )
+        return "B"
+    if declared_level == "U":
+        return "U"
+    mark_info = root.get("/MarkInfo")
+    marked_ok = bool(mark_info and mark_info.get("/Marked"))
+    struct_tree_root = root.get("/StructTreeRoot")
+    struct_ok = False
+    if struct_tree_root is not None:
+        try:
+            struct_ok = bool(struct_tree_root.get_object().get("/K"))
+        except Exception as e:
+            logger.debug("Could not inspect /StructTreeRoot: %s", e)
+
+    lang_ok = bool(root.get("/Lang"))
+    if marked_ok and struct_ok and lang_ok:
+        return "A"
+    logger.warning(
+        "Source PDF declares pdfaid:conformance=A but is missing "
+        "required accessibility markers (Marked=%s, StructTreeRoot=%s, "
+        "Lang=%s). This looks like a mismatch between the declared XMP "
+        "conformance and the actual document structure (e.g. metadata "
+        "edited by hand). Falling back to the safer 'B' conformance "
+        "level instead of trusting the declared value.",
+        marked_ok, struct_ok, lang_ok,
+    )
+    return "B"
+
+
+def _resolve_pdfa_conformance(
+    pdfa_conformance, pdf_writer, existing_metadata_obj, pdfa_validator=None
+):
+    """Resolve the final pdfaid:conformance value to write in the output
+    XMP. Never returns a level higher than what was actually verified.
+
+    :param pdfa_conformance: 'preserve' (default), 'A', 'B' or 'U'.
+    :param pdf_writer: pypdf PdfWriter already cloned from the source PDF.
+    :param existing_metadata_obj: source PDF's existing /Metadata object,
+        read before being overwritten (may be None).
+    :param pdfa_validator: optional callable(pdf_writer) -> str or None,
+        wrapping an authoritative external validator (e.g. veraPDF) for
+        a rigorous ISO 19005-3 check instead of the built-in heuristic.
+    """
+    if pdfa_conformance in VALID_PDFA_CONFORMANCES:
+        # Explicit override: the caller takes responsibility for this
+        # claim being accurate. No verification performed here, exactly
+        # like the rest of the metadata the caller supplies via
+        # pdf_metadata (title, author, etc.) is trusted as given.
+        return pdfa_conformance
+    if pdfa_conformance != "preserve":
+        raise ValueError(
+            f"Wrong value '{pdfa_conformance}' for argument pdfa_conformance. "
+            f"Possible values: 'preserve' (default), 'A', 'B', 'U'."
+        )
+    declared = _read_declared_pdfa_conformance(existing_metadata_obj)
+    if declared is None:
+        return "B" # historical behaviour, unchanged: nothing to preserve
+    if pdfa_validator is not None:
+        verified = pdfa_validator(pdf_writer)
+        if verified not in VALID_PDFA_CONFORMANCES:
+            return "B"
+        # Never trust the external validator beyond what was declared,
+        # and never trust the declared value beyond what was verified:
+        # take the minimum of the two ranks.
+        return min(
+            (declared, verified), key=lambda level: VALID_PDFA_CONFORMANCES[level]
+        )
+    return _verify_pdfa_structural_markers(pdf_writer, declared)
+
 
 def _facturx_update_metadata_add_attachment(
     pdf_writer,
@@ -1040,6 +1227,8 @@ def _facturx_update_metadata_add_attachment(
     additional_attachments=None,
     afrelationship="data",
     xmp_compression=True,
+    pdfa_conformance="preserve",
+    pdfa_validator=None,
 ):
     """This method is inspired from the code of the add_attachment()
     method of the pypdf lib"""
@@ -1140,8 +1329,16 @@ def _facturx_update_metadata_add_attachment(
         # show attachments when opening PDF
         NameObject("/PageMode"): NameObject("/UseAttachments"),
     }
+    existing_metadata_obj = pdf_writer._root_object.get("/Metadata")
+    resolve_pdfa_conformance = _resolve_pdfa_conformance(
+        pdfa_conformance,
+        pdf_writer,
+        existing_metadata_obj,
+        pdfa_validator=pdfa_validator,
+    )
     metadata_xml_bytes = _prepare_pdf_metadata_xml(
-        flavor, level, orderx_type, pdf_metadata
+        flavor, level, orderx_type, pdf_metadata,
+        pdfa_conformance=resolve_pdfa_conformance,
     )
     metadata_file_entry = DecodedStreamObject()
     metadata_file_entry.update(
@@ -1153,8 +1350,6 @@ def _facturx_update_metadata_add_attachment(
     metadata_file_entry.set_data(metadata_xml_bytes)
     if xmp_compression:
         metadata_file_entry = metadata_file_entry.flate_encode()
-
-    existing_metadata_obj = pdf_writer._root_object.get("/Metadata")
     if isinstance(existing_metadata_obj, IndirectObject):
         logger.debug(
             "Found existing /Metadata entry in catalog as indirect obj: replacing it."
@@ -1428,6 +1623,8 @@ def generate_from_binary(
     attachments=None,
     afrelationship="data",
     xmp_compression=True,
+    pdfa_conformance="preserve",
+    pdfa_validator=None,
 ):
     """
     Generate a Factur-X or Order-X PDF from a regular PDF and a factur-X
@@ -1503,6 +1700,30 @@ def generate_from_binary(
     Default value: True. Set this option to False if you plan to later add a
     PAdES signature to the generated PDF file.
     :type xmp_compression: bool
+    :param pdfa_conformance: PDF/A conformance level to declare in the
+    pdfaid:conformance XMP tag. Default value: 'preserve' — the
+    conformance level declared in the source PDF's XMP (if any) is only
+    used as a CANDIDATE level: it is then structurally verified (Tagged
+    PDF markers for level A, /ToUnicode coverage for level U) before
+    being reused, and downgraded to 'B' if the structural evidence does
+    not support the declared claim (e.g. a source PDF/A-3b whose XMP was
+    hand-edited to claim conformance A without the document actually
+    being tagged). If the source PDF has no PDF/A metadata at all, falls
+    back to 'B' (historical behaviour, unchanged). You can also force
+    'A', 'B' or 'U' explicitly, regardless of the source PDF: in that
+    case NO verification is performed and the caller is responsible for
+    the claim being accurate — only use 'A' if you are certain the
+    source PDF is properly tagged for accessibility.
+    :type pdfa_conformance: string
+    :param pdfa_validator: optional callable taking the pypdf PdfWriter
+    (already cloned from the source PDF) and returning the PDF/A
+    conformance level it confirms ('A', 'B', 'U') or None. When provided,
+    this authoritative external check (e.g. a wrapper around veraPDF) is
+    used instead of the built-in structural heuristic to verify the
+    conformance level declared in the source PDF, for callers who need a
+    full ISO 19005-3 guarantee rather than a best-effort check. Ignored
+    when pdfa_conformance is 'A', 'B' or 'U' (explicit override).
+    :type pdfa_validator: callable or None
     :return: The Factur-X or Order-X PDF file as bytes
     :rtype: bytes
     """
@@ -1529,6 +1750,8 @@ def generate_from_binary(
             attachments=attachments,
             afrelationship=afrelationship,
             xmp_compression=xmp_compression,
+            pdfa_conformance=pdfa_conformance,
+            pdfa_validator=pdfa_validator,
         )
         f.seek(0)
         result_pdf = f.read()
@@ -1554,6 +1777,8 @@ def generate_from_file(
     attachments=None,
     afrelationship="data",
     xmp_compression=True,
+    pdfa_conformance="preserve",
+    pdfa_validator=None,
 ):
     """
     Generate a Factur-X or Order-X PDF file from a regular PDF and a Factur-X
@@ -1631,6 +1856,30 @@ def generate_from_file(
     Default value: True. Set this option to False if you plan to later add a
     PAdES signature to the generated PDF file.
     :type xmp_compression: bool
+    :param pdfa_conformance: PDF/A conformance level to declare in the
+    pdfaid:conformance XMP tag. Default value: 'preserve' — the
+    conformance level declared in the source PDF's XMP (if any) is only
+    used as a CANDIDATE level: it is then structurally verified (Tagged
+    PDF markers for level A, /ToUnicode coverage for level U) before
+    being reused, and downgraded to 'B' if the structural evidence does
+    not support the declared claim (e.g. a source PDF/A-3b whose XMP was
+    hand-edited to claim conformance A without the document actually
+    being tagged). If the source PDF has no PDF/A metadata at all, falls
+    back to 'B' (historical behaviour, unchanged). You can also force
+    'A', 'B' or 'U' explicitly, regardless of the source PDF: in that
+    case NO verification is performed and the caller is responsible for
+    the claim being accurate — only use 'A' if you are certain the
+    source PDF is properly tagged for accessibility.
+    :type pdfa_conformance: string
+    :param pdfa_validator: optional callable taking the pypdf PdfWriter
+    (already cloned from the source PDF) and returning the PDF/A
+    conformance level it confirms ('A', 'B', 'U') or None. When provided,
+    this authoritative external check (e.g. a wrapper around veraPDF) is
+    used instead of the built-in structural heuristic to verify the
+    conformance level declared in the source PDF, for callers who need a
+    full ISO 19005-3 guarantee rather than a best-effort check. Ignored
+    when pdfa_conformance is 'A', 'B' or 'U' (explicit override).
+    :type pdfa_validator: callable or None
     :return: Returns True. This method re-writes the input PDF file,
     unless if the argument output_pdf_file is set.
     :rtype: bool
@@ -1677,6 +1926,15 @@ def generate_from_file(
         raise ValueError(
             f"output_pdf_file argument is a {type(output_pdf_file)}, "
             f"must be a string or None"
+        )
+    if pdfa_conformance not in ("preserve", "A", "B", "U"):
+        raise ValueError(
+            f"Wrong value '{pdfa_conformance}' for argument pdfa_conformance. "
+            f"Possible values: 'preserve' (default), 'A', 'B', 'U'."
+        )
+    if pdfa_validator is not None and not callable(pdfa_validator):
+        raise ValueError(
+            "pdfa_validator argument must be a callable or None"
         )
     if not isinstance(attachments, (dict, type(None))):
         raise ValueError(
@@ -1842,6 +2100,8 @@ def generate_from_file(
         additional_attachments=attachments,
         afrelationship=afrelationship,
         xmp_compression=xmp_compression,
+        pdfa_conformance=pdfa_conformance,
+        pdfa_validator=pdfa_validator,
     )
     if output_pdf_file:
         with open(output_pdf_file, "wb") as output_f:
