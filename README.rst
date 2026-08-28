@@ -37,6 +37,24 @@ Usage
 
 The PDF file *regular_pdf_file* will be updated to Factur-X/Order-X. If you want to write the resulting Factur-X/Order-X PDF to another file, use the argument *output_pdf_file*.
 
+By default, ``factur-x`` preserves the PDF/A conformance level
+(``pdfaid:conformance``) already present in the source PDF file: if the
+source PDF is a valid PDF/A-3a document, the resulting Factur-X PDF will
+also be declared PDF/A-3a. If the source PDF has no PDF/A metadata, the 
+lib falls back to the historical behavior and declares PDF/A-3**b**.
+
+You can also force a specific conformance level regardless of the source 
+PDF, with the ``pdfa_conformance`` argument::
+
+  from facturx import generate_from_file
+
+  generate_from_file(regular_pdf_file, xml_file)
+
+..warning::
+  Only force ``pdfa_conformance="A"`` if you are certain your source PDF 
+  is properly tagged for accessibility. Declaring conformance "A" on a 
+  PDF that isn't actually accessible produces an invalid PDF/A-3a claim.
+
 To have more examples, look at the docstrings in the source code or look at the source code of the command line tools located in the *bin* subdirectory.
 
 Development
@@ -140,6 +158,13 @@ Contributors
 
 Changelog
 =========
+
+* Version 6.9 dated 2026-08-27:
+  * Add argument **pdfa_conformance** on generate_from_file()
+  and generate_from_binary(). Default value "preserve": the PDF/A
+  conformance level (pdfaid:conformance) already declared in the 
+  source PDF is now preserved instead of always being downgraded to 
+  "B". Fixes #86
 
 * Version 6.8 dated 2026-08-18:
 
