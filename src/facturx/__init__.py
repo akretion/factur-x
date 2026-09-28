@@ -1,6 +1,6 @@
 import logging
 
-__version__ = "6.8"
+__version__ = "7.0"
 from .facturx import (
     facturx_schematron_get_codedb_xml_file,
     generate_from_binary,
@@ -17,6 +17,7 @@ from .facturx import (
     xml_check_xsd,
 )
 from .generate_xml import generate_cii_xml, generate_ubl_xml, generate_xml
+from .parse_xml import parse_ubl_cii_xml, parse_ubl_cii_xml_to_json
 
 __all__ = [
     "generate_from_binary",
@@ -35,6 +36,8 @@ __all__ = [
     "generate_xml",
     "generate_cii_xml",
     "generate_ubl_xml",
+    "parse_ubl_cii_xml",
+    "parse_ubl_cii_xml_to_json",
 ]
 
 logging.getLogger("factur-x").addHandler(logging.NullHandler())

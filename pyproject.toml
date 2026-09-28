@@ -25,6 +25,7 @@ dependencies = [
     "python-stdnum",
     "requests",
     "importlib-resources ; python_version < '3.9'",
+    "iso4217",
 ]
 requires-python = ">=3.8"
 dynamic = ["version"]
@@ -44,6 +45,7 @@ Issues = "https://github.com/akretion/factur-x/issues"
 facturx-pdfgen = "facturx.scripts.pdfgen:main"
 facturx-pdfextractxml = "facturx.scripts.pdfextractxml:main"
 facturx-xmlcheck = "facturx.scripts.xmlcheck:main"
+facturx-convert = "facturx.scripts.convert:main"
 # I consider the webservice scripts as a proof of concept, not real clean code
 # facturx-webservice = "facturx.scripts.webservice:main"
 

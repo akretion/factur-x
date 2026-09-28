@@ -11,7 +11,7 @@
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:xsd="http://www.w3.org/2001/XMLSchema"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                version="2.0"><!--Implementers: please note that overriding process-prolog or process-root is 
+                version="2.0"><!--Implementers: please note that overriding process-prolog or process-root is
     the preferred method for meta-stylesheets to use where possible. -->
    <xsl:param name="archiveDirParameter"/>
    <xsl:param name="archiveNameParameter"/>
@@ -47,9 +47,9 @@
       <xsl:variable name="isFormatValid"
                     select="matches($shortDate, '^20\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])$')"/>
       <!-- Extraction des composantes -->
-      <xsl:variable name="year" select="number(substring($shortDate, 1, 4))"/>
-      <xsl:variable name="month" select="number(substring($shortDate, 5, 2))"/>
-      <xsl:variable name="day" select="number(substring($shortDate, 7, 2))"/>
+      <xsl:variable name="year" select="xs:decimal(substring($shortDate, 1, 4))"/>
+      <xsl:variable name="month" select="xs:decimal(substring($shortDate, 5, 2))"/>
+      <xsl:variable name="day" select="xs:decimal(substring($shortDate, 7, 2))"/>
       <!-- Calcul année bissextile -->
       <xsl:variable name="isLeapYear"
                     select="($year mod 4 = 0 and $year mod 100 != 0) or ($year mod 400 = 0)"/>
@@ -239,7 +239,7 @@
       </xsl:if>
    </xsl:template>
    <!--MODE: SCHEMATRON-FULL-PATH-3-->
-   <!--This mode can be used to generate prefixed XPath for humans 
+   <!--This mode can be used to generate prefixed XPath for humans
 	(Top-level element has index)-->
    <xsl:template match="node() | @*" mode="schematron-get-full-path-3">
       <xsl:for-each select="ancestor-or-self::*">
@@ -2373,7 +2373,7 @@
                   <xsl:apply-templates select="." mode="schematron-select-full-path"/>
                </xsl:attribute>
                <svrl:text>
-        BR-FR-20/BT-21 : Lorsqu’une note a pour code sujet « BAR » (BT-21), la valeur associée (BT-22, contenu de la note) doit être l’une des suivantes : B2B, B2BINT, B2C, OUTOFSCOPE, ARCHIVEONLY.
+        BR-FR-20/BT-21 : Lorsqu’une note a pour code sujet « BAR » (BT-21), la valeur associée (BT-22, contenu de la note) doit être l’une des suivantes : B2B, B2BINT, B2C, B2CINT, OUTOFSCOPE, ARCHIVEONLY.
         Valeur fournie : "<xsl:text/>
                   <xsl:value-of select="$barTreatment"/>
                   <xsl:text/>". Veuillez corriger la valeur ou retirer le code sujet « BAR ».
@@ -3166,7 +3166,7 @@
                   <xsl:apply-templates select="." mode="schematron-select-full-path"/>
                </xsl:attribute>
                <svrl:text>
-        [BR-FR-28] : La valeur d’attribut (cbc:Value) ou la valeur (cbc:ValueQuantity avec unité de mesure) doivent être présents, mais pas les deux
+        [BR-FR-28] : La valeur d’attribut (ram:Value) ou la valeur (ram:ValueMeasure avec unité de mesure) doivent être présents, mais pas les deux
         Valeur actuelle Value : "<xsl:text/>
                   <xsl:value-of select="ram:Value"/>
                   <xsl:text/>", Valeur actuelle Value Quantity : "<xsl:text/>
@@ -3598,10 +3598,10 @@
                     select="rsm:ExchangedDocumentContext/ram:BusinessProcessSpecifiedDocumentContextParameter/ram:ID"/>
       <!--ASSERT -->
       <xsl:choose>
-         <xsl:when test="not(string($dueDate)) or          ($typeCode = ('386', '500', '503') or $frameworkCode = ('B2', 'S2', 'M2') or $dueDate ge $issueDate)"/>
+         <xsl:when test="not($dueDate[normalize-space(.)]) or          ($typeCode = ('386', '500', '503') or $frameworkCode = ('B2', 'S2', 'M2') or (every $dt in $dueDate satisfies $dt ge $issueDate))"/>
          <xsl:otherwise>
             <svrl:failed-assert xmlns:svrl="http://purl.oclc.org/dsdl/svrl"
-                                test="not(string($dueDate)) or ($typeCode = ('386', '500', '503') or $frameworkCode = ('B2', 'S2', 'M2') or $dueDate ge $issueDate)">
+                                test="not($dueDate[normalize-space(.)]) or ($typeCode = ('386', '500', '503') or $frameworkCode = ('B2', 'S2', 'M2') or (every $dt in $dueDate satisfies $dt ge $issueDate))">
                <xsl:attribute name="id">BR-FR-CO-07_BT-9</xsl:attribute>
                <xsl:attribute name="flag">fatal</xsl:attribute>
                <xsl:attribute name="location">
@@ -3685,10 +3685,10 @@
                     select="rsm:SupplyChainTradeTransaction/ram:ApplicableHeaderTradeSettlement/ram:SpecifiedTradePaymentTerms/ram:DueDateDateTime/udt:DateTimeString"/>
       <!--ASSERT -->
       <xsl:choose>
-         <xsl:when test="not($isPaidMode) or (number($paidAmount) = number($totalAmount))"/>
+         <xsl:when test="not($isPaidMode) or (xs:decimal($paidAmount) = xs:decimal($totalAmount))"/>
          <xsl:otherwise>
             <svrl:failed-assert xmlns:svrl="http://purl.oclc.org/dsdl/svrl"
-                                test="not($isPaidMode) or (number($paidAmount) = number($totalAmount))">
+                                test="not($isPaidMode) or (xs:decimal($paidAmount) = xs:decimal($totalAmount))">
                <xsl:attribute name="id">BR-FR-CO-09_BT-23-1</xsl:attribute>
                <xsl:attribute name="flag">fatal</xsl:attribute>
                <xsl:attribute name="location">
@@ -3707,10 +3707,10 @@
       </xsl:choose>
       <!--ASSERT -->
       <xsl:choose>
-         <xsl:when test="not($isPaidMode) or (number($dueAmount) = 0)"/>
+         <xsl:when test="not($isPaidMode) or (xs:decimal($dueAmount) = 0)"/>
          <xsl:otherwise>
             <svrl:failed-assert xmlns:svrl="http://purl.oclc.org/dsdl/svrl"
-                                test="not($isPaidMode) or (number($dueAmount) = 0)">
+                                test="not($isPaidMode) or (xs:decimal($dueAmount) = 0)">
                <xsl:attribute name="id">BR-FR-CO-09_BT-23-2</xsl:attribute>
                <xsl:attribute name="flag">fatal</xsl:attribute>
                <xsl:attribute name="location">
@@ -3727,10 +3727,10 @@
       </xsl:choose>
       <!--ASSERT -->
       <xsl:choose>
-         <xsl:when test="not($isPaidMode) or string($dueDate)"/>
+         <xsl:when test="not($isPaidMode) or $dueDate[normalize-space(.)]"/>
          <xsl:otherwise>
             <svrl:failed-assert xmlns:svrl="http://purl.oclc.org/dsdl/svrl"
-                                test="not($isPaidMode) or string($dueDate)">
+                                test="not($isPaidMode) or $dueDate[normalize-space(.)]">
                <xsl:attribute name="id">BR-FR-CO-09_BT-23-3</xsl:attribute>
                <xsl:attribute name="flag">fatal</xsl:attribute>
                <xsl:attribute name="location">
@@ -5173,13 +5173,13 @@
                <xsl:attribute name="location">
                   <xsl:apply-templates select="." mode="schematron-select-full-path"/>
                </xsl:attribute>
-               <svrl:text> BR-FR-MV-03/EXT-FR-FE-164 : 
+               <svrl:text> BR-FR-MV-03/EXT-FR-FE-164 :
         Ligne : <xsl:text/>
                   <xsl:value-of select="./ram:AssociatedDocumentLineDocument/ram:LineID"/>
                   <xsl:text/> : Valeur actuelle : "<xsl:text/>
                   <xsl:value-of select="./ram:SpecifiedLineTradeAgreement/ram:ItemSellerTradeParty/ram:Name"/>
                   <xsl:text/>".
-        Lorsque le cadre de facturation (BT-23) est S8, B8, M8 ou S9, B9, M9 et que la ligne est de type GROUP sans parent, le nom du vendeur (ram:Name) doit être renseigné. 
+        Lorsque le cadre de facturation (BT-23) est S8, B8, M8 ou S9, B9, M9 et que la ligne est de type GROUP sans parent, le nom du vendeur (ram:Name) doit être renseigné.
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -5195,7 +5195,7 @@
                <xsl:attribute name="location">
                   <xsl:apply-templates select="." mode="schematron-select-full-path"/>
                </xsl:attribute>
-               <svrl:text> BR-FR-MV-03/EXT-FR-FE-167 : 
+               <svrl:text> BR-FR-MV-03/EXT-FR-FE-167 :
         Ligne : <xsl:text/>
                   <xsl:value-of select="./ram:AssociatedDocumentLineDocument/ram:LineID"/>
                   <xsl:text/> : Valeur actuelle : "<xsl:text/>
@@ -5217,7 +5217,7 @@
                <xsl:attribute name="location">
                   <xsl:apply-templates select="." mode="schematron-select-full-path"/>
                </xsl:attribute>
-               <svrl:text> BR-FR-MV-03/EXT-FR-FE-177 : 
+               <svrl:text> BR-FR-MV-03/EXT-FR-FE-177 :
         Ligne : <xsl:text/>
                   <xsl:value-of select="./ram:AssociatedDocumentLineDocument/ram:LineID"/>
                   <xsl:text/> : Valeur actuelle : "<xsl:text/>
@@ -5241,7 +5241,7 @@
                <xsl:attribute name="location">
                   <xsl:apply-templates select="." mode="schematron-select-full-path"/>
                </xsl:attribute>
-               <svrl:text>BR-FR-MV-03/EXT-FR-FE-181 : 
+               <svrl:text>BR-FR-MV-03/EXT-FR-FE-181 :
         Ligne : <xsl:text/>
                   <xsl:value-of select="./ram:AssociatedDocumentLineDocument/ram:LineID"/>
                   <xsl:text/>, Valeur actuelle : "<xsl:text/>
@@ -5265,7 +5265,7 @@
                <xsl:attribute name="location">
                   <xsl:apply-templates select="." mode="schematron-select-full-path"/>
                </xsl:attribute>
-               <svrl:text> BR-FR-MV-03/EXT-FR-FE-182 : 
+               <svrl:text> BR-FR-MV-03/EXT-FR-FE-182 :
         Ligne : <xsl:text/>
                   <xsl:value-of select="./ram:AssociatedDocumentLineDocument/ram:LineID"/>
                   <xsl:text/>, Devise de comptabilité : "<xsl:text/>
@@ -5354,10 +5354,10 @@
                     select="count(../ram:IncludedSupplyChainTradeLineItem[ram:AssociatedDocumentLineDocument/ram:ParentLineID= $grouplineID  and ram:AssociatedDocumentLineDocument/ram:LineStatusReasonCode != 'INFORMATION']         /ram:SpecifiedLineTradeSettlement/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:LineTotalAmount)"/>
       <!--ASSERT -->
       <xsl:choose>
-         <xsl:when test="not(custom:isSpecialContract(/rsm:CrossIndustryInvoice))          or (abs(number(ram:SpecifiedLineTradeSettlement/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:LineTotalAmount) - $sumsubline) &lt;= 0.01 * $numberline)"/>
+         <xsl:when test="not(custom:isSpecialContract(/rsm:CrossIndustryInvoice))          or (abs(xs:decimal(ram:SpecifiedLineTradeSettlement/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:LineTotalAmount) - $sumsubline) &lt;= 0.01 * $numberline)"/>
          <xsl:otherwise>
             <svrl:failed-assert xmlns:svrl="http://purl.oclc.org/dsdl/svrl"
-                                test="not(custom:isSpecialContract(/rsm:CrossIndustryInvoice)) or (abs(number(ram:SpecifiedLineTradeSettlement/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:LineTotalAmount) - $sumsubline) &lt;= 0.01 * $numberline)">
+                                test="not(custom:isSpecialContract(/rsm:CrossIndustryInvoice)) or (abs(xs:decimal(ram:SpecifiedLineTradeSettlement/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:LineTotalAmount) - $sumsubline) &lt;= 0.01 * $numberline)">
                <xsl:attribute name="id">BR-FR-MV-05_EXT-FR-FE-BG-12</xsl:attribute>
                <xsl:attribute name="flag">fatal</xsl:attribute>
                <xsl:attribute name="location">
@@ -5372,7 +5372,7 @@
                   <xsl:value-of select="$numberline"/>
                   <xsl:text/>. Valeur actuelle : "<xsl:text/>
                   <xsl:value-of select="ram:SpecifiedLineTradeSettlement/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:LineTotalAmount"/>
-                  <xsl:text/>". 
+                  <xsl:text/>".
         Lorsque le cadre de facturation (BT-23) est S8, B8, M8 ou S9, B9, M9, le total HT (BT-131 : ram:LineTotalAmount) de la ligne GROUP doit être égal (tolérance ±0,01 * nombre de sous-lignes) à la somme des totaux HT des lignes enfants dont le ParentLineID correspond à l'identifiant de la ligne GROUP (ram:LineID).
       </svrl:text>
             </svrl:failed-assert>
@@ -5464,7 +5464,7 @@
                   <xsl:value-of select="$numfact"/>
                   <xsl:text/>, numfact ligne parent : <xsl:text/>
                   <xsl:value-of select="$numfactparent"/>
-                  <xsl:text/>. 
+                  <xsl:text/>.
         Lorsque le cadre de facturation (BT-23) est S8, B8, M8 ou S9, B9, M9, chaque ligne (BG-25) doit contenir un numéro de facture codifié AFL (ram:IssuerAssignedID). Si la ligne a un identifiant de ligne parent (ram:ParentLineID), ce numéro doit être identique à celui de la ligne parent.
       </svrl:text>
             </svrl:failed-assert>
@@ -5531,10 +5531,10 @@
                     select="../ram:ApplicableHeaderTradeSettlement/ram:InvoiceCurrencyCode"/>
       <!--ASSERT -->
       <xsl:choose>
-         <xsl:when test="not(custom:isSpecialContract(/rsm:CrossIndustryInvoice))          or (abs(number(./ram:SpecifiedLineTradeSettlement/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:TaxTotalAmount[@currencyID = $invcurrency]) - $sumvat) &lt;= 0.01)"/>
+         <xsl:when test="not(custom:isSpecialContract(/rsm:CrossIndustryInvoice))          or (abs(xs:decimal(./ram:SpecifiedLineTradeSettlement/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:TaxTotalAmount[@currencyID = $invcurrency]) - $sumvat) &lt;= 0.01)"/>
          <xsl:otherwise>
             <svrl:failed-assert xmlns:svrl="http://purl.oclc.org/dsdl/svrl"
-                                test="not(custom:isSpecialContract(/rsm:CrossIndustryInvoice)) or (abs(number(./ram:SpecifiedLineTradeSettlement/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:TaxTotalAmount[@currencyID = $invcurrency]) - $sumvat) &lt;= 0.01)">
+                                test="not(custom:isSpecialContract(/rsm:CrossIndustryInvoice)) or (abs(xs:decimal(./ram:SpecifiedLineTradeSettlement/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:TaxTotalAmount[@currencyID = $invcurrency]) - $sumvat) &lt;= 0.01)">
                <xsl:attribute name="id">BR-FR-MV-09_EXT-FR-FE-181</xsl:attribute>
                <xsl:attribute name="flag">fatal</xsl:attribute>
                <xsl:attribute name="location">
@@ -5549,7 +5549,7 @@
                   <xsl:value-of select="./ram:SpecifiedLineTradeSettlement/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:TaxTotalAmount[@currencyID = $invcurrency]"/>
                   <xsl:text/>, Somme TVA : <xsl:text/>
                   <xsl:value-of select="$sumvat"/>
-                  <xsl:text/>. 
+                  <xsl:text/>.
         Lorsque le cadre de facturation (BT-23) est S8, B8, M8 ou S9, B9, M9, le montant total TVA de la ligne GROUP (EXT-FR-FE-181) doit être égal  à la somme des montants de TVA des ventilations TVA (BT-117) dont la raison d'exemption (ram:ExemptionReason) commence par le numéro de facture en ligne (BT-128 avec ReferenceTypeCode = AFL) entre #.
       </svrl:text>
             </svrl:failed-assert>
@@ -5574,13 +5574,13 @@
       <xsl:variable name="parentlineID"
                     select="./ram:AssociatedDocumentLineDocument/ram:LineID"/>
       <xsl:variable name="nbligne"
-                    select="count(/rsm:CrossIndustryInvoice/rsm:SupplyChainTradeTransaction/ram:IncludedSupplyChainTradeLineItem[ram:AssociatedDocumentLineDocument/ram:ParentLineID = $parentlineID and ram:AssociatedDocumentLineDocument/ram:LineStatusReasonCode = 'DETAIL'])"/>
+                    select="count(/rsm:CrossIndustryInvoice/rsm:SupplyChainTradeTransaction/ram:IncludedSupplyChainTradeLineItem[ram:AssociatedDocumentLineDocument/ram:ParentLineID = $parentlineID and ram:AssociatedDocumentLineDocument/ram:LineStatusReasonCode = ('DETAIL', 'GROUP')])"/>
       <!--ASSERT -->
       <xsl:choose>
-         <xsl:when test="not(custom:isSpecialContract(/rsm:CrossIndustryInvoice))          or not(./ram:SpecifiedLineTradeSettlement/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:GrandTotalAmount)         or (normalize-space(./ram:SpecifiedLineTradeSettlement/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:GrandTotalAmount) != ''          and abs(number(./ram:SpecifiedLineTradeSettlement/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:GrandTotalAmount)          - number(./ram:SpecifiedLineTradeSettlement/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:LineTotalAmount)          - number(./ram:SpecifiedLineTradeSettlement/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:TaxTotalAmount[@currencyID = $invcurrency])) &lt;= 0.01 * $nbligne)"/>
+         <xsl:when test="not(custom:isSpecialContract(/rsm:CrossIndustryInvoice))          or not(./ram:SpecifiedLineTradeSettlement/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:GrandTotalAmount)         or (normalize-space(./ram:SpecifiedLineTradeSettlement/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:GrandTotalAmount) != ''          and abs(xs:decimal(./ram:SpecifiedLineTradeSettlement/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:GrandTotalAmount)          - xs:decimal(./ram:SpecifiedLineTradeSettlement/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:LineTotalAmount)          - xs:decimal(./ram:SpecifiedLineTradeSettlement/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:TaxTotalAmount[@currencyID = $invcurrency])) &lt;= 0.01 * $nbligne)"/>
          <xsl:otherwise>
             <svrl:failed-assert xmlns:svrl="http://purl.oclc.org/dsdl/svrl"
-                                test="not(custom:isSpecialContract(/rsm:CrossIndustryInvoice)) or not(./ram:SpecifiedLineTradeSettlement/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:GrandTotalAmount) or (normalize-space(./ram:SpecifiedLineTradeSettlement/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:GrandTotalAmount) != '' and abs(number(./ram:SpecifiedLineTradeSettlement/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:GrandTotalAmount) - number(./ram:SpecifiedLineTradeSettlement/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:LineTotalAmount) - number(./ram:SpecifiedLineTradeSettlement/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:TaxTotalAmount[@currencyID = $invcurrency])) &lt;= 0.01 * $nbligne)">
+                                test="not(custom:isSpecialContract(/rsm:CrossIndustryInvoice)) or not(./ram:SpecifiedLineTradeSettlement/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:GrandTotalAmount) or (normalize-space(./ram:SpecifiedLineTradeSettlement/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:GrandTotalAmount) != '' and abs(xs:decimal(./ram:SpecifiedLineTradeSettlement/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:GrandTotalAmount) - xs:decimal(./ram:SpecifiedLineTradeSettlement/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:LineTotalAmount) - xs:decimal(./ram:SpecifiedLineTradeSettlement/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:TaxTotalAmount[@currencyID = $invcurrency])) &lt;= 0.01 * $nbligne)">
                <xsl:attribute name="id">BR-FR-MV-10_EXT-FR-FE-184</xsl:attribute>
                <xsl:attribute name="flag">fatal</xsl:attribute>
                <xsl:attribute name="location">
@@ -5591,7 +5591,7 @@
                   <xsl:value-of select="./ram:AssociatedDocumentLineDocument/ram:LineID"/>
                   <xsl:text/>, nb sous-ligne : <xsl:text/>
                   <xsl:value-of select="$nbligne"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         TTC : <xsl:text/>
                   <xsl:value-of select="./ram:SpecifiedLineTradeSettlement/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:GrandTotalAmount"/>
                   <xsl:text/>,
@@ -5601,7 +5601,7 @@
         HT : <xsl:text/>
                   <xsl:value-of select="./ram:SpecifiedLineTradeSettlement/ram:SpecifiedTradeSettlementLineMonetarySummation/ram:LineTotalAmount"/>
                   <xsl:text/>
-        Lorsque le cadre de facturation (BT-23) est S8, B8, M8 ou S9, B9, M9, si le montant total avec TVA (ram:GrandTotalAmount) est présent pour une ligne GROUP sans parent, alors la différence entre ce montant et la somme du montant HT (ram:LineTotalAmount) et du montant TVA (ram:TaxTotalAmount) doit être inférieure ou égale à 0,01 × le nombre de sous-lignes DETAIL. Valeur actuelle : "<xsl:text/>
+        Lorsque le cadre de facturation (BT-23) est S8, B8, M8 ou S9, B9, M9, si le montant total avec TVA (ram:GrandTotalAmount) est présent pour une ligne GROUP sans parent, alors la différence entre ce montant et la somme du montant HT (ram:LineTotalAmount) et du montant TVA (ram:TaxTotalAmount) doit être inférieure ou égale à 0,01 × le nombre de sous-lignes DETAIL ou GROUP. Valeur actuelle : "<xsl:text/>
                   <xsl:value-of select="."/>
                   <xsl:text/>'.
       </svrl:text>
@@ -5653,7 +5653,7 @@
                   <xsl:value-of select="$nbSubinvoiceSeller"/>
                   <xsl:text/>, NumFact de ligne : <xsl:text/>
                   <xsl:value-of select="$numFactLine"/>
-                  <xsl:text/>. 
+                  <xsl:text/>.
         [BR-FR-MV-11/BT-128]Lorsque le cadre de facturation (BT-23) est S8, B8, M8 ou S9, B9, M9, si le Vendeur principal identifié dans le bloc Vendeur (BG-4) de la facture au travers de son identifiant légal (BT-30) dispose d'un groupe de lignes de facturation, alors il doit exister au moins une ligne (BG-25) avec sous-type de ligne (EXT-FR-FE-163) = "GROUP" et sans identifiant de ligne Parent (EXT-FR-FE-162), pour laquelle le numéro de facture à la ligne (Valeur de BT-128 avec BT-128-1 = AFL) est égal au numéro de facture (BT-1).
       </svrl:text>
             </svrl:failed-assert>

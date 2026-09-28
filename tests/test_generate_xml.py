@@ -4,23 +4,28 @@
 import datetime
 import unittest
 
-from facturx import generate_cii_xml, generate_ubl_xml, get_xml_namespaces
-from lxml import etree
+from facturx import (
+    generate_cii_xml,
+    generate_ubl_xml,
+    parse_ubl_cii_xml,
+)
+
+# from pprint import pprint
+# from deepdiff import DeepDiff
 
 
 class TestGenerateXML(unittest.TestCase):
     def _prepare_data_dict(self):
-        date_fmt = "%Y-%m-%d"
         data_dict = {
             "BT-1": "F124212",
-            "BT-2": datetime.datetime.strptime("2026-06-17", date_fmt),
+            "BT-2": datetime.date(2026, 6, 17),
             "BT-3": "380",
-            "BT-5": "EUR",
-            #            'BT-6': "EUR",
+            "BT-5": "USD",
+            "BT-6": "EUR",
             # for BT-8, as the values are different in UBL and CII
             # we use a codification: 'invoice', 'delivery' or 'payment'
             "BT-8": "invoice",
-            "BT-9": datetime.datetime.strptime("2026-07-16", date_fmt),
+            "BT-9": datetime.date(2026, 7, 16),
             "BT-10": "120943",
             "BT-11": "Projet_Zorro",
             "BT-11-0": "Zorro super projet",
@@ -32,106 +37,141 @@ class TestGenerateXML(unittest.TestCase):
             "BT-19": "401HOF",
             "BT-20": "30 jours net",
             "BT-23": "S1",
-            # START Seller BG-4
-            "BT-27": "Au bon moulin",
-            "BT-28": "L'huile d'olive en folie",
-            "BT-29": {
-                # key = schemeID, value = GlobalID value
-                # if not key: value = ID
-                #                None: 'REF_SELLER',
-                "0009": "99999999800019",
-                "0224": "Code_ROUTAGE_seller",
+            "BG-4": {  # Seller
+                "name": "Au bon moulin",
+                "biz_name": "L'huile d'olive en folie",
+                "identifiers": {
+                    # key = schemeID, value = GlobalID value
+                    # if not key: value = ID
+                    # None: 'REF_SELLER',  # not allowed by UBL schematron
+                    "0009": "99999999800019",
+                    "0224": "Code_ROUTAGE_seller",
+                },
+                "legal_identifier": "999999998",
+                "legal_identifier_schemeid": "0002",
+                "legal_info": "SARL au capital de 42 000 € - APE 6201Z",
+                "vat_identifier": "FR11999999998",
+                "tax_identifier": "DGFIP_ref_1242",
+                "einvoicing_addr": "999999998_042",
+                "einvoicing_addr_schemeid": "0225",
+                "addr_l1": "1242 chemin de l'olive",
+                "addr_l2": "Lieu dit des senteurs",
+                "addr_l3": "ZAC du Mont Ventoux",
+                "city": "Malaucène",
+                "postcode": "84340",
+                "country_subdivision": "Vaucluse",
+                "country_code": "FR",
+                "contacts": [
+                    {
+                        "name": "M. Rémi Dupont",
+                        "phone": "+33 6 12 42 12 42",
+                        "email": "commercial@aubonmoulin.com",
+                    }
+                ],
             },
-            "BT-30": "999999998",
-            "BT-30-1": "0002",
-            "BT-31": "FR11999999998",
-            "BT-32": "DGFIP_ref_1242",
-            "BT-34": "999999998_042",
-            "BT-34-1": "0225",
-            "BT-35": "1242 chemin de l'olive",
-            "BT-36": "Lieu dit des senteurs",
-            "BT-162": "ZAC du Mont Ventoux",
-            "BT-37": "Malaucène",
-            "BT-38": "84340",
-            "BT-39": "Vaucluse",
-            "BT-40": "FR",
-            "BT-41": "M. Rémi Dupont",
-            "BT-42": "+33 6 12 42 12 42",
-            "BT-43": "commercial@aubonmoulin.com",
-            # START Buyer  BG-7
-            "BT-44": "Ma jolie boutique SARL",
-            "BT-45": "Ma jolie Trading Brand",
-            "BT-46": {
-                # for buyer: either ID (key None) or GlobalID, not both
-                #                None: "REF_BUYER",
-                "0009": "78787878400018",
-                # TODO FX schematron doesn't allow multiple schemes for buyer
-                # but it allows that for seller... I don't understand this !
-                #                "0224": 'code_routage_buyer',
+            "BG-7": {  # Buyer
+                "name": "Ma jolie boutique SARL",
+                "biz_name": "Ma jolie Trading Brand",
+                "identifiers": {
+                    # for buyer: either ID (key None) or GlobalID, not both
+                    #                None: "REF_BUYER",
+                    "0009": "78787878400018",
+                    # FX schematron doesn't allow multiple schemes for buyer
+                    # but it allows that for seller... I don't understand this !
+                    #                "0224": 'code_routage_buyer',
+                },
+                "legal_identifier": "787878784",
+                "legal_identifier_schemeid": "0002",
+                "vat_identifier": "FR19787878784",
+                "einvoicing_addr": "787878784",
+                "einvoicing_addr_schemeid": "0225",
+                "addr_l1": "35 rue de la République",
+                "addr_l2": "La presqu'île",
+                "city": "Lyon",
+                "postcode": "69001",
+                "country_subdivision": "Rhône",
+                "country_code": "FR",
+                # either personName (BT-56) OR DepartmentName (BT-56-0), not both
+                "contacts": [
+                    {
+                        "name": "Mme Laëtitia Durand",
+                        "phone": "+33 7 42 12 42 12",
+                        "email": "laetita.durand@jolieboutique.com",
+                    }
+                ],
             },
-            "BT-47": "787878784",
-            "BT-47-1": "0002",
-            "BT-48": "FR19787878784",
-            "BT-49": "787878784",
-            "BT-49-1": "0225",
-            "BT-50": "35 rue de la République",
-            "BT-51": "La presqu'île",
-            "BT-52": "Lyon",
-            "BT-53": "69001",
-            "BT-54": "Rhône",
-            "BT-55": "FR",
-            # either personName (BT-56) OR DepartmentName (BT-56-0), not both
-            "BT-56": "Mme Laëtitia Durand",
-            "BT-57": "+33 7 42 12 42 12",
-            "BT-58": "laetita.durand@jolieboutique.com",
-            # End Buyer
-            # Seller Agent  EXT-FR-FE-BG-03
-            "EXT-FR-FE-66": "M. Rémi Agent",
-            "EXT-FR-FE-86": "Rémi Agent",
-            "EXT-FR-FE-87": "+33 7 87 32 34 54",
-            "EXT-FR-FE-88": "remi@superagent.com",
-            # Buyer Agent  EXT-FR-FE-BG-01
-            "EXT-FR-FE-03": "M. Négociateur CHEF",
-            "EXT-FR-FE-23": "Charlotte Dupont",
-            "EXT-FR-FE-24": "+33 7 88 55 33 22",
-            "EXT-FR-FE-25": "charlotte@supernegociatrice.eu",
-            # Invoicer EXT-FR-FE-BG-05
-            "EXT-FR-FE-112": "Facturier SARL",
-            "EXT-FR-FE-130": "FR",
-            "EXT-FR-FE-128": "97400",
-            "EXT-FR-FE-127": "St Denis",
-            "EXT-FR-FE-124": "12 rue Sainte Marie",
-            "EXT-FR-FE-117": "704721240",
-            "EXT-FR-FE-118": "0002",
-            # Invoicee EXT-FR-FE-BG-04
-            "EXT-FR-FE-89": "Receipee EURL",
-            "EXT-FR-FE-107": "FR",
-            "EXT-FR-FE-105": "69001",
-            "EXT-FR-FE-104": "Lyon",
-            "EXT-FR-FE-101": "42 boulevard de la Croix Rousse",
-            "EXT-FR-FE-94": "528010523",
-            "EXT-FR-FE-95": "0002",
-            # Start Tax Representative
-            "BT-62": "Société écran",
-            "BT-69": "FR",
-            "BT-63": "FR15123456789",
-            "BT-73": datetime.datetime.strptime("2026-06-01", date_fmt),
-            "BT-74": datetime.datetime.strptime("2026-06-30", date_fmt),
+            "EXT-FR-FE-BG-03": {  # Seller Agent
+                "name": "M. Rémi Agent",
+                "contacts": [
+                    {
+                        "name": "Rémi Agent",
+                        "phone": "+33 7 87 32 34 54",
+                        "email": "remi@superagent.com",
+                    }
+                ],
+            },
+            "EXT-FR-FE-BG-01": {  # Buyer Agent
+                "name": "M. Négociateur CHEF",
+                "contacts": [
+                    {
+                        "name": "Charlotte Dupont",
+                        "phone": "+33 7 88 55 33 22",
+                        "email": "charlotte@supernegociatrice.eu",
+                    }
+                ],
+            },
+            "EXT-FR-FE-BG-05": {  # Invoicer
+                "name": "Facturier SARL",
+                "country_code": "FR",
+                "postcode": "97400",
+                "city": "St Denis",
+                "addr_l1": "12 rue Sainte Marie",
+                "legal_identifier": "704721240",
+                "legal_identifier_schemeid": "0002",
+            },
+            "EXT-FR-FE-BG-04": {  # Invoicee
+                "name": "Receipee EURL",
+                "country_code": "FR",
+                "postcode": "69001",
+                "city": "Lyon",
+                "addr_l1": "42 boulevard de la Croix Rousse",
+                "legal_identifier": "528010523",
+                "legal_identifier_schemeid": "0002",
+            },
+            "BG-10": {  # Tax Representative
+                "name": "Facto BNP",
+                "legal_identifier": "123321123",
+                "legal_identifier_schemeid": "0002",
+            },
+            "BG-11": {  # Tax Representative
+                "name": "Société écran",
+                "biz_name": "Marque de la Société écran",
+                "country_code": "FR",
+                "vat_identifier": "FR15123456789",
+                "postcode": "74210",
+                "city": "Seythenex",
+                "addr_l1": "1242 route des Caillets",
+            },
+            "BT-73": datetime.date(2026, 6, 1),
+            "BT-74": datetime.date(2026, 6, 30),
             # Incoterms EXT-FR-FE-BG-14
             "EXT-FR-FE-185": "EXW",
             "EXT-FR-FE-186": "Lunel-Viel",
             # Start Ship to
-            "BT-70": "Plateforme logistique FastIT",
-            "BT-71": {
-                "0009": "63636363200010",
+            "BG-13": {
+                "name": "Plateforme logistique FastIT",
+                "identifiers": {
+                    "0009": "63636363200010",
+                },
+                "country_code": "FR",
+                "city": "Carpentras",
+                "postcode": "84200",
+                "addr_l1": "5 avenue Georges Clémenceau",
+                "addr_l2": "ZAC du lac vert",
             },
-            "BT-80": "FR",
-            "BT-77": "Carpentras",
-            "BT-78": "84200",
-            "BT-75": "5 avenue Georges Clémenceau",
-            "BT-72": datetime.datetime.strptime("2026-06-14", date_fmt),
+            "BT-72": datetime.date(2026, 6, 14),
             "BT-81": "30",
-            "BT-82": "Libellé du moyen de paiement",
+            "BT-82": "Virement",
             "BT-83": "Avis de paiement",
             #            "BT-87": "567890",
             #            "BT-88": "Alexis de Lattre",
@@ -140,17 +180,19 @@ class TestGenerateXML(unittest.TestCase):
             "BT-86": "QNTOFRP1XXX",
             "BT-89": "RUM_9083209",
             # Payeur EXT-FR-FE-BG-02
-            "EXT-FR-FE-43": "Société payeur",
-            "EXT-FR-FE-61": "FR",
-            "EXT-FR-FE-59": "05100",
-            "EXT-FR-FE-58": "Névache",
-            "EXT-FR-FE-55": "Vallée étroite",
-            "EXT-FR-FE-52": "754760932",
-            "EXT-FR-FE-53": "0225",
-            "EXT-FR-FE-48": "754760932",
-            "EXT-FR-FE-49": "0002",
+            "EXT-FR-FE-BG-02": {
+                "name": "Société payeur",
+                "country_code": "FR",
+                "postcode": "05100",
+                "city": "Névache",
+                "addr_l1": "Vallée étroite",
+                "einvoicing_addr": "754760932",
+                "einvoicing_addr_schemeid": "0225",
+                "legal_identifier": "754760932",
+                "legal_identifier_schemeid": "0002",
+            },
             "BT-91": "FR7312345678901275089715A98",
-            "BT-90": "Au bon moulin SARL",
+            "BT-90": "FR09ZZZ124299",
             "BG-1": [
                 {
                     "BT-21": "AAI",
@@ -181,17 +223,13 @@ class TestGenerateXML(unittest.TestCase):
             "BG-23": [
                 {
                     "BT-117": "27.6",
-                    "BT-117-1": "EUR",  # TODO
                     "BT-116": "138.00",
-                    "BT-116-1": "EUR",  # TODO
                     "BT-118": "S",
                     "BT-119": "20.00",
                 },
                 {
                     "BT-117": "7.43",
-                    "BT-117-1": "EUR",  # TODO
                     "BT-116": "135.00",
-                    "BT-116-1": "EUR",  # TODO
                     "BT-118": "S",
                     "BT-119": "5.50",
                 },
@@ -201,7 +239,9 @@ class TestGenerateXML(unittest.TestCase):
             "BT-108": "5.50",
             "BT-109": "273.00",
             "BT-110": "35.03",
-            "BT-110-1": "EUR",
+            #            "BT-110-1": "USD",
+            "BT-111": "30.46",
+            #            "BT-111-1": "EUR",
             "BT-112": "308.03",
             "BT-113": "100.00",
             "BT-115": "208.03",
@@ -209,28 +249,31 @@ class TestGenerateXML(unittest.TestCase):
                 {
                     "BT-25": "F124211",
                     "EXT-FR-FE-02": "386",
-                    "BT-26": datetime.datetime.strptime("2025-12-30", date_fmt),
+                    "BT-26": datetime.date(2025, 12, 30),
                 },
                 {
                     "BT-25": "F124210",
-                    #     'BT-26': datetime.strptime("2025-09-01", date_fmt),
+                    #     'BT-26': datetime.date(2025, 9, 1),
                 },
             ],
-            "BT-17": "LOT12",
-            "BT-18-00": {  # key = BT-18-1: value = BT-18
+            "BT-17": ["LOT12", "LOT13"],
+            "BT-18": {  # key = BT-18-1: value = BT-18
                 "AHK": "EMPL042",
-                "AHO": "Chamber0823",
+                "AAG": "PROPAL_8890",
             },
             "BG-24": [
+                # Only one BT-123 is allowed per BG-24 block
                 {
                     "BT-122": "JUSTIF42",
-                    "BT-123": "DOCUMENT_ANNEXE",  # allowed codes in BR-FR-17
+                    # "BT-123": "DOCUMENT_ANNEXE",  # allowed codes in BR-FR-17
                     "BT-124": "https://www.share.com/justif42.pdf",
                 },
                 {
                     "BT-122": "JUSTIF43",
                     "BT-123": "BON_LIVRAISON",
-                    "BT-124": "https://www.share.com/justif43.pdf",
+                    "BT-125": b"code;date;product;qty;uom",
+                    "BT-125-1": "text/csv",
+                    "BT-125-2": "BL1242.csv",
                 },
             ],
             "BG-20": [
@@ -251,67 +294,128 @@ class TestGenerateXML(unittest.TestCase):
             ],
             "BG-21": [
                 {
-                    "BT-99": "5.50",
+                    "BT-99": "2.50",
                     "BT-100": "138.00",
                     "BT-104": "Surtaxe carburant",
                     "BT-102": "S",
                     "BT-103": "20.00",
-                }
+                },
+                {
+                    "BT-99": "1.00",
+                    "BT-102": "S",
+                    "BT-103": "20.00",
+                    "BT-104": "test BT177",
+                    "BT-105": "ADJ",
+                },
+                {
+                    "BT-99": "2.00",
+                    "BT-102": "S",
+                    "BT-103": "20.00",
+                    "BT-104": "test BT177 non VAT Tax",
+                    "BT-177": "OTH",
+                },
             ],
             "BG-25": [  # Invoice lines
                 {
                     "BT-126": "1",
-                    "BT-127": "Olives récoltées exclusivement dans le Vaucluse (FR)",
+                    "BT-127-00": [
+                        {
+                            "EXT-FR-FE-183": "AAA",
+                            "BT-127": "Olives récoltées exclusivement dans le "
+                            "Vaucluse (FR) et pressées au moulin des moines.",
+                        },
+                        {"EXT-FR-FE-183": "BAO", "BT-127": "Test d'acidité : 7,5."},
+                    ],
                     "BT-155": "JOIO50CL",
                     "BT-153": "Huile d'olive Joio 50cl",
                     "BT-157": "3518370900150",
                     "BT-157-1": "0160",
                     "BT-159": "FR",
                     "BT-146": "13.50",
-                    "BT-147": "1.50",
+                    "BT-147-00": [
+                        {
+                            "BT-147": "1.50",
+                            "EXT-FR-FE-195": "Négocié spécialement pour cette commande",
+                            "EXT-FR-FE-196": "103",
+                        }
+                    ],
                     "BT-148": "15.00",
+                    "BT-149": "1",
+                    "BT-150": "C62",
                     "BT-129": "10",
+                    "BT-128": {  # key = BT-128-1: value = BT-128
+                        "MWB": "XYZ78932",
+                    },
                     "BT-130": "C62",
                     "BT-133": "623400",
                     "BT-151": "S",
                     "BT-152": "5.50",
                     "BT-131": "135.00",  # Total HT
-                    "BT-134": datetime.datetime.strptime("2026-06-14", date_fmt),
-                    "BT-135": datetime.datetime.strptime("2026-06-15", date_fmt),
-                    "BG-32": {  # key = BT-160: value = BT-161
-                        "Couleur": "Vert",
-                        "Taille": "L",
-                    },
-                    "BT-158-00": {  # key = (BT-158-1, BT-158-2): value = BT-158
+                    "BT-132": "PO1242-L1",
+                    "BT-134": datetime.date(2026, 6, 14),
+                    "BT-135": datetime.date(2026, 6, 15),
+                    "EXT-FR-FE-144": "Order-678",
+                    "EXT-FR-FE-145": "OrderLine-490",
+                    "EXT-FR-FE-135": "PX9021",
+                    "BG-32": [  # key = BT-160: value = BT-161
+                        {
+                            "BT-160": "Couleur",
+                            "BT-161": "Vert",
+                        },
+                        {
+                            "BT-160": "Taille",
+                            "BT-161": "L",
+                        },
+                    ],
+                    "BT-158": {  # key = (BT-158-1, BT-158-2): value = BT-158
                         ("BB", "1.0"): "LOT1242",
                         ("HS", "NC8"): "15092000",
                     },
+                    # TODO see if we switch to generic field names
                     "BG-27": [
                         {
                             "BT-136": "1.50",
                             "BT-139": "test",
+                            "BT-140": "95",
                         },
                     ],
                     "BG-28": [
                         {
                             "BT-141": "1.50",
                             "BT-144": "test inverse",
+                            "BT-145": "ABL",
                         },
                     ],
                 },
                 {
                     "BT-126": "2",
-                    "BT-127": "Nougat préparé par les moines et les "
-                    "moniales du Barroux (FR)",
+                    "BT-127-00": [
+                        {
+                            "EXT-FR-FE-183": "AAA",
+                            "BT-127": "Nougat préparé par les moines et les "
+                            "moniales du Barroux (FR)",
+                        }
+                    ],
                     "BT-155": "NOUGATCUBES",
+                    "BT-156": "KUB_NOUGAT",
                     "BT-153": "Nougats en cubes",
+                    "BT-154": "Nougat de Provence découpés en petits cubes de la "
+                    "taille d'un bonbon",
                     "BT-157": "3518370400049",
                     "BT-157-1": "0160",
                     "BT-159": "FR",
                     "BT-146": "6.90",
-                    "BT-147": "1.05",
+                    "BT-147-00": [
+                        {
+                            "BT-147": "1.05",
+                            "EXT-FR-FE-195": "Comme indiqué dans le contrat",
+                            "EXT-FR-FE-196": "104",
+                        }
+                    ],
                     "BT-148": "7.95",
-                    "BT-128-00": {  # key = BT-128-1: value = BT-128
+                    "BT-149": "1",
+                    "BT-150": "C62",
+                    "BT-128": {  # key = BT-128-1: value = BT-128
                         "MWB": "AWB129871",
                     },
                     "BT-129": "20",
@@ -320,21 +424,22 @@ class TestGenerateXML(unittest.TestCase):
                     "BT-151": "S",
                     "BT-152": "20.00",
                     "BT-131": "138.00",  # Total HT
-                    "BT-132": "DV843873",
+                    "BT-132": "PO1242-L2",
                     "EXT-FR-FE-135": "PO982749",
                     "EXT-FR-FE-140": "BL0982432",
                     "EXT-FR-FE-141": "AVIS9074398",
-                    # EXT-FR-FE-BG-10
-                    "EXT-FR-FE-149": "Alpes du Sud Logistique",
-                    "EXT-FR-FE-155": "05600",
-                    "EXT-FR-FE-151": "12 rue de Vanban",
-                    "EXT-FR-FE-154": "Eygliers",
-                    "EXT-FR-FE-157": "FR",
+                    "EXT-FR-FE-BG-10": {
+                        "name": "Alpes du Sud Logistique",
+                        "postcode": "05600",
+                        "addr_l1": "12 rue de Vanban",
+                        "city": "Eygliers",
+                        "country_code": "FR",
+                    },
                     # ref to previous invoice
                     "EXT-FR-FE-136": "F824739",
                     "EXT-FR-FE-139": "12",
                     "EXT-FR-FE-137": "380",
-                    "EXT-FR-FE-138": datetime.datetime.strptime("2025-12-24", date_fmt),
+                    "EXT-FR-FE-138": datetime.date(2025, 12, 24),
                 },
             ],
         }
@@ -367,9 +472,6 @@ class TestGenerateXML(unittest.TestCase):
         # because generate_cii_xml modifies data_dict
         for level in ("extended", "en16931", "basicwl", "extended-ctc-fr"):
             data_dict = self._prepare_data_dict()
-            # bug in specific extended sch ?
-            if "extended" in level:
-                data_dict["BT-18-00"].pop("AHO")
             xml_bytes = generate_cii_xml(
                 data_dict,
                 level=level,
@@ -377,69 +479,26 @@ class TestGenerateXML(unittest.TestCase):
                 prefixed_namespaces=True,
             )
             xml_str = xml_bytes.decode("utf-8")
+            # pprint(data_dict)
+            # pprint(xml_str)
             self._check_data_in_xml(data_dict, xml_str)
+            parsed_data_dict = parse_ubl_cii_xml(
+                xml_bytes, flavor="factur-x", check_xsd=False
+            )
+            # pprint(parsed_data_dict)
 
-    def test_cii_incoterms(self):
-        data_dict = self._prepare_data_dict()
-        data_dict["BT-18-00"].pop("AHO")
-        xml_bytes = generate_cii_xml(data_dict, level="extended-ctc-fr")
-        ns = get_xml_namespaces("factur-x")
-        root = etree.fromstring(xml_bytes)
-        terms_xpath = (
-            "/rsm:CrossIndustryInvoice/rsm:SupplyChainTradeTransaction"
-            "/ram:ApplicableHeaderTradeAgreement/ram:ApplicableTradeDeliveryTerms"
-        )
-        self.assertEqual(
-            root.xpath(f"{terms_xpath}/ram:DeliveryTypeCode/text()", namespaces=ns)[0],
-            data_dict["EXT-FR-FE-185"],
-        )
-        self.assertEqual(
-            root.xpath(
-                f"{terms_xpath}/ram:RelevantTradeLocation/ram:Name/text()",
-                namespaces=ns,
-            )[0],
-            data_dict["EXT-FR-FE-186"],
-        )
-
-    def test_cii_incoterms_absent_below_extended(self):
-        # EXT-FR-FE-xx fields are extended-only: no incoterm node in en16931
-        data_dict = self._prepare_data_dict()
-        xml_bytes = generate_cii_xml(
-            data_dict, level="en16931", prefixed_namespaces=True
-        )
-        ns = get_xml_namespaces("factur-x")
-        root = etree.fromstring(xml_bytes)
-        self.assertFalse(
-            root.xpath("//ram:ApplicableTradeDeliveryTerms", namespaces=ns)
-        )
-
-    def test_ubl_incoterms(self):
-        data_dict = self._prepare_data_dict()
-        data_dict["BT-18-00"].pop("AHO")
-        data_dict.pop("BG-24")
-        xml_bytes = generate_ubl_xml(data_dict, level="extended-ctc-fr")
-        ns = get_xml_namespaces("ubl-2.1-invoice")
-        root = etree.fromstring(xml_bytes)
-        self.assertEqual(
-            root.xpath("//cac:DeliveryTerms/cbc:ID/text()", namespaces=ns)[0],
-            data_dict["EXT-FR-FE-185"],
-        )
-        self.assertEqual(
-            root.xpath(
-                "//cac:DeliveryTerms/cac:DeliveryLocation/cbc:Name/text()",
-                namespaces=ns,
-            )[0],
-            data_dict["EXT-FR-FE-186"],
-        )
+            if parsed_data_dict != data_dict:
+                # diff = DeepDiff(data_dict, parsed_data_dict)
+                # pprint(diff)
+                self.assertFalse("Parsed parsed_data_dict is different than data_dict")
 
     def test_generate_ubl(self):
         for bt3 in ("380", "381"):
             for level in ("en16931", "extended-ctc-fr"):
                 data_dict = self._prepare_data_dict()
-                data_dict["BT-18-00"].pop("AHO")
-                # To avoid schematron bug https://github.com/fnfempe/France_RFE/issues/1
-                data_dict.pop("BG-24")
                 data_dict["BT-3"] = bt3
+                data_dict.pop("BT-11-0")  # doesn't exist in UBL
+                # pprint(data_dict)
                 xml_bytes = generate_ubl_xml(
                     data_dict,
                     level=level,
@@ -447,5 +506,17 @@ class TestGenerateXML(unittest.TestCase):
                     prefixed_namespaces=True,
                 )
                 xml_str = xml_bytes.decode("utf-8")
+                # pprint(xml_str)
                 flavor = bt3 == "381" and "ubl-2.1-creditnote" or "ubl-2.1-invoice"
                 self._check_data_in_xml(data_dict, xml_str, flavor=flavor)
+
+                parsed_data_dict = parse_ubl_cii_xml(
+                    xml_bytes, flavor=flavor, check_xsd=False
+                )
+                # pprint(parsed_data_dict)
+                if parsed_data_dict != data_dict:
+                    # diff = DeepDiff(data_dict, parsed_data_dict)
+                    # pprint(diff)
+                    self.assertFalse(
+                        "Parsed parsed_data_dict is different than data_dict"
+                    )

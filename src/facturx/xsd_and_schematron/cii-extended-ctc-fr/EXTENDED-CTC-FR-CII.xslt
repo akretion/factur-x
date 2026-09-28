@@ -11,7 +11,7 @@
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:xsd="http://www.w3.org/2001/XMLSchema"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                version="2.0"><!--Implementers: please note that overriding process-prolog or process-root is 
+                version="2.0"><!--Implementers: please note that overriding process-prolog or process-root is
     the preferred method for meta-stylesheets to use where possible. -->
    <xsl:param name="archiveDirParameter"/>
    <xsl:param name="archiveNameParameter"/>
@@ -94,7 +94,7 @@
       </xsl:if>
    </xsl:template>
    <!--MODE: SCHEMATRON-FULL-PATH-3-->
-   <!--This mode can be used to generate prefixed XPath for humans 
+   <!--This mode can be used to generate prefixed XPath for humans
 	(Top-level element has index)-->
    <xsl:template match="node() | @*" mode="schematron-get-full-path-3">
       <xsl:for-each select="ancestor-or-self::*">
@@ -1421,7 +1421,7 @@
                <xsl:attribute name="location">
                   <xsl:apply-templates select="." mode="schematron-select-full-path"/>
                </xsl:attribute>
-               <svrl:text> 
+               <svrl:text>
         [BR-FREXT-BR-24]-Each Invoice line (BG-25) shall have an Invoice line net amount (BT-131) if the "Subtype of invoice line item" (EXT-FR-FE-163 / BT-X-8) has the value "DETAIL" or is not specified.</svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -1437,7 +1437,7 @@
                <xsl:attribute name="location">
                   <xsl:apply-templates select="." mode="schematron-select-full-path"/>
                </xsl:attribute>
-               <svrl:text>       
+               <svrl:text>
         [BR-FREXT-BR-26]-Each Invoice line (BG-25) shall contain the Item net price (BT-146) if the "Subtype of invoice line item" (EXT-FR-FE-163 / BT-X-8) has the value "DETAIL" or is not specified..</svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -2030,7 +2030,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131ini : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131ini"/>
                   <xsl:text/>, NBlinesini : <xsl:text/>
@@ -2041,7 +2041,7 @@
                   <xsl:value-of select="$chargesAmountBT99ini"/>
                   <xsl:text/>, NBAllowChargesini : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrChargesini"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         [BR-FXEXT-AE-08ini] - Without Exemption reason EN16931_2017 - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “AE” ("Reverse charge"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Reverse charge" (AE), but only for lines where the "Subtype of invoice item" (BT-X-8) has the value ""DETAIL" or is not specified.
       </svrl:text>
             </svrl:failed-assert>
@@ -2069,7 +2069,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131 : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131"/>
                   <xsl:text/>, NBlines : <xsl:text/>
@@ -2080,10 +2080,10 @@
                   <xsl:value-of select="$chargesAmountBT99"/>
                   <xsl:text/>, NBAllowCharges : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrCharges"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         [BR-FXEXT-AE-08rev] - With Exemption reason EN16931_2026  - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “AE” ("Reverse charge"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Reverse charge" (AE),
         and where applicable the VAT exemption reason and specification code (BT-195, BT-174 and BT-176 and BT-X-592) and the Exemption reason text (BT-194, BT-173 and BT-175 and BT-X-591) are identical with the VAT category VAT exemption reason and specification code (BT-121) and VAT exemption reason text (BT-120),
-        but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.             
+        but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -2306,7 +2306,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131 : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131"/>
                   <xsl:text/>, NBlines : <xsl:text/>
@@ -2317,7 +2317,7 @@
                   <xsl:value-of select="$chargesAmountBT99"/>
                   <xsl:text/>, NBAllowCharges : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrCharges"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131ini : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131ini"/>
                   <xsl:text/>, NBlinesini : <xsl:text/>
@@ -2328,8 +2328,8 @@
                   <xsl:value-of select="$chargesAmountBT99ini"/>
                   <xsl:text/>, NBAllowChargesini : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrChargesini"/>
-                  <xsl:text/>, 
-        [BR-FXEXT-AF-08] - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “L” ("Canary Islands tax"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Canary Islands tax" (L), but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.          
+                  <xsl:text/>,
+        [BR-FXEXT-AF-08] - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “L” ("Canary Islands tax"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Canary Islands tax" (L), but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.  
         or the same rule but also taking into account the exemption reasons in Text (BT-120) and Code (BT-121) in BG-23 and the exemption reasons on each line (BT-X-96 / BT-X-97), on Document level Allowances  (BT-173 / BT-174) and on Document Level Charges (BT-175 / BT-176) and on Service logistic charges (BT-X-591 / BT-X-592).
         One of the two rules must be followed, bearing in mind that ultimately only the second one will have to be followed.
       </svrl:text>
@@ -2358,7 +2358,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131ini : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131ini"/>
                   <xsl:text/>, NBlinesini : <xsl:text/>
@@ -2369,8 +2369,8 @@
                   <xsl:value-of select="$chargesAmountBT99ini"/>
                   <xsl:text/>, NBAllowChargesini : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrChargesini"/>
-                  <xsl:text/>, 
-        [BR-FXEXT-AF-08ini] - Without Exemption reason EN16931_2017 - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “L” ("Canary Islands tax"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Canary Islands tax" (L), but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.                       
+                  <xsl:text/>,
+        [BR-FXEXT-AF-08ini] - Without Exemption reason EN16931_2017 - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “L” ("Canary Islands tax"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Canary Islands tax" (L), but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.   
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -2397,7 +2397,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131 : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131"/>
                   <xsl:text/>, NBlines : <xsl:text/>
@@ -2408,10 +2408,10 @@
                   <xsl:value-of select="$chargesAmountBT99"/>
                   <xsl:text/>, NBAllowCharges : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrCharges"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         [BR-FXEXT-AF-08rev] - With Exemption reason EN16931_2026  - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “L” ("Canary Islands tax"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Canary Islands tax" (L),
         and where applicable the VAT exemption reason and specification code (BT-195, BT-174 and BT-176 and BT-X-592) and the Exemption reason text (BT-194, BT-173 and BT-175 and BT-X-591) are identical with the VAT category VAT exemption reason and specification code (BT-121) and VAT exemption reason text (BT-120),
-        but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.                
+        but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified. 
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -2618,7 +2618,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131 : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131"/>
                   <xsl:text/>, NBlines : <xsl:text/>
@@ -2629,7 +2629,7 @@
                   <xsl:value-of select="$chargesAmountBT99"/>
                   <xsl:text/>, NBAllowCharges : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrCharges"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131ini : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131ini"/>
                   <xsl:text/>, NBlinesini : <xsl:text/>
@@ -2640,8 +2640,8 @@
                   <xsl:value-of select="$chargesAmountBT99ini"/>
                   <xsl:text/>, NBAllowChargesini : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrChargesini"/>
-                  <xsl:text/>, 
-        [BR-FXEXT-AG-08] - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “M” ("Ceuta and Mellita tax"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Ceuta and Mellita tax" (M), but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.          
+                  <xsl:text/>,
+        [BR-FXEXT-AG-08] - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “M” ("Ceuta and Mellita tax"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Ceuta and Mellita tax" (M), but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.  
         or the same rule but also taking into account the exemption reasons in Text (BT-120) and Code (BT-121) in BG-23 and the exemption reasons on each line (BT-X-96 / BT-X-97), on Document level Allowances  (BT-173 / BT-174) and on Document Level Charges (BT-175 / BT-176) and on Service logistic charges (BT-X-591 / BT-X-592).
         One of the two rules must be followed, bearing in mind that ultimately only the second one will have to be followed.
       </svrl:text>
@@ -2670,7 +2670,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131ini : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131ini"/>
                   <xsl:text/>, NBlinesini : <xsl:text/>
@@ -2681,8 +2681,8 @@
                   <xsl:value-of select="$chargesAmountBT99ini"/>
                   <xsl:text/>, NBAllowChargesini : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrChargesini"/>
-                  <xsl:text/>, 
-        [BR-FXEXT-AG-08ini] - Without Exemption reason EN16931_2017 - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “L” ("Canary Islands tax"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Ceuta and Mellita tax" (M), but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.                                      
+                  <xsl:text/>,
+        [BR-FXEXT-AG-08ini] - Without Exemption reason EN16931_2017 - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “L” ("Canary Islands tax"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Ceuta and Mellita tax" (M), but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.   
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -2709,7 +2709,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131 : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131"/>
                   <xsl:text/>, NBlines : <xsl:text/>
@@ -2720,10 +2720,10 @@
                   <xsl:value-of select="$chargesAmountBT99"/>
                   <xsl:text/>, NBAllowCharges : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrCharges"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         [BR-FXEXT-AG-08rev] - With Exemption reason EN16931_2026  - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “M” ("Canary Islands tax"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Canary Islands tax" (M),
         and where applicable the VAT exemption reason and specification code (BT-195, BT-174 and BT-176 and BT-X-592) and the Exemption reason text (BT-194, BT-173 and BT-175 and BT-X-591) are identical with the VAT category VAT exemption reason and specification code (BT-121) and VAT exemption reason text (BT-120),
-        but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.                        
+        but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified. 
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -2927,7 +2927,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131 : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131"/>
                   <xsl:text/>, NBlines : <xsl:text/>
@@ -2938,7 +2938,7 @@
                   <xsl:value-of select="$chargesAmountBT99"/>
                   <xsl:text/>, NBAllowCharges : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrCharges"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131ini : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131ini"/>
                   <xsl:text/>, NBlinesini : <xsl:text/>
@@ -2949,8 +2949,8 @@
                   <xsl:value-of select="$chargesAmountBT99ini"/>
                   <xsl:text/>, NBAllowChargesini : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrChargesini"/>
-                  <xsl:text/>, 
-        [BR-FXEXT-E-08] - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “E” ("Exempt from VAT"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Exempt from VAT" (E), but only for lines where the "Subtype of invoice item" (BT-X-8) has the value ""DETAIL" or is not specified.          
+                  <xsl:text/>,
+        [BR-FXEXT-E-08] - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “E” ("Exempt from VAT"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Exempt from VAT" (E), but only for lines where the "Subtype of invoice item" (BT-X-8) has the value ""DETAIL" or is not specified.  
         or the same rule but also taking into account the exemption reasons in Text (BT-120) and Code (BT-121) in BG-23 and the exemption reasons on each line (BT-X-96 / BT-X-97), on Document level Allowances  (BT-173 / BT-174) and on Document Level Charges (BT-175 / BT-176) and on Service logistic charges (BT-X-591 / BT-X-592).
         One of the two rules must be followed, bearing in mind that ultimately only the second one will have to be followed.
       </svrl:text>
@@ -2979,7 +2979,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131ini : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131ini"/>
                   <xsl:text/>, NBlinesini : <xsl:text/>
@@ -2990,8 +2990,8 @@
                   <xsl:value-of select="$chargesAmountBT99ini"/>
                   <xsl:text/>, NBAllowChargesini : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrChargesini"/>
-                  <xsl:text/>, 
-        [BR-FXEXT-E-08ini] - Without Exemption reason EN16931_2017 - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “E” ("Exempt from VAT"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Exempt from VAT" (E), but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.        
+                  <xsl:text/>,
+        [BR-FXEXT-E-08ini] - Without Exemption reason EN16931_2017 - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “E” ("Exempt from VAT"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Exempt from VAT" (E), but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.   
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -3018,7 +3018,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131 : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131"/>
                   <xsl:text/>, NBlines : <xsl:text/>
@@ -3029,7 +3029,7 @@
                   <xsl:value-of select="$chargesAmountBT99"/>
                   <xsl:text/>, NBAllowCharges : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrCharges"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         [BR-FXEXT-E-08rev] - With Exemption reason EN16931_2026  - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “E” ("Exempt from VAT"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Exempt from VAT" (E),
         and where applicable the VAT exemption reason and specification code (BT-195, BT-174 and BT-176 and BT-X-592) and the Exemption reason text (BT-194, BT-173 and BT-175 and BT-X-591) are identical with the VAT category VAT exemption reason and specification code (BT-121) and VAT exemption reason text (BT-120),
          but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified. 
@@ -3252,7 +3252,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131 : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131"/>
                   <xsl:text/>, NBlines : <xsl:text/>
@@ -3263,7 +3263,7 @@
                   <xsl:value-of select="$chargesAmountBT99"/>
                   <xsl:text/>, NBAllowCharges : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrCharges"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131ini : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131ini"/>
                   <xsl:text/>, NBlinesini : <xsl:text/>
@@ -3274,8 +3274,8 @@
                   <xsl:value-of select="$chargesAmountBT99ini"/>
                   <xsl:text/>, NBAllowChargesini : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrChargesini"/>
-                  <xsl:text/>, 
-        [BR-FXEXT-G-08] - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “G” ("Export  outside  the EU"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Export  outside  the EU" (G), but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.          
+                  <xsl:text/>,
+        [BR-FXEXT-G-08] - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “G” ("Export  outside  the EU"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Export  outside  the EU" (G), but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.  
         or the same rule but also taking into account the exemption reasons in Text (BT-120) and Code (BT-121) in BG-23 and the exemption reasons on each line (BT-X-96 / BT-X-97), on Document level Allowances  (BT-173 / BT-174) and on Document Level Charges (BT-175 / BT-176) and on Service logistic charges (BT-X-591 / BT-X-592).
         One of the two rules must be followed, bearing in mind that ultimately only the second one will have to be followed.
       </svrl:text>
@@ -3304,7 +3304,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131ini : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131ini"/>
                   <xsl:text/>, NBlinesini : <xsl:text/>
@@ -3315,8 +3315,8 @@
                   <xsl:value-of select="$chargesAmountBT99ini"/>
                   <xsl:text/>, NBAllowChargesini : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrChargesini"/>
-                  <xsl:text/>, 
-        [BR-FXEXT-G-08ini] - Without Exemption reason EN16931_2017 - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “G” ("Export  outside  the EU"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Export  outside  the EU" (G), but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.                
+                  <xsl:text/>,
+        [BR-FXEXT-G-08ini] - Without Exemption reason EN16931_2017 - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “G” ("Export  outside  the EU"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Export  outside  the EU" (G), but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.   
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -3343,7 +3343,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131 : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131"/>
                   <xsl:text/>, NBlines : <xsl:text/>
@@ -3354,10 +3354,10 @@
                   <xsl:value-of select="$chargesAmountBT99"/>
                   <xsl:text/>, NBAllowCharges : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrCharges"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         [BR-FXEXT-G-08rev] - With Exemption reason EN16931_2026  - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “G” ("Export  outside  the EU"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Export  outside  the EU" (G),
         and where applicable the VAT exemption reason and specification code (BT-195, BT-174 and BT-176 and BT-X-592) and the Exemption reason text (BT-194, BT-173 and BT-175 and BT-X-591) are identical with the VAT category VAT exemption reason and specification code (BT-121) and VAT exemption reason text (BT-120),
-         but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.        
+         but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified. 
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -3577,7 +3577,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131 : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131"/>
                   <xsl:text/>, NBlines : <xsl:text/>
@@ -3588,7 +3588,7 @@
                   <xsl:value-of select="$chargesAmountBT99"/>
                   <xsl:text/>, NBAllowCharges : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrCharges"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131ini : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131ini"/>
                   <xsl:text/>, NBlinesini : <xsl:text/>
@@ -3599,8 +3599,8 @@
                   <xsl:value-of select="$chargesAmountBT99ini"/>
                   <xsl:text/>, NBAllowChargesini : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrChargesini"/>
-                  <xsl:text/>, 
-        [BR-FXEXT-IC-08] - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “K” ("Intra-community supply"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Intra-community supply" (K), but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.          
+                  <xsl:text/>,
+        [BR-FXEXT-IC-08] - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “K” ("Intra-community supply"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Intra-community supply" (K), but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.  
         or the same rule but also taking into account the exemption reasons in Text (BT-120) and Code (BT-121) in BG-23 and the exemption reasons on each line (BT-X-96 / BT-X-97), on Document level Allowances  (BT-173 / BT-174) and on Document Level Charges (BT-175 / BT-176) and on Service logistic charges (BT-X-591 / BT-X-592).
         One of the two rules must be followed, bearing in mind that ultimately only the second one will have to be followed.
       </svrl:text>
@@ -3629,7 +3629,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131ini : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131ini"/>
                   <xsl:text/>, NBlinesini : <xsl:text/>
@@ -3640,8 +3640,8 @@
                   <xsl:value-of select="$chargesAmountBT99ini"/>
                   <xsl:text/>, NBAllowChargesini : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrChargesini"/>
-                  <xsl:text/>, 
-        [BR-FXEXT-IC-08ini] - Without Exemption reason EN16931_2017 - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “K” ("Intra-community supply"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Intra-community supply" (K), but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.                       
+                  <xsl:text/>,
+        [BR-FXEXT-IC-08ini] - Without Exemption reason EN16931_2017 - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “K” ("Intra-community supply"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Intra-community supply" (K), but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.   
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -3668,7 +3668,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131 : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131"/>
                   <xsl:text/>, NBlines : <xsl:text/>
@@ -3679,10 +3679,10 @@
                   <xsl:value-of select="$chargesAmountBT99"/>
                   <xsl:text/>, NBAllowCharges : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrCharges"/>
-                  <xsl:text/>,       
+                  <xsl:text/>,
         [BR-FXEXT-IC-08rev] - With Exemption reason EN16931_2026  - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “K” ("Intra-community supply"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Intra-community supply" (K),
         and where applicable the VAT exemption reason and specification code (BT-195, BT-174 and BT-176 and BT-X-592) and the Exemption reason text (BT-194, BT-173 and BT-175 and BT-X-591) are identical with the VAT category VAT exemption reason and specification code (BT-121) and VAT exemption reason text (BT-120),
-        but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.        
+        but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified. 
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -3929,7 +3929,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131 : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131"/>
                   <xsl:text/>, NBlines : <xsl:text/>
@@ -3940,7 +3940,7 @@
                   <xsl:value-of select="$chargesAmountBT99"/>
                   <xsl:text/>, NBAllowCharges : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrCharges"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131ini : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131ini"/>
                   <xsl:text/>, NBlinesini : <xsl:text/>
@@ -3951,8 +3951,8 @@
                   <xsl:value-of select="$chargesAmountBT99ini"/>
                   <xsl:text/>, NBAllowChargesini : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrChargesini"/>
-                  <xsl:text/>, 
-        [BR-FXEXT-O-08] - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “O” ("Not subject to VAT"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Not subject to VAT" (O), but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.          
+                  <xsl:text/>,
+        [BR-FXEXT-O-08] - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “O” ("Not subject to VAT"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Not subject to VAT" (O), but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.  
         or the same rule but also taking into account the exemption reasons in Text (BT-120) and Code (BT-121) in BG-23 and the exemption reasons on each line (BT-X-96 / BT-X-97), on Document level Allowances  (BT-173 / BT-174) and on Document Level Charges (BT-175 / BT-176) and on Service logistic charges (BT-X-591 / BT-X-592).
         One of the two rules must be followed, bearing in mind that ultimately only the second one will have to be followed.
       </svrl:text>
@@ -3979,7 +3979,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131ini : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131ini"/>
                   <xsl:text/>, NBlinesini : <xsl:text/>
@@ -3990,8 +3990,8 @@
                   <xsl:value-of select="$chargesAmountBT99ini"/>
                   <xsl:text/>, NBAllowChargesini : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrChargesini"/>
-                  <xsl:text/>, 
-        [BR-FXEXT-O-08ini] - Without Exemption reason EN16931_2017 - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “O” ("Not subject to VAT"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Not subject to VAT" (O), but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.                                      
+                  <xsl:text/>,
+        [BR-FXEXT-O-08ini] - Without Exemption reason EN16931_2017 - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “O” ("Not subject to VAT"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Not subject to VAT" (O), but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.   
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -4016,7 +4016,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131 : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131"/>
                   <xsl:text/>, NBlines : <xsl:text/>
@@ -4027,10 +4027,10 @@
                   <xsl:value-of select="$chargesAmountBT99"/>
                   <xsl:text/>, NBAllowCharges : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrCharges"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         [BR-FXEXT-O-08rev] - With Exemption reason EN16931_2026  - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “O” ("Not subject to VAT"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Not subject to VAT" (O),
         and where applicable the VAT exemption reason and specification code (BT-195, BT-174 and BT-176 and BT-X-592) and the Exemption reason text (BT-194, BT-173 and BT-175 and BT-X-591) are identical with the VAT category VAT exemption reason and specification code (BT-121) and VAT exemption reason text (BT-120),
-        but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.                                
+        but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified. 
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -4160,7 +4160,7 @@
                   <xsl:apply-templates select="." mode="schematron-select-full-path"/>
                </xsl:attribute>
                <svrl:text>
-          [BR-FXEXT-S-08] - In a VAT breakdown (BG-23), for each different value of VAT rate (BT-119), where VAT category code (BT-118) is equal to “S” ("Standard Rated"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-X-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Standard Rated" (S), but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.   
+          [BR-FXEXT-S-08] - In a VAT breakdown (BG-23), for each different value of VAT rate (BT-119), where VAT category code (BT-118) is equal to “S” ("Standard Rated"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-X-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Standard Rated" (S), but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.
           or the same rule but also taking into account the exemption reasons in Text (BT-120) and Code (BT-121) in BG-23 and the exemption reasons on each line (BT-X-96 / BT-X-97), on Document level Allowances  (BT-173 / BT-174) and on Document Level Charges (BT-175 / BT-176) and on Service logistic charges (BT-X-591 / BT-X-592).
           One of the two rules must be followed, bearing in mind that ultimately only the second one will have to be followed.
         </svrl:text>
@@ -4189,7 +4189,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
           SumBT131ini : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131ini"/>
                   <xsl:text/>, NBlinesini : <xsl:text/>
@@ -4200,7 +4200,7 @@
                   <xsl:value-of select="$chargesAmountBT99ini"/>
                   <xsl:text/>, NBAllowChargesini : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrChargesini"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
           [BR-FXEXT-S-08ini] - In a VAT breakdown (BG-23), for each different value of VAT rate (BT-119), where VAT category code (BT-118) is equal to “S” ("Standard Rated"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Standard Rated" (S), but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.
         </svrl:text>
             </svrl:failed-assert>
@@ -4228,7 +4228,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
           SumBT131 : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131"/>
                   <xsl:text/>, NBlines : <xsl:text/>
@@ -4239,10 +4239,10 @@
                   <xsl:value-of select="$chargesAmountBT99"/>
                   <xsl:text/>, NBAllowCharges : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrCharges"/>
-                  <xsl:text/>, 
-          [BR-FXEXT-S-08rev] - In a VAT breakdown (BG-23), for each different value of VAT rate (BT-119), where VAT category code (BT-118) is equal to “S” ("Standard Rated"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-X-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Standard Rated" (S), 
+                  <xsl:text/>,
+          [BR-FXEXT-S-08rev] - In a VAT breakdown (BG-23), for each different value of VAT rate (BT-119), where VAT category code (BT-118) is equal to “S” ("Standard Rated"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-X-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Standard Rated" (S),
           and where applicable the VAT exemption reason and specification code (BT-195, BT-174 and BT-176 and BT-X-592) and the Exemption reason text (BT-194, BT-173 and BT-175 and BT-X-591) are identical with the VAT category VAT exemption reason and specification code (BT-121) and VAT exemption reason text (BT-120),
-          but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.        
+          but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.
         </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -4433,7 +4433,7 @@
                   <xsl:apply-templates select="." mode="schematron-select-full-path"/>
                </xsl:attribute>
                <svrl:text>
-        [BR-FXEXT-Z-08] - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “Z” ("Zero Rated"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Zero Rated" (Z), but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.   
+        [BR-FXEXT-Z-08] - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “Z” ("Zero Rated"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Zero Rated" (Z), but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.
         or the same rule but also taking into account the exemption reasons in Text (BT-120) and Code (BT-121) in BG-23 and the exemption reasons on each line (BT-X-96 / BT-X-97), on Document level Allowances  (BT-173 / BT-174) and on Document Level Charges (BT-175 / BT-176) and on Service logistic charges (BT-X-591 / BT-X-592).
         One of the two rules must be followed, bearing in mind that ultimately only the second one will have to be followed.
       </svrl:text>
@@ -4462,7 +4462,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131ini : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131ini"/>
                   <xsl:text/>, NBlinesini : <xsl:text/>
@@ -4473,8 +4473,8 @@
                   <xsl:value-of select="$chargesAmountBT99ini"/>
                   <xsl:text/>, NBAllowChargesini : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrChargesini"/>
-                  <xsl:text/>, 
-        [BR-FXEXT-Z-08ini] - Without Exemption reason EN16931_2017 - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “Z” ("Zero Rated"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Zero Rated" (Z), but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.    
+                  <xsl:text/>,
+        [BR-FXEXT-Z-08ini] - Without Exemption reason EN16931_2017 - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “Z” ("Zero Rated"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Zero Rated" (Z), but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified.
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -4501,7 +4501,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131 : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131"/>
                   <xsl:text/>, NBlines : <xsl:text/>
@@ -4512,10 +4512,10 @@
                   <xsl:value-of select="$chargesAmountBT99"/>
                   <xsl:text/>, NBAllowCharges : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrCharges"/>
-                  <xsl:text/>, 
-        [BR-FXEXT-Z-08rev] - With Exemption reason EN16931_2026  - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “Z” ("Zero Rated"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Zero Rated" (Z), 
+                  <xsl:text/>,
+        [BR-FXEXT-Z-08rev] - With Exemption reason EN16931_2026  - In a VAT breakdown (BG-23) where VAT category code (BT-118) is equal to “Z” ("Zero Rated"), Absolute Value of (VAT category taxable amount (BT-116) - ∑ Invoice line net amounts (BT-131) + Σ Document level allowance amounts (BT-92) - Σ Document level charge amounts (BT-99) - Σ Logistics Service fee amounts (BT-x-272)) &lt;= 0,01 * ((Number of line net amounts (BT-131) + Number of Document level allowance amounts (BT-92) + Number of Document level charge amounts (BT-99) + Number of Logistics Service fee amounts (BT-X-272)), where the VAT category code (BT-151, BT-95, BT-102, BT-X-273) is "Zero Rated" (Z),
         and where applicable the VAT exemption reason and specification code (BT-195, BT-174 and BT-176 and BT-X-592) and the Exemption reason text (BT-194, BT-173 and BT-175 and BT-X-591) are identical with the VAT category VAT exemption reason and specification code (BT-121) and VAT exemption reason text (BT-120),
-        but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified   
+        but only for lines where the "Subtype of invoice item" (BT-X-8) has the value "DETAIL" or is not specified
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -13180,7 +13180,7 @@
                <xsl:attribute name="location">
                   <xsl:apply-templates select="." mode="schematron-select-full-path"/>
                </xsl:attribute>
-               <svrl:text>[BR-FREXT-CL-27]- INCOTERMS shall be in restricted 
+               <svrl:text>[BR-FREXT-CL-27]- INCOTERMS shall be in restricted
          code list</svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -13295,7 +13295,7 @@
                   <xsl:value-of select="$calculatedAmountBT131"/>
                   <xsl:text/>, Subline Code : <xsl:text/>
                   <xsl:value-of select="ram:AssociatedDocumentLineDocument/ram:LineStatusReasonCode"/>
-                  <xsl:text/> - 
+                  <xsl:text/> -
          [BR-FREXT-08]-If the "Subtype of invoice line item" (EXT-FR-FE-163 / BT-X-8) has the value  "GROUP" and if the "Invoice line net amount" (BT-131) is specified, it MUST correspond to the sum of the "Invoice line net amount" (BT-131) of the next lower level for which the "Subtype of the invoice line item" (EXT-FR-FE-163) has the value "DETAIL" or "GROUP".</svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>

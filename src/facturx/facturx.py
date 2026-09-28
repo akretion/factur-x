@@ -87,10 +87,10 @@ UBL_21_xsd = {
 # SCHEMATON "BASE" files
 FACTURX_LEVEL2schematron = {
     "minimum": "facturx-minimum/Factur-X_1.09_MINIMUM.xsl",
-    "basicwl": "facturx-basicwl/Factur-X_1.09_BASICWL.xsl",
+    "basicwl": "facturx-basicwl/FACTUR-X_BASIC-WL.xslt",
     "basic": "facturx-basic/Factur-X_1.09_BASIC.xsl",
-    "en16931": "facturx-en16931/Factur-X_1.09_EN16931.xsl",
-    "extended": "facturx-extended/Factur-X_1.09_EXTENDED.xsl",
+    "en16931": "facturx-en16931/FACTUR-X_EN16931.xslt",
+    "extended": "facturx-extended/FACTUR-X_EXTENDED.xslt",
     # CII only
     "extended-ctc-fr": "cii-extended-ctc-fr/EXTENDED-CTC-FR-CII.xslt",
 }
@@ -402,27 +402,20 @@ def xml_check_schematron(
             except Exception as e:
                 raise Exception(f"The XML syntax is invalid: {e}.") from e
         flavor = get_flavor(xml_etree)
+    if level == "autodetect":
+        if xml_etree is None:
+            try:
+                xml_etree = etree.fromstring(xml_bytes)
+            except Exception as e:
+                raise Exception(f"The XML syntax is invalid: {e}.") from e
+        level = get_level(xml_etree, flavor)
     if flavor in ("factur-x", "facturx"):
-        if level not in FACTURX_LEVEL2schematron:
-            if xml_etree is None:
-                try:
-                    xml_etree = etree.fromstring(xml_bytes)
-                except Exception as e:
-                    raise Exception(f"The XML syntax is invalid: {e}.") from e
-            level = get_level(xml_etree, flavor)
         if level not in FACTURX_LEVEL2schematron:
             raise ValueError(f"Wrong level '{level}' for Factur-X invoice.")
         xsl_files = {"base": f"xsd_and_schematron/{FACTURX_LEVEL2schematron[level]}"}
         if check_option in ("fr-ctc", "fr-chorus") and level != "minimum":
             xsl_files["fr-ctc"] = f"xsd_and_schematron/{CII_FR_CTC_schematron}"
     elif flavor in ("order-x", "orderx"):
-        if level not in ORDERX_LEVEL2schematron:
-            if xml_etree is None:
-                try:
-                    xml_etree = etree.fromstring(xml_bytes)
-                except Exception as e:
-                    raise Exception(f"The XML syntax is invalid: {e}.") from e
-            level = get_level(xml_etree, flavor)
         if level not in ORDERX_LEVEL2schematron:
             raise ValueError(f"Wrong level '{level}' for Order-X document.")
         xsl_files = {"base": f"xsd_and_schematron/{ORDERX_LEVEL2schematron[level]}"}

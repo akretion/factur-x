@@ -15,10 +15,10 @@
             <ram:Content>Rechnung gemäß Bestellung vom 01.03.2013.</ram:Content>
         </ram:IncludedNote>
         <ram:IncludedNote>
-            <ram:Content>Lieferant GmbH             
-Lieferantenstraße 20                
-80333 München               
-Deutschland             
+            <ram:Content>Lieferant GmbH
+Lieferantenstraße 20
+80333 München
+Deutschland
 Geschäftsführer: Hans Muster
 Handelsregisternummer: H A 123
 </ram:Content>
@@ -166,6 +166,6 @@ Handelsregisternummer: H A 123
                 <ram:SellerAssignedID>ARNR2</ram:SellerAssignedID>
                 <ram:Name>Joghurt Banane</ram:Name>
             </ram:SpecifiedTradeProduct>
-        </ram:IncludedSupplyChainTradeLineItem>     
+        </ram:IncludedSupplyChainTradeLineItem>
     </rsm:SpecifiedSupplyChainTradeTransaction>
 </rsm:CrossIndustryDocument>

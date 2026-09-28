@@ -141,6 +141,16 @@ Contributors
 Changelog
 =========
 
+* Version 7.0 dated 2026-09-29:
+
+  * Add support for XML parsing: new methods **parse_ubl_cii_xml()** and **parse_ubl_cii_xml_to_json()**. The method parse_ubl_cii_xml() returns the same python dict that is used as input for generate_xml()
+  * New script **facturx-convert**: allows to convert an invoice file in Factur-X, UBL XML, CII XML or JSON to another format (in alpha status ; will be improved in next versions)
+  * Update to latest schematrons for Factur-X and UBL from `FNFE's GitHub <https://github.com/fnfempe/France_RFE>`_
+  * Several changes in the structure of the python dict (data_dict) used to generate XML, in order to have the same python dict to generate XML and for the result of XML parsing: party blocks are now generic blocks, the only currency fields are now BT-5 and BT-6, BT-17 is changed from string to list (may be reverted in the future, depending on `this bug <https://github.com/fnfempe/France_RFE/issues/78>`_), BT-127 has been replaced by BT-127-00 which is a list of dicts, BT-147 has been replaced by BT-147-00 which is a list of dicts, BG-32 is now a list of dicts, BT-128-00 has been renamed to BT-128. Refer to tests/test_generate_xml.py for a complete example of data_dict.
+  * generate XML methods now also accept dates as string (YYYY-MM-DD), percent/qty/price/monetary fields as floats and binary field (BT-125) as bytes (bytes is now the default format, base64-encoded string is still accepted), to make it easier to generate XML from a JSON
+  * new dependency: `iso4217 <https://pypi.org/project/iso4217/>`_
+  * make level="autodetect" work in xml_check_schematron() when flavor is UBL
+
 * Version 6.8 dated 2026-08-18:
 
   * Add support for Incoterm in UBL and Factur-x XML generation. Contribution by Nicolas Jeudy.

@@ -6,12 +6,12 @@
   Module:            UBL-XAdESv132-2.1.xsd
   Generated on:      2011-02-21 17:20(UTC)
 
-  This is a copy of http://uri.etsi.org/01903/v1.3.2/XAdES.xsd modified 
+  This is a copy of http://uri.etsi.org/01903/v1.3.2/XAdES.xsd modified
   only to change the importing URI for the XML DSig schema.
 -->
 <xsd:schema targetNamespace="http://uri.etsi.org/01903/v1.3.2#" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://uri.etsi.org/01903/v1.3.2#" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" elementFormDefault="qualified">
 	<xsd:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="UBL-xmldsig-core-schema-2.1.xsd"/>
-	<!-- Start auxiliary types definitions: AnyType, ObjectIdentifierType, 
+	<!-- Start auxiliary types definitions: AnyType, ObjectIdentifierType,
 EncapsulatedPKIDataType and containers for time-stamp tokens -->
 	<!-- Start AnyType -->
 	<xsd:element name="Any" type="AnyType"/>

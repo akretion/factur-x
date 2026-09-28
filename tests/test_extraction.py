@@ -9,8 +9,14 @@ from facturx import (
     get_flavor,
     get_level,
     get_xml_from_pdf,
+    parse_ubl_cii_xml,
 )
+
+#    generate_cii_xml,
+#    generate_ubl_xml,
 from lxml import etree
+
+# from pprint import pprint
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -21,7 +27,7 @@ class TestAPI(unittest.TestCase):
         with open(path_file, "rb") as pdf_file:
             get_xml_from_pdf(pdf_file, check_xsd=True, check_schematron=True)
 
-    def test_get_flavor_and_level(self):
+    def test_get_flavor_and_get_level_and_parse(self):
         files2flavor_level = {
             "factur-x-minimum.xml": ("factur-x", "minimum"),
             "factur-x-basicwl.xml": ("factur-x", "basicwl"),
@@ -45,6 +51,15 @@ class TestAPI(unittest.TestCase):
                 self.assertEqual(flavor, flavor_detected)
                 level_detected = get_level(xml_root, flavor=flavor)
                 self.assertEqual(level, level_detected)
+                if flavor in ("factur-x", "ubl-2.1-invoice"):
+                    data_dict = parse_ubl_cii_xml(xml_root, flavor=flavor, level=level)
+                    data_dict.pop("BT-24")
+
+    #               pprint(data_dict)
+    #               if level in ('basicwl', 'en16931', 'extended', 'extended-ctc-fr'):
+    #                   generate_cii_xml(dict(data_dict), level=level)
+    #               if level in ('en16931', 'extended-ctc-fr'):
+    #                   generate_ubl_xml(dict(data_dict), level=level)
 
     def test_facturx_schematron_get_codedb_xml_file(self):
         for level in ("minimum", "basicwl", "basic", "en16931", "extended"):

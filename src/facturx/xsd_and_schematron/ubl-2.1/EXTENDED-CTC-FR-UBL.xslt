@@ -13,7 +13,7 @@
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:xsd="http://www.w3.org/2001/XMLSchema"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                version="2.0"><!--Implementers: please note that overriding process-prolog or process-root is 
+                version="2.0"><!--Implementers: please note that overriding process-prolog or process-root is
     the preferred method for meta-stylesheets to use where possible. -->
    <xsl:param name="archiveDirParameter"/>
    <xsl:param name="archiveNameParameter"/>
@@ -96,7 +96,7 @@
       </xsl:if>
    </xsl:template>
    <!--MODE: SCHEMATRON-FULL-PATH-3-->
-   <!--This mode can be used to generate prefixed XPath for humans 
+   <!--This mode can be used to generate prefixed XPath for humans
 	(Top-level element has index)-->
    <xsl:template match="node() | @*" mode="schematron-get-full-path-3">
       <xsl:for-each select="ancestor-or-self::*">
@@ -777,7 +777,7 @@
                   <xsl:text/>, Ecart calculé : <xsl:text/>
                   <xsl:value-of select="$resultCO13"/>
                   <xsl:text/>,
-        [BR-FREXT-CO-13] - Écart absolu entre le montant total hors TVA (BT-109) et la somme des BT-131 pour lesquels le sous-type est absent ou égal à DETAIL, BT-92 et BT-99 ≤ 0,01 € * nombre total d’éléments. 
+        [BR-FREXT-CO-13] - Écart absolu entre le montant total hors TVA (BT-109) et la somme des BT-131 pour lesquels le sous-type est absent ou égal à DETAIL, BT-92 et BT-99 ≤ 0,01 € * nombre total d’éléments.
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -804,7 +804,7 @@
                   <xsl:value-of select="$totalVATAmountBT110"/>
                   <xsl:text/>, TTC : <xsl:text/>
                   <xsl:value-of select="$totalAmountBT112"/>
-                  <xsl:text/> 
+                  <xsl:text/>
         [BR-FREXT-CO-15] - Si le montant de TVA (BT-110) est présent dans la devise du document (BT-5), alors l’écart absolu entre le montant TTC (BT-112) et la somme HT + TVA (BT-109 + BT-110) doit être ≤ 0,01 € * nombre total d’éléments. Sinon, BT-112 = BT-109.
       </svrl:text>
             </svrl:failed-assert>
@@ -1741,7 +1741,7 @@
                   <xsl:apply-templates select="." mode="schematron-select-full-path"/>
                </xsl:attribute>
                <svrl:text>
-        [BR-FREXT-O-01]-An Invoice that contains an Invoice line (BG-25) where the "Subtype of invoice line item" (EXT-FR-FE-163 / BT-X-8) has the value "DETAIL" or is not specified, a Document level allowance (BG-20) or a Document level charge or tax (BG-21) where the VAT category code (BT-151, BT-95 or BT-102) is “O” ("Not subject to VAT") shall contain in the VAT breakdown (BG-23) at least one VAT category code (BT-118) equal with “O” ("Not subject to VAT"). 
+        [BR-FREXT-O-01]-An Invoice that contains an Invoice line (BG-25) where the "Subtype of invoice line item" (EXT-FR-FE-163 / BT-X-8) has the value "DETAIL" or is not specified, a Document level allowance (BG-20) or a Document level charge or tax (BG-21) where the VAT category code (BT-151, BT-95 or BT-102) is “O” ("Not subject to VAT") shall contain in the VAT breakdown (BG-23) at least one VAT category code (BT-118) equal with “O” ("Not subject to VAT").
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -2719,7 +2719,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131 : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131"/>
                   <xsl:text/>, NBlines : <xsl:text/>
@@ -2730,7 +2730,7 @@
                   <xsl:value-of select="$chargesAmountBT99"/>
                   <xsl:text/>, NBAllowCharges : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrCharges"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131ini : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131ini"/>
                   <xsl:text/>, NBlinesini : <xsl:text/>
@@ -2741,7 +2741,7 @@
                   <xsl:value-of select="$chargesAmountBT99ini"/>
                   <xsl:text/>, NBAllowChargesini : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrChargesini"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         [BR-FREXT-AE-08] - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "AE" (Autoliquidation), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.
       </svrl:text>
             </svrl:failed-assert>
@@ -2771,7 +2771,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131ini : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131ini"/>
                   <xsl:text/>, NBlinesini : <xsl:text/>
@@ -2782,8 +2782,8 @@
                   <xsl:value-of select="$chargesAmountBT99ini"/>
                   <xsl:text/>, NBAllowChargesini : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrChargesini"/>
-                  <xsl:text/>, 
-        [BR-FREXT-AE-08ini] - Sans raisons d'exemption - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "AE" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.    
+                  <xsl:text/>,
+        [BR-FREXT-AE-08ini] - Sans raisons d'exemption - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "AE" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -2812,7 +2812,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131 : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131"/>
                   <xsl:text/>, NBlines : <xsl:text/>
@@ -2823,8 +2823,8 @@
                   <xsl:value-of select="$chargesAmountBT99"/>
                   <xsl:text/>, NBAllowCharges : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrCharges"/>
-                  <xsl:text/>, 
-        [BR-FREXT-AE-08rev] - Avec raisons d'exemption - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "AE" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.    
+                  <xsl:text/>,
+        [BR-FREXT-AE-08rev] - Avec raisons d'exemption - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "AE" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -2986,7 +2986,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131 : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131"/>
                   <xsl:text/>, NBlines : <xsl:text/>
@@ -2997,7 +2997,7 @@
                   <xsl:value-of select="$chargesAmountBT99"/>
                   <xsl:text/>, NBAllowCharges : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrCharges"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131ini : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131ini"/>
                   <xsl:text/>, NBlinesini : <xsl:text/>
@@ -3008,8 +3008,8 @@
                   <xsl:value-of select="$chargesAmountBT99ini"/>
                   <xsl:text/>, NBAllowChargesini : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrChargesini"/>
-                  <xsl:text/>, 
-        [BR-FREXT-E-08] - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "E" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.    
+                  <xsl:text/>,
+        [BR-FREXT-E-08] - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "E" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -3038,7 +3038,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131ini : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131ini"/>
                   <xsl:text/>, NBlinesini : <xsl:text/>
@@ -3049,8 +3049,8 @@
                   <xsl:value-of select="$chargesAmountBT99ini"/>
                   <xsl:text/>, NBAllowChargesini : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrChargesini"/>
-                  <xsl:text/>, 
-        [BR-FREXT-E-08ini] - Sans raisons d'exemption - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "E" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.    
+                  <xsl:text/>,
+        [BR-FREXT-E-08ini] - Sans raisons d'exemption - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "E" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -3079,7 +3079,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131 : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131"/>
                   <xsl:text/>, NBlines : <xsl:text/>
@@ -3090,8 +3090,8 @@
                   <xsl:value-of select="$chargesAmountBT99"/>
                   <xsl:text/>, NBAllowCharges : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrCharges"/>
-                  <xsl:text/>, 
-        [BR-FREXT-E-08rev] - Avec raisons d'exemption - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "E" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.    
+                  <xsl:text/>,
+        [BR-FREXT-E-08rev] - Avec raisons d'exemption - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "E" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -3253,7 +3253,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131 : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131"/>
                   <xsl:text/>, NBlines : <xsl:text/>
@@ -3264,7 +3264,7 @@
                   <xsl:value-of select="$chargesAmountBT99"/>
                   <xsl:text/>, NBAllowCharges : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrCharges"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131ini : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131ini"/>
                   <xsl:text/>, NBlinesini : <xsl:text/>
@@ -3275,7 +3275,7 @@
                   <xsl:value-of select="$chargesAmountBT99ini"/>
                   <xsl:text/>, NBAllowChargesini : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrChargesini"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         [BR-FREXT-G-08] - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "G" (Export hors UE), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.
       </svrl:text>
             </svrl:failed-assert>
@@ -3305,7 +3305,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131ini : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131ini"/>
                   <xsl:text/>, NBlinesini : <xsl:text/>
@@ -3316,8 +3316,8 @@
                   <xsl:value-of select="$chargesAmountBT99ini"/>
                   <xsl:text/>, NBAllowChargesini : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrChargesini"/>
-                  <xsl:text/>, 
-        [BR-FREXT-G-08ini] - Sans raison d'exemption - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "G" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.    
+                  <xsl:text/>,
+        [BR-FREXT-G-08ini] - Sans raison d'exemption - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "G" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -3346,7 +3346,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131 : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131"/>
                   <xsl:text/>, NBlines : <xsl:text/>
@@ -3357,8 +3357,8 @@
                   <xsl:value-of select="$chargesAmountBT99"/>
                   <xsl:text/>, NBAllowCharges : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrCharges"/>
-                  <xsl:text/>, 
-        [BR-FREXT-G-08rev] - Avec raisons d'exemption - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "G" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.    
+                  <xsl:text/>,
+        [BR-FREXT-G-08rev] - Avec raisons d'exemption - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "G" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -3520,7 +3520,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131 : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131"/>
                   <xsl:text/>, NBlines : <xsl:text/>
@@ -3531,7 +3531,7 @@
                   <xsl:value-of select="$chargesAmountBT99"/>
                   <xsl:text/>, NBAllowCharges : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrCharges"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131ini : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131ini"/>
                   <xsl:text/>, NBlinesini : <xsl:text/>
@@ -3542,8 +3542,8 @@
                   <xsl:value-of select="$chargesAmountBT99ini"/>
                   <xsl:text/>, NBAllowChargesini : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrChargesini"/>
-                  <xsl:text/>, 
-        [BR-FREXT-IC-08] - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "K" (Taux zéro), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.    
+                  <xsl:text/>,
+        [BR-FREXT-IC-08] - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "K" (Taux zéro), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -3572,7 +3572,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131ini : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131ini"/>
                   <xsl:text/>, NBlinesini : <xsl:text/>
@@ -3583,8 +3583,8 @@
                   <xsl:value-of select="$chargesAmountBT99ini"/>
                   <xsl:text/>, NBAllowChargesini : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrChargesini"/>
-                  <xsl:text/>, 
-        [BR-FREXT-IC-08ini] - Sans raisons d'exemption - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "K" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.    
+                  <xsl:text/>,
+        [BR-FREXT-IC-08ini] - Sans raisons d'exemption - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "K" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -3613,7 +3613,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131 : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131"/>
                   <xsl:text/>, NBlines : <xsl:text/>
@@ -3624,8 +3624,8 @@
                   <xsl:value-of select="$chargesAmountBT99"/>
                   <xsl:text/>, NBAllowCharges : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrCharges"/>
-                  <xsl:text/>, 
-        [BR-FREXT-IC-08rev] - Avec raisons d'exemption - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "K" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.    
+                  <xsl:text/>,
+        [BR-FREXT-IC-08rev] - Avec raisons d'exemption - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "K" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -3790,7 +3790,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131 : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131"/>
                   <xsl:text/>, NBlines : <xsl:text/>
@@ -3801,7 +3801,7 @@
                   <xsl:value-of select="$chargesAmountBT99"/>
                   <xsl:text/>, NBAllowCharges : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrCharges"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131ini : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131ini"/>
                   <xsl:text/>, NBlinesini : <xsl:text/>
@@ -3812,7 +3812,7 @@
                   <xsl:value-of select="$chargesAmountBT99ini"/>
                   <xsl:text/>, NBAllowChargesini : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrChargesini"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         [BR-FREXT-AF-08] - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "L" (IGIC - taxe des Canaries), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.
       </svrl:text>
             </svrl:failed-assert>
@@ -3842,7 +3842,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131ini : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131ini"/>
                   <xsl:text/>, NBlinesini : <xsl:text/>
@@ -3853,8 +3853,8 @@
                   <xsl:value-of select="$chargesAmountBT99ini"/>
                   <xsl:text/>, NBAllowChargesini : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrChargesini"/>
-                  <xsl:text/>, 
-        [BR-FREXT-AF-08ini] - Sans raisons d'exemption - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "L" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.    
+                  <xsl:text/>,
+        [BR-FREXT-AF-08ini] - Sans raisons d'exemption - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "L" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -3883,7 +3883,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131 : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131"/>
                   <xsl:text/>, NBlines : <xsl:text/>
@@ -3894,8 +3894,8 @@
                   <xsl:value-of select="$chargesAmountBT99"/>
                   <xsl:text/>, NBAllowCharges : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrCharges"/>
-                  <xsl:text/>, 
-        [BR-FREXT-AF-08rev] - Avec raisons d'exemption - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "L" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.    
+                  <xsl:text/>,
+        [BR-FREXT-AF-08rev] - Avec raisons d'exemption - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "L" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -4057,7 +4057,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131 : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131"/>
                   <xsl:text/>, NBlines : <xsl:text/>
@@ -4068,7 +4068,7 @@
                   <xsl:value-of select="$chargesAmountBT99"/>
                   <xsl:text/>, NBAllowCharges : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrCharges"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131ini : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131ini"/>
                   <xsl:text/>, NBlinesini : <xsl:text/>
@@ -4079,7 +4079,7 @@
                   <xsl:value-of select="$chargesAmountBT99ini"/>
                   <xsl:text/>, NBAllowChargesini : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrChargesini"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         [BR-FREXT-AG-08] - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "M" (IPSI - taxe de Ceuta et Melilla), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.
       </svrl:text>
             </svrl:failed-assert>
@@ -4109,7 +4109,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131ini : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131ini"/>
                   <xsl:text/>, NBlinesini : <xsl:text/>
@@ -4120,8 +4120,8 @@
                   <xsl:value-of select="$chargesAmountBT99ini"/>
                   <xsl:text/>, NBAllowChargesini : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrChargesini"/>
-                  <xsl:text/>, 
-        [BR-FREXT-AG-08ini] - Sans raisons d'exemption - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "M" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.    
+                  <xsl:text/>,
+        [BR-FREXT-AG-08ini] - Sans raisons d'exemption - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "M" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -4150,7 +4150,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131 : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131"/>
                   <xsl:text/>, NBlines : <xsl:text/>
@@ -4161,8 +4161,8 @@
                   <xsl:value-of select="$chargesAmountBT99"/>
                   <xsl:text/>, NBAllowCharges : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrCharges"/>
-                  <xsl:text/>, 
-        [BR-FREXT-AG-08rev] - Avec raisons d'exemption - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "M" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.    
+                  <xsl:text/>,
+        [BR-FREXT-AG-08rev] - Avec raisons d'exemption - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "M" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -4318,7 +4318,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131 : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131"/>
                   <xsl:text/>, NBlines : <xsl:text/>
@@ -4329,7 +4329,7 @@
                   <xsl:value-of select="$chargesAmountBT99"/>
                   <xsl:text/>, NBAllowCharges : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrCharges"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131ini : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131ini"/>
                   <xsl:text/>, NBlinesini : <xsl:text/>
@@ -4340,7 +4340,7 @@
                   <xsl:value-of select="$chargesAmountBT99ini"/>
                   <xsl:text/>, NBAllowChargesini : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrChargesini"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         [BR-FREXT-O-08] - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "O" (Non soumis à TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.
       </svrl:text>
             </svrl:failed-assert>
@@ -4368,7 +4368,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131ini : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131ini"/>
                   <xsl:text/>, NBlinesini : <xsl:text/>
@@ -4379,8 +4379,8 @@
                   <xsl:value-of select="$chargesAmountBT99ini"/>
                   <xsl:text/>, NBAllowChargesini : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrChargesini"/>
-                  <xsl:text/>, 
-        [BR-FREXT-O-08ini] - Sans raisons d'exemption - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "O" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.    
+                  <xsl:text/>,
+        [BR-FREXT-O-08ini] - Sans raisons d'exemption - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "O" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -4407,7 +4407,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131 : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131"/>
                   <xsl:text/>, NBlines : <xsl:text/>
@@ -4418,8 +4418,8 @@
                   <xsl:value-of select="$chargesAmountBT99"/>
                   <xsl:text/>, NBAllowCharges : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrCharges"/>
-                  <xsl:text/>, 
-        [BR-FREXT-O-08rev] - Avec raisons d'exemption - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "O" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.    
+                  <xsl:text/>,
+        [BR-FREXT-O-08rev] - Avec raisons d'exemption - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "O" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -4581,7 +4581,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131 : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131"/>
                   <xsl:text/>, NBlines : <xsl:text/>
@@ -4592,7 +4592,7 @@
                   <xsl:value-of select="$chargesAmountBT99"/>
                   <xsl:text/>, NBAllowCharges : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrCharges"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131ini : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131ini"/>
                   <xsl:text/>, NBlinesini : <xsl:text/>
@@ -4603,8 +4603,8 @@
                   <xsl:value-of select="$chargesAmountBT99ini"/>
                   <xsl:text/>, NBAllowChargesini : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrChargesini"/>
-                  <xsl:text/>, 
-        [BR-FREXT-S-08] - Dans une ventilation TVA (BG-23), pour chaque taux de TVA (BT-119) où le code catégorie (BT-118) est "S" (Taux normal), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.    
+                  <xsl:text/>,
+        [BR-FREXT-S-08] - Dans une ventilation TVA (BG-23), pour chaque taux de TVA (BT-119) où le code catégorie (BT-118) est "S" (Taux normal), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.
         </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -4633,7 +4633,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131ini : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131ini"/>
                   <xsl:text/>, NBlinesini : <xsl:text/>
@@ -4644,8 +4644,8 @@
                   <xsl:value-of select="$chargesAmountBT99ini"/>
                   <xsl:text/>, NBAllowChargesini : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrChargesini"/>
-                  <xsl:text/>, 
-        [BR-FREXT-S-08ini] - Sans raisons d'exemption - Dans une ventilation TVA (BG-23), pour chaque taux de TVA (BT-119) où le code de catégorie TVA (BT-118) est "S" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.    
+                  <xsl:text/>,
+        [BR-FREXT-S-08ini] - Sans raisons d'exemption - Dans une ventilation TVA (BG-23), pour chaque taux de TVA (BT-119) où le code de catégorie TVA (BT-118) est "S" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -4674,7 +4674,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131 : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131"/>
                   <xsl:text/>, NBlines : <xsl:text/>
@@ -4685,8 +4685,8 @@
                   <xsl:value-of select="$chargesAmountBT99"/>
                   <xsl:text/>, NBAllowCharges : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrCharges"/>
-                  <xsl:text/>, 
-        [BR-FREXT-S-08rev] - Avec raisons d'exemption - Dans une ventilation TVA (BG-23), pour chaque taux de TVA (BT-119) où le code de catégorie TVA (BT-118) est "S" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.    
+                  <xsl:text/>,
+        [BR-FREXT-S-08rev] - Avec raisons d'exemption - Dans une ventilation TVA (BG-23), pour chaque taux de TVA (BT-119) où le code de catégorie TVA (BT-118) est "S" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -4717,7 +4717,7 @@
                   <xsl:value-of select="$nbLineItems"/>
                   <xsl:text/>, NBAllowCharges : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrCharges"/>
-                  <xsl:text/> 
+                  <xsl:text/>
         [BR-FREXT-S-09] - Dans une ventilation TVA (BG-23), pour chaque taux de TVA (BT-119) où le code catégorie (BT-118) est "S" (Taux normal), l’écart absolu entre le montant de TVA (BT-117) et le produit du montant taxable (BT-116) par le taux (BT-119) doit être ≤ 0,01 € * nombre total d’éléments concernés.
         </svrl:text>
             </svrl:failed-assert>
@@ -4847,7 +4847,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131 : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131"/>
                   <xsl:text/>, NBlines : <xsl:text/>
@@ -4858,7 +4858,7 @@
                   <xsl:value-of select="$chargesAmountBT99"/>
                   <xsl:text/>, NBAllowCharges : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrCharges"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131ini : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131ini"/>
                   <xsl:text/>, NBlinesini : <xsl:text/>
@@ -4869,8 +4869,8 @@
                   <xsl:value-of select="$chargesAmountBT99ini"/>
                   <xsl:text/>, NBAllowChargesini : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrChargesini"/>
-                  <xsl:text/>, 
-        [BR-FREXT-Z-08] - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "Z" (Taux zéro), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.    
+                  <xsl:text/>,
+        [BR-FREXT-Z-08] - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "Z" (Taux zéro), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -4899,7 +4899,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131ini : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131ini"/>
                   <xsl:text/>, NBlinesini : <xsl:text/>
@@ -4910,8 +4910,8 @@
                   <xsl:value-of select="$chargesAmountBT99ini"/>
                   <xsl:text/>, NBAllowChargesini : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrChargesini"/>
-                  <xsl:text/>, 
-        [BR-FREXT-Z-08ini] - Sans raisons d'exemption - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "Z" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.    
+                  <xsl:text/>,
+        [BR-FREXT-Z-08ini] - Sans raisons d'exemption - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "Z" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -4940,7 +4940,7 @@
                   <xsl:value-of select="$exempReasonCode"/>
                   <xsl:text/>, basisAmount : <xsl:text/>
                   <xsl:value-of select="$basisAmount"/>
-                  <xsl:text/>, 
+                  <xsl:text/>,
         SumBT131 : <xsl:text/>
                   <xsl:value-of select="$calculatedAmountBT131"/>
                   <xsl:text/>, NBlines : <xsl:text/>
@@ -4951,8 +4951,8 @@
                   <xsl:value-of select="$chargesAmountBT99"/>
                   <xsl:text/>, NBAllowCharges : <xsl:text/>
                   <xsl:value-of select="$nbAllowancesOrCharges"/>
-                  <xsl:text/>, 
-        [BR-FREXT-Z-08rev] - Avec raisons d'exemption - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "Z" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.    
+                  <xsl:text/>,
+        [BR-FREXT-Z-08rev] - Avec raisons d'exemption - Dans une ventilation TVA (BG-23) où le code de catégorie TVA (BT-118) est "Z" (Exonéré de TVA), l’écart absolu entre le montant taxable (BT-116) et la somme des montants nets ligne (BT-131) + charges (BT-99) - remises (BT-92) doit être ≤ 0,01 € * nombre total d’éléments concernés.
       </svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
@@ -15944,16 +15944,16 @@
                        context="cac:PartyIdentification/cbc:ID[@schemeID]"/>
       <!--ASSERT -->
       <xsl:choose>
-         <xsl:when test="((not(contains(normalize-space(@schemeID), ' ')) and contains(' 0002 0003 0004 0005 0006 0007 0008 0009 0010 0011 0012 0013 0014 0015 0016 0017 0018 0019 0020 0021 0022 0023 0024 0025 0026 0027 0028 0029 0030 0031 0032 0033 0034 0035 0036 0037 0038 0039 0040 0041 0042 0043 0044 0045 0046 0047 0048 0049 0050 0051 0052 0053 0054 0055 0056 0057 0058 0059 0060 0061 0062 0063 0064 0065 0066 0067 0068 0069 0070 0071 0072 0073 0074 0075 0076 0077 0078 0079 0080 0081 0082 0083 0084 0085 0086 0087 0088 0089 0090 0091 0093 0094 0095 0096 0097 0098 0099 0100 0101 0102 0104 0105 0106 0107 0108 0109 0110 0111 0112 0113 0114 0115 0116 0117 0118 0119 0120 0121 0122 0123 0124 0125 0126 0127 0128 0129 0130 0131 0132 0133 0134 0135 0136 0137 0138 0139 0140 0141 0142 0143 0144 0145 0146 0147 0148 0149 0150 0151 0152 0153 0154 0155 0156 0157 0158 0159 0160 0161 0162 0163 0164 0165 0166 0167 0168 0169 0170 0171 0172 0173 0174 0175 0176 0177 0178 0179 0180 0183 0184 0185 0186 0187 0188 0189 0190 0191 0192 0193 0194 0195 0196 0197 0198 0199 0200 0201 0202 0203 0204 0205 0206 0207 0208 0209 0210 0211 0212 0213 0214 0215 0216 0217 0218 0219 0220 0221 0222 0223 0224 0225 0226 0227 0228 0229 0230 0231 0232 0233 0234 0235 0236 0237 0238 0239 0240 0241 0242 0243 0244 0245 0246 0247 0248 ', concat(' ', normalize-space(@schemeID), ' '))))  or ((not(contains(normalize-space(@schemeID), ' ')) and contains(' SEPA ', concat(' ', normalize-space(@schemeID), ' '))) and ((ancestor::cac:AccountingSupplierParty) or (ancestor::cac:PayeeParty)))"/>
+         <xsl:when test="((not(contains(normalize-space(@schemeID), ' ')) and contains(' BY SE 0002 0003 0004 0005 0006 0007 0008 0009 0010 0011 0012 0013 0014 0015 0016 0017 0018 0019 0020 0021 0022 0023 0024 0025 0026 0027 0028 0029 0030 0031 0032 0033 0034 0035 0036 0037 0038 0039 0040 0041 0042 0043 0044 0045 0046 0047 0048 0049 0050 0051 0052 0053 0054 0055 0056 0057 0058 0059 0060 0061 0062 0063 0064 0065 0066 0067 0068 0069 0070 0071 0072 0073 0074 0075 0076 0077 0078 0079 0080 0081 0082 0083 0084 0085 0086 0087 0088 0089 0090 0091 0093 0094 0095 0096 0097 0098 0099 0100 0101 0102 0104 0105 0106 0107 0108 0109 0110 0111 0112 0113 0114 0115 0116 0117 0118 0119 0120 0121 0122 0123 0124 0125 0126 0127 0128 0129 0130 0131 0132 0133 0134 0135 0136 0137 0138 0139 0140 0141 0142 0143 0144 0145 0146 0147 0148 0149 0150 0151 0152 0153 0154 0155 0156 0157 0158 0159 0160 0161 0162 0163 0164 0165 0166 0167 0168 0169 0170 0171 0172 0173 0174 0175 0176 0177 0178 0179 0180 0183 0184 0185 0186 0187 0188 0189 0190 0191 0192 0193 0194 0195 0196 0197 0198 0199 0200 0201 0202 0203 0204 0205 0206 0207 0208 0209 0210 0211 0212 0213 0214 0215 0216 0217 0218 0219 0220 0221 0222 0223 0224 0225 0226 0227 0228 0229 0230 0231 0232 0233 0234 0235 0236 0237 0238 0239 0240 0241 0242 0243 0244 0245 0246 0247 0248 ', concat(' ', normalize-space(@schemeID), ' '))))  or ((not(contains(normalize-space(@schemeID), ' ')) and contains(' SEPA ', concat(' ', normalize-space(@schemeID), ' '))) and ((ancestor::cac:AccountingSupplierParty) or (ancestor::cac:PayeeParty)))"/>
          <xsl:otherwise>
             <svrl:failed-assert xmlns:svrl="http://purl.oclc.org/dsdl/svrl"
-                                test="((not(contains(normalize-space(@schemeID), ' ')) and contains(' 0002 0003 0004 0005 0006 0007 0008 0009 0010 0011 0012 0013 0014 0015 0016 0017 0018 0019 0020 0021 0022 0023 0024 0025 0026 0027 0028 0029 0030 0031 0032 0033 0034 0035 0036 0037 0038 0039 0040 0041 0042 0043 0044 0045 0046 0047 0048 0049 0050 0051 0052 0053 0054 0055 0056 0057 0058 0059 0060 0061 0062 0063 0064 0065 0066 0067 0068 0069 0070 0071 0072 0073 0074 0075 0076 0077 0078 0079 0080 0081 0082 0083 0084 0085 0086 0087 0088 0089 0090 0091 0093 0094 0095 0096 0097 0098 0099 0100 0101 0102 0104 0105 0106 0107 0108 0109 0110 0111 0112 0113 0114 0115 0116 0117 0118 0119 0120 0121 0122 0123 0124 0125 0126 0127 0128 0129 0130 0131 0132 0133 0134 0135 0136 0137 0138 0139 0140 0141 0142 0143 0144 0145 0146 0147 0148 0149 0150 0151 0152 0153 0154 0155 0156 0157 0158 0159 0160 0161 0162 0163 0164 0165 0166 0167 0168 0169 0170 0171 0172 0173 0174 0175 0176 0177 0178 0179 0180 0183 0184 0185 0186 0187 0188 0189 0190 0191 0192 0193 0194 0195 0196 0197 0198 0199 0200 0201 0202 0203 0204 0205 0206 0207 0208 0209 0210 0211 0212 0213 0214 0215 0216 0217 0218 0219 0220 0221 0222 0223 0224 0225 0226 0227 0228 0229 0230 0231 0232 0233 0234 0235 0236 0237 0238 0239 0240 0241 0242 0243 0244 0245 0246 0247 0248 ', concat(' ', normalize-space(@schemeID), ' ')))) or ((not(contains(normalize-space(@schemeID), ' ')) and contains(' SEPA ', concat(' ', normalize-space(@schemeID), ' '))) and ((ancestor::cac:AccountingSupplierParty) or (ancestor::cac:PayeeParty)))">
-               <xsl:attribute name="id">BR-CL-10</xsl:attribute>
+                                test="((not(contains(normalize-space(@schemeID), ' ')) and contains(' BY SE 0002 0003 0004 0005 0006 0007 0008 0009 0010 0011 0012 0013 0014 0015 0016 0017 0018 0019 0020 0021 0022 0023 0024 0025 0026 0027 0028 0029 0030 0031 0032 0033 0034 0035 0036 0037 0038 0039 0040 0041 0042 0043 0044 0045 0046 0047 0048 0049 0050 0051 0052 0053 0054 0055 0056 0057 0058 0059 0060 0061 0062 0063 0064 0065 0066 0067 0068 0069 0070 0071 0072 0073 0074 0075 0076 0077 0078 0079 0080 0081 0082 0083 0084 0085 0086 0087 0088 0089 0090 0091 0093 0094 0095 0096 0097 0098 0099 0100 0101 0102 0104 0105 0106 0107 0108 0109 0110 0111 0112 0113 0114 0115 0116 0117 0118 0119 0120 0121 0122 0123 0124 0125 0126 0127 0128 0129 0130 0131 0132 0133 0134 0135 0136 0137 0138 0139 0140 0141 0142 0143 0144 0145 0146 0147 0148 0149 0150 0151 0152 0153 0154 0155 0156 0157 0158 0159 0160 0161 0162 0163 0164 0165 0166 0167 0168 0169 0170 0171 0172 0173 0174 0175 0176 0177 0178 0179 0180 0183 0184 0185 0186 0187 0188 0189 0190 0191 0192 0193 0194 0195 0196 0197 0198 0199 0200 0201 0202 0203 0204 0205 0206 0207 0208 0209 0210 0211 0212 0213 0214 0215 0216 0217 0218 0219 0220 0221 0222 0223 0224 0225 0226 0227 0228 0229 0230 0231 0232 0233 0234 0235 0236 0237 0238 0239 0240 0241 0242 0243 0244 0245 0246 0247 0248 ', concat(' ', normalize-space(@schemeID), ' ')))) or ((not(contains(normalize-space(@schemeID), ' ')) and contains(' SEPA ', concat(' ', normalize-space(@schemeID), ' '))) and ((ancestor::cac:AccountingSupplierParty) or (ancestor::cac:PayeeParty)))">
+               <xsl:attribute name="id">BR-FREXT-CL-10</xsl:attribute>
                <xsl:attribute name="flag">fatal</xsl:attribute>
                <xsl:attribute name="location">
                   <xsl:apply-templates select="." mode="schematron-select-full-path"/>
                </xsl:attribute>
-               <svrl:text>[BR-CL-10]-Any identifier identification scheme identifier MUST be coded using one of the ISO 6523 ICD list.</svrl:text>
+               <svrl:text>[BR-FREXT-CL-10]-Any identifier identification scheme identifier MUST be coded using one of the ISO 6523 ICD list + BY and SE.</svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
       </xsl:choose>
@@ -16189,24 +16189,24 @@
       <xsl:apply-templates select="*" mode="M13"/>
    </xsl:template>
    <!--RULE -->
-   <xsl:template match="cac:AllowanceCharge[cbc:ChargeIndicator = true()]/cbc:AllowanceChargeReasonCode[exists(@listID)]"
+   <xsl:template match="cac:AllowanceCharge[cbc:ChargeIndicator = true()]/cbc:AllowanceChargeReasonCode[@listID !='']"
                  priority="1007"
                  mode="M13">
       <svrl:fired-rule xmlns:svrl="http://purl.oclc.org/dsdl/svrl"
-                       context="cac:AllowanceCharge[cbc:ChargeIndicator = true()]/cbc:AllowanceChargeReasonCode[exists(@listID)]"/>
+                       context="cac:AllowanceCharge[cbc:ChargeIndicator = true()]/cbc:AllowanceChargeReasonCode[@listID !='']"/>
       <!--ASSERT -->
       <xsl:choose>
-         <xsl:when test="((not(contains(normalize-space(.), ' '))          and contains(' 7161 5153 ', concat(' ', normalize-space(.), ' '))))"/>
+         <xsl:when test="((not(contains(normalize-space(./@listID), ' '))          and contains(' 7161 5153 ', concat(' ', normalize-space(./@listID), ' '))))"/>
          <xsl:otherwise>
             <svrl:failed-assert xmlns:svrl="http://purl.oclc.org/dsdl/svrl"
-                                test="((not(contains(normalize-space(.), ' ')) and contains(' 7161 5153 ', concat(' ', normalize-space(.), ' '))))">
+                                test="((not(contains(normalize-space(./@listID), ' ')) and contains(' 7161 5153 ', concat(' ', normalize-space(./@listID), ' '))))">
                <xsl:attribute name="id">BR-FREXT-CL-20-LISTID</xsl:attribute>
                <xsl:attribute name="flag">fatal</xsl:attribute>
                <xsl:attribute name="location">
                   <xsl:apply-templates select="." mode="schematron-select-full-path"/>
                </xsl:attribute>
                <svrl:text>
-        [BR-FREXT-CL-20-LISTID]- ListID for Charges and Tax reason code, if present SHALL be equal to 7161 or 5153</svrl:text>
+        [BR-FREXT-CL-20-LISTID]- ListID for Charges and Tax reason code, if present, SHALL be equal to 7161 or 5153</svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
       </xsl:choose>
@@ -16362,7 +16362,7 @@
                <xsl:attribute name="location">
                   <xsl:apply-templates select="." mode="schematron-select-full-path"/>
                </xsl:attribute>
-               <svrl:text>[BR-FREXT-CL-27]- INCOTERMS shall be in restricted 
+               <svrl:text>[BR-FREXT-CL-27]- INCOTERMS shall be in restricted
         code list</svrl:text>
             </svrl:failed-assert>
          </xsl:otherwise>
