@@ -141,6 +141,13 @@ Contributors
 Changelog
 =========
 
+* Version 7.1 dated 2026-09-28:
+
+  * get_facturx_xml_from_pdf() and get_orderx_xml_from_pdf() respect the standard for file naming,
+  * get_xml_from_pdf accepts() still any file naming by default by adding a strict_naming parameter.
+  * This is a breaking change from the previous implementation, but renders the functions standard proof.
+  * It also reverts a "breaking" change introduced by https://github.com/akretion/factur-x/commit/6cd0d190d30780e681492ceeee757cb59e70df2a
+
 * Version 6.8 dated 2026-08-18:
 
   * Add support for Incoterm in UBL and Factur-x XML generation. Contribution by Nicolas Jeudy.
