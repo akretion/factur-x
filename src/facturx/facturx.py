@@ -630,6 +630,7 @@ def get_facturx_xml_from_pdf(
     saxon_server_codedb_base_url=None,
     saxon_server_codedb_dir=None,
     saxon_server_raise_if_http_error=False,
+    strict_naming=True,
 ):
     filenames = [FACTURX_FILENAME] + ZUGFERD_FILENAMES
     return get_xml_from_pdf(
@@ -641,6 +642,7 @@ def get_facturx_xml_from_pdf(
         saxon_server_codedb_dir=saxon_server_codedb_dir,
         saxon_server_raise_if_http_error=saxon_server_raise_if_http_error,
         filenames=filenames,
+        strict_naming=strict_naming,
     )
 
 
@@ -652,6 +654,7 @@ def get_orderx_xml_from_pdf(
     saxon_server_codedb_base_url=None,
     saxon_server_codedb_dir=None,
     saxon_server_raise_if_http_error=False,
+    strict_naming=True,
 ):
     filenames = [ORDERX_FILENAME]
     return get_xml_from_pdf(
@@ -663,6 +666,7 @@ def get_orderx_xml_from_pdf(
         saxon_server_codedb_dir=saxon_server_codedb_dir,
         saxon_server_raise_if_http_error=saxon_server_raise_if_http_error,
         filenames=filenames,
+        strict_naming=strict_naming,
     )
 
 
@@ -675,6 +679,7 @@ def get_xml_from_pdf(
     saxon_server_codedb_dir=None,
     saxon_server_raise_if_http_error=False,
     filenames=None,
+    strict_naming=False,
 ):
     logger.debug("get_xml_from_pdf with factur-x lib %s", VERSION)
     if filenames is None:
@@ -704,7 +709,8 @@ def get_xml_from_pdf(
     for attach_obj in pdf_reader.attachment_list:
         filename = attach_obj.name
         logger.debug("Found filename=%s", filename)
-        if filename.lower().endswith(".xml") and attach_obj.content:
+        process_xml_file = filename in filenames if strict_naming is True else filename.lower().endswith(".xml")
+        if process_xml_file and attach_obj.content:
             try:
                 xml_root = etree.fromstring(attach_obj.content)
                 logger.info("A valid XML file %s has been found in the PDF", filename)
