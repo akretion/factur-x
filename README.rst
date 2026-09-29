@@ -141,6 +141,16 @@ Contributors
 Changelog
 =========
 
+* Version 7.1 dated 2026-09-29:
+
+  * Update data structure of BT-158 to make JSON conversion work. BT-158 should now be expressed as {listID: {listVersionID: value}} where listID always has a value and listVersionID can be None. See tests/test_generate_xml.py for an exemple.
+  * Fix generate XML for 'contacts' key of party block when level != 'extended'
+  * Fix XML parsing when float_as="float": return 0.0 values
+  * Re-organise methods for XML parsing: remove method **parse_ubl_cii_xml_to_json()** and add method **data_dict_to_json()**
+  * Add required=True on BG-25 fields that are required fields and move min_level logic of party fields from _check_data_dict() to field definition
+  * Add generation/parsing tests with JSON and factorize code of test
+  * Fix crashes in facturx-convert script
+
 * Version 7.0 dated 2026-09-29:
 
   * Add support for XML parsing: new methods **parse_ubl_cii_xml()** and **parse_ubl_cii_xml_to_json()**. The method parse_ubl_cii_xml() returns the same python dict that is used as input for generate_xml()

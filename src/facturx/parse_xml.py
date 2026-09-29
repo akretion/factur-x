@@ -141,31 +141,41 @@ def parse_ubl_cii_xml(
         ):
             continue
         value = _xpath_get_value(xml_etree, field, field_props, setup)
-        if value:
+        if value or isinstance(value, float):
             data_dict[field] = value
     _post_processing(data_dict, flavor)
     return data_dict
 
 
-def parse_ubl_cii_xml_to_json(
-    xml,
-    flavor="autodetect",
-    level="autodetect",
-    check_xsd=True,
-    check_schematron=False,
-    saxon_server_url=None,
-):
-    data_dict = parse_ubl_cii_xml(
-        xml,
-        flavor=flavor,
-        level=level,
-        float_as="float",
-        date_as="string",
-        bytes_as="string",
-        check_xsd=check_xsd,
-        check_schematron=check_schematron,
-        saxon_server_url=saxon_server_url,
-    )
+def _prepare_data_dict_for_json_conversion(data_dict, fields_dict=None):
+    if fields_dict is None:
+        fields_dict = EN16931_FIELDS
+    for field, props in fields_dict.items():
+        if field in data_dict:
+            if props.get("format") == "date" and isinstance(
+                data_dict[field], (datetime.date, datetime.datetime)
+            ):
+                data_dict[field] = datetime.datetime.strftime(
+                    data_dict[field], "%Y-%m-%d"
+                )
+            elif props.get("format") == "bytes" and isinstance(data_dict[field], bytes):
+                data_dict[field] = base64.b64encode(data_dict[field]).decode("ascii")
+            if (
+                props.get("format") == "list"
+                and props.get("fields")
+                and isinstance(props["fields"], dict)
+                and data_dict.get(field)
+                and isinstance(data_dict[field], list)
+            ):
+                for entry in data_dict[field]:
+                    _prepare_data_dict_for_json_conversion(
+                        entry,
+                        fields_dict=props["fields"],
+                    )
+
+
+def data_dict_to_json(data_dict):
+    _prepare_data_dict_for_json_conversion(data_dict)
     json_res = json.dumps(data_dict, indent=4)
     return json_res
 
@@ -241,7 +251,7 @@ def _xpath_get_value(node, field, field_props, setup):
                 cres = {}
                 for cfield, cfield_props in field_props["fields"].items():
                     cvalue = _xpath_get_value(xpath_entry, cfield, cfield_props, setup)
-                    if cvalue:
+                    if cvalue or isinstance(cvalue, float):
                         cres[cfield] = cvalue
                 if cres:
                     values.append(cres)
@@ -305,7 +315,10 @@ def _xpath_get_value(node, field, field_props, setup):
                 ):
                     listID = xpath_entry.attrib["listID"]
                     listVersionID = xpath_entry.attrib.get("listVersionID")
-                    values[(listID, listVersionID)] = xpath_entry.text
+                    if listID in values:
+                        values[listID][listVersionID] = xpath_entry.text
+                    else:
+                        values[listID] = {listVersionID: xpath_entry.text}
             elif xpath_entry.text:
                 value = xpath_entry.text and xpath_entry.text.strip()
                 if field_props.get("format") == "date":
@@ -325,7 +338,7 @@ def _xpath_get_value(node, field, field_props, setup):
                     and setup["bytes_as"] == "bytes"
                 ):
                     value = base64.b64decode(value)
-                if value:
+                if value or isinstance(value, float):
                     values.append(value)
     if not values:
         values = None

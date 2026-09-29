@@ -2,16 +2,22 @@
 # @author: Alexis de Lattre <alexis.delattre@akretion.com>
 
 import datetime
+import json
 import unittest
 
 from facturx import (
-    generate_cii_xml,
-    generate_ubl_xml,
+    data_dict_to_json,
+    generate_xml,
     parse_ubl_cii_xml,
 )
 
 # from pprint import pprint
 # from deepdiff import DeepDiff
+
+FLAVOR2LEVELS = {
+    "factur-x": ["extended", "en16931", "basicwl", "extended-ctc-fr"],
+    "ubl-2.1": ["en16931", "extended-ctc-fr"],
+}
 
 
 class TestGenerateXML(unittest.TestCase):
@@ -145,7 +151,6 @@ class TestGenerateXML(unittest.TestCase):
             },
             "BG-11": {  # Tax Representative
                 "name": "Société écran",
-                "biz_name": "Marque de la Société écran",
                 "country_code": "FR",
                 "vat_identifier": "FR15123456789",
                 "postcode": "74210",
@@ -367,9 +372,14 @@ class TestGenerateXML(unittest.TestCase):
                             "BT-161": "L",
                         },
                     ],
-                    "BT-158": {  # key = (BT-158-1, BT-158-2): value = BT-158
-                        ("BB", "1.0"): "LOT1242",
-                        ("HS", "NC8"): "15092000",
+                    "BT-158": {  # key = BT-158-1, value = {BT-158-2: BT-158}
+                        "BB": {
+                            "1.0": "LOT1242",
+                            "1.1": "LOTAZER",
+                            None: "LOTnoVERSION",
+                        },
+                        "HS": {"2.0": "150920"},
+                        "TSP": {None: "15092090"},  # NC8
                     },
                     # TODO see if we switch to generic field names
                     "BG-27": [
@@ -458,7 +468,7 @@ class TestGenerateXML(unittest.TestCase):
                 elif isinstance(value, datetime.date):
                     if flavor == "factur-x":
                         value_str = value.strftime("%Y%m%d")
-                    elif flavor in ("ubl-2.1-invoice", "ubl-2.1-creditnote"):
+                    elif flavor == "ubl-2.1":
                         value_str = value.strftime("%Y-%m-%d")
                     self.assertIn(value_str, xml_str)
                 else:
@@ -467,56 +477,64 @@ class TestGenerateXML(unittest.TestCase):
             for item in data_dict:
                 self._check_data_in_xml(item, xml_str, flavor=flavor)
 
-    def test_generate_cii_xml(self):
+    def test_generate_and_parse_xml(self):
         # I need to re-generate data_dict before every call to generate_cii_xml()
-        # because generate_cii_xml modifies data_dict
-        for level in ("extended", "en16931", "basicwl", "extended-ctc-fr"):
-            data_dict = self._prepare_data_dict()
-            xml_bytes = generate_cii_xml(
-                data_dict,
-                level=level,
-                check_schematron="fr-ctc",
-                prefixed_namespaces=True,
-            )
-            xml_str = xml_bytes.decode("utf-8")
-            # pprint(data_dict)
-            # pprint(xml_str)
-            self._check_data_in_xml(data_dict, xml_str)
-            parsed_data_dict = parse_ubl_cii_xml(
-                xml_bytes, flavor="factur-x", check_xsd=False
-            )
-            # pprint(parsed_data_dict)
-
-            if parsed_data_dict != data_dict:
-                # diff = DeepDiff(data_dict, parsed_data_dict)
-                # pprint(diff)
-                self.assertFalse("Parsed parsed_data_dict is different than data_dict")
-
-    def test_generate_ubl(self):
-        for bt3 in ("380", "381"):
-            for level in ("en16931", "extended-ctc-fr"):
-                data_dict = self._prepare_data_dict()
-                data_dict["BT-3"] = bt3
-                data_dict.pop("BT-11-0")  # doesn't exist in UBL
-                # pprint(data_dict)
-                xml_bytes = generate_ubl_xml(
-                    data_dict,
-                    level=level,
-                    check_schematron="fr-ctc",
-                    prefixed_namespaces=True,
-                )
-                xml_str = xml_bytes.decode("utf-8")
-                # pprint(xml_str)
-                flavor = bt3 == "381" and "ubl-2.1-creditnote" or "ubl-2.1-invoice"
-                self._check_data_in_xml(data_dict, xml_str, flavor=flavor)
-
-                parsed_data_dict = parse_ubl_cii_xml(
-                    xml_bytes, flavor=flavor, check_xsd=False
-                )
-                # pprint(parsed_data_dict)
-                if parsed_data_dict != data_dict:
-                    # diff = DeepDiff(data_dict, parsed_data_dict)
-                    # pprint(diff)
-                    self.assertFalse(
-                        "Parsed parsed_data_dict is different than data_dict"
+        # because generate_xml modifies data_dict
+        for flavor in ("factur-x", "ubl-2.1"):
+            for level in FLAVOR2LEVELS[flavor]:
+                for bt3 in ("380", "381"):
+                    data_dict = self._prepare_data_dict()
+                    data_dict["BT-3"] = bt3
+                    xml_bytes = generate_xml(
+                        data_dict,
+                        flavor=flavor,
+                        level=level,
+                        check_schematron="fr-ctc",
+                        prefixed_namespaces=True,
                     )
+                    xml_str = xml_bytes.decode("utf-8")
+                    # pprint(data_dict)
+                    # pprint(xml_str)
+                    self._check_data_in_xml(data_dict, xml_str, flavor=flavor)
+                    parsed_data_dict = parse_ubl_cii_xml(xml_bytes, check_xsd=False)
+                    # pprint(parsed_data_dict)
+                    if parsed_data_dict != data_dict:
+                        # diff = DeepDiff(data_dict, parsed_data_dict)
+                        # pprint(diff)
+                        self.assertFalse(
+                            "Parsed parsed_data_dict is different than data_dict"
+                        )
+
+    def test_generate_and_parse_xml_json(self):
+        # I need to re-generate data_dict before every call to generate_cii_xml()
+        # because generate_xml modifies data_dict
+        for flavor in ("factur-x", "ubl-2.1"):
+            for level in FLAVOR2LEVELS[flavor]:
+                for bt3 in ("380", "381"):
+                    data_dict = self._prepare_data_dict()
+                    data_dict["BT-3"] = bt3
+                    json_str = data_dict_to_json(data_dict)
+                    data_dict_from_json = json.loads(json_str)
+                    xml_bytes = generate_xml(
+                        data_dict_from_json,
+                        flavor=flavor,
+                        level=level,
+                        check_schematron="fr-ctc",
+                        prefixed_namespaces=True,
+                    )
+                    # xml_str = xml_bytes.decode("utf-8")
+                    # pprint(xml_str)
+                    parsed_data_dict = parse_ubl_cii_xml(
+                        xml_bytes,
+                        check_xsd=False,
+                        float_as="string",
+                    )
+                    # pprint(parsed_data_dict)
+                    if data_dict_from_json != parsed_data_dict:
+                        # diff = DeepDiff(data_dict_from_json, parsed_data_dict)
+                        # pprint(diff)
+                        self.assertFalse(
+                            "Parsed parsed_json_str is different than json_str"
+                        )
+                    parsed_json_str = data_dict_to_json(parsed_data_dict)
+                    self.assertTrue(isinstance(parsed_json_str, str))

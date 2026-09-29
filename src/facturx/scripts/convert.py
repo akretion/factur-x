@@ -11,6 +11,7 @@ from os.path import isdir, isfile
 from facturx import __version__ as fxversion
 from facturx import (
     configure_script_logging,
+    data_dict_to_json,
     generate_xml,
     get_xml_from_pdf,
     parse_ubl_cii_xml,
@@ -18,7 +19,7 @@ from facturx import (
 
 __author__ = "Alexis de Lattre <alexis.delattre@akretion.com>"
 __date__ = "September 2026"
-__version__ = "0.1alpha"
+__version__ = "0.2beta"
 
 logger = logging.getLogger("factur-x")
 
@@ -49,15 +50,21 @@ def convert(args):
     if in_mtype == "application/pdf":
         with open(in_filename, "rb") as in_file:
             try:
-                (xml_filename, xml_string) = get_xml_from_pdf(
+                xml_filename, xml_string = get_xml_from_pdf(
                     in_file, check_xsd=check_xsd, check_schematron=check_schematron
                 )
             except Exception as e:
                 logger.error(e)
                 sys.exit(1)
+        if not xml_string:
+            logger.error("Could not extract XML file from PDF")
+            sys.exit(1)
     elif in_mtype == "application/xml":
         with open(in_filename, "rb") as in_file:
             xml_string = in_file.read()
+        if not xml_string:
+            logger.error("Input XML file is empty")
+            sys.exit(1)
     elif in_mtype == "application/json":
         with open(in_filename, "rb") as in_file:
             json_string = in_file.read()
@@ -85,6 +92,8 @@ def convert(args):
     if "BT-24" in data_dict:
         data_dict.pop("BT-24")
 
+    # pprint(data_dict)
+
     if out_mtype == "application/xml":
         if not out_flavor_list:
             logger.error(
@@ -103,7 +112,7 @@ def convert(args):
             "cii": "factur-x",
         }
         prefixed_namespaces = not args.absolute_namespaces
-        xml_bytes = generate_xml(
+        data_to_write_bytes = generate_xml(
             data_dict,
             flavor=flavor_map[cli_flavor],
             #  level="autodetect",
@@ -116,11 +125,10 @@ def convert(args):
             #  saxon_server_raise_if_http_error=False,
             prefixed_namespaces=prefixed_namespaces,
         )
-        data_to_write = xml_bytes
 
     elif out_mtype == "application/json":
-        json_to_write = json.dumps(data_dict, indent=4)
-        data_to_write = json_to_write.encode("utf-8")
+        json_to_write = data_dict_to_json(data_dict)
+        data_to_write_bytes = json_to_write.encode("utf-8")
     else:
         logger.error(
             f"Output file is identified as an {out_mtype} file. "
@@ -129,11 +137,11 @@ def convert(args):
         )
         sys.exit(1)
 
-    if data_to_write:
+    if data_to_write_bytes:
         if isfile(out_filename):
             logger.warning(f"File {out_filename} already exists. Overwriting it!")
         with open(out_filename, "wb") as out_file:
-            out_file.write(data_to_write)
+            out_file.write(data_to_write_bytes)
         logger.info(f"Output file {out_filename} generated")
     else:
         logger.warning(f"File {out_filename} has not been created")

@@ -824,6 +824,7 @@ EN16931_FIELDS = {
         "fields": {
             "BT-126": {
                 "label": "Invoice Line Identifier",
+                "required": True,
                 "cii_xpath": "ram:AssociatedDocumentLineDocument/ram:LineID",
                 "ubl_xpath": "cbc:ID",
             },
@@ -857,12 +858,14 @@ EN16931_FIELDS = {
             "BT-129": {
                 "label": "Invoiced Quantity",
                 "format": "qty",
+                "required": True,
                 "cii_xpath": "ram:SpecifiedLineTradeDelivery/ram:BilledQuantity",
                 "ubl_xpath": "cbc:InvoicedQuantity",
                 "ubl_creditnote_xpath": "cbc:CreditedQuantity",
             },
             "BT-130": {
                 "label": "Invoiced Quantity Unit of Measure",
+                "required": True,
                 "cii_xpath": "ram:SpecifiedLineTradeDelivery/"
                 "ram:BilledQuantity/@unitCode",
                 "ubl_xpath": "cbc:InvoicedQuantity/@unitCode",
@@ -871,6 +874,7 @@ EN16931_FIELDS = {
             "BT-131": {
                 "label": "Invoice Line Net Amount",
                 "format": "monetary_BT-5",
+                "required": True,
                 "cii_xpath": "ram:SpecifiedLineTradeSettlement/"
                 "ram:SpecifiedTradeSettlementLineMonetarySummation/ram:LineTotalAmount",
                 "ubl_xpath": "cbc:LineExtensionAmount",
@@ -904,6 +908,7 @@ EN16931_FIELDS = {
             "BT-146": {
                 "label": "Invoice Line Item Net Price",
                 "format": "price",
+                "required": True,
                 "cii_xpath": "ram:SpecifiedLineTradeAgreement/"
                 "ram:NetPriceProductTradePrice/ram:ChargeAmount",
                 "ubl_xpath": "cac:Price/cbc:PriceAmount",
@@ -972,6 +977,7 @@ EN16931_FIELDS = {
             },
             "BT-153": {
                 "label": "Invoice Line Item Name",
+                "required": True,
                 "cii_xpath": "ram:SpecifiedTradeProduct/ram:Name",
                 "ubl_xpath": "cac:Item/cbc:Name",
             },
@@ -1265,6 +1271,7 @@ EN16931_PARTY_FIELDS = {
     # no need for tax_identifier schemeID, because its value is fixed
     "legal_info": {
         "label": "Additional Legal Information",
+        "min_level": "en16931",
         "cii_xpath": "ram:Description",
         "ubl_xpath": "cac:PartyLegalEntity/cbc:CompanyLegalForm",
     },
@@ -1293,6 +1300,7 @@ EN16931_PARTY_FIELDS = {
     "contacts": {
         "label": "Contacts",
         "format": "list",
+        "min_level": "en16931",
         "cii_xpath": "ram:DefinedTradeContact",
         "ubl_xpath": "cac:Contact",
         "fields": {
@@ -1361,7 +1369,6 @@ def _check_data_dict(
     instance_map = {
         "date": datetime.date,
         "list": list,
-        "dict": dict,
         "string": str,
         "monetary_BT-5": str,
         "monetary_BT-6": str,
@@ -1393,7 +1400,7 @@ def _check_data_dict(
     for field, props in fields_dict.items():
         if field not in data_dict:
             if props.get("required"):
-                raise ValueError(f"Required field {field} is not in data_dict.")
+                raise ValueError(f"Required field {field} is not in data_dictxxxx.")
             continue
         value = data_dict[field]
         if props.get("required") and not isinstance(value, (int, float)) and not value:
@@ -1407,7 +1414,7 @@ def _check_data_dict(
         # and we convert it to python date objects
         if value and field_format == "date" and isinstance(value, str):
             try:
-                value = datetime.datetime.strptime(value, "%Y-%m-%d")
+                value = datetime.date.fromisoformat(value)
             except Exception as err:
                 raise ValueError(
                     f"Field {field} is a date field. Its value ({value}) has "
@@ -1417,6 +1424,25 @@ def _check_data_dict(
         # and we convert it to raw bytes
         elif value and field_format == "bytes" and isinstance(value, str):
             value = base64.b64decode(value)
+        elif value and field_format in (
+            "schemeID_dict",
+            "schemeID_ReferenceTypeCode_dict",
+        ):
+            # if the key of the dict is "null" (due to json conversion),
+            # convert it to None
+            value = {
+                schemeID != "null" and schemeID or None: val
+                for schemeID, val in value.items()
+            }
+        elif value and field_format == "listID_listVersionID_dict":
+            # same as previous elif, but for the 2 levels of dict
+            value = {
+                listID != "null" and listID or None: {
+                    listVersionID != "null" and listVersionID or None: val
+                    for listVersionID, val in listVersionID_val_dict.items()
+                }
+                for listID, listVersionID_val_dict in value.items()
+            }
         # monetary/qty/price/percent fields: we also accept float
         # and we convert it to string
         elif field_format in decimal_precision_dict:
@@ -1493,30 +1519,42 @@ def _check_data_dict(
             and value
             and (props.get("party_dict_whitelist") or props.get("party_dict_blacklist"))
         ):
+            tmp_dict = None
             if props.get("party_dict_whitelist"):
                 whitelist = props["party_dict_whitelist"]
                 if "address" in whitelist:
                     whitelist += addr_fields_list
-                if level == "basic_wl" and "legal_info" in whitelist:
-                    whitelist.pop("legal_info")
-                if level in ("basicwl", "en16931") and "contacts" in whitelist:
-                    whitelist.pop("contacts")
-                data_dict[field] = {
-                    key: val for key, val in value.items() if key in whitelist
-                }
+                    whitelist.remove("address")
+                tmp_dict = {key: val for key, val in value.items() if key in whitelist}
             elif props.get("party_dict_blacklist"):
                 blacklist = props["party_dict_blacklist"]
                 if "address" in blacklist:
                     blacklist += addr_fields_list
-                if level == "basicwl":
-                    blacklist.append("legal_info")
-                    # biz_name is basicwl in BG-4 and en16931 in bg-7
-                    if field == "BG-7":
-                        blacklist.append("biz_name")
-                if level in ("basicwl", "en16931"):
-                    blacklist.append("contacts")
-                data_dict[field] = {
+                    blacklist.remove("address")
+                # biz_name is basicwl in BG-4 and en16931 in bg-7
+                if level == "basicwl" and field == "BG-7":
+                    blacklist.append("biz_name")
+                tmp_dict = {
                     key: val for key, val in value.items() if key not in blacklist
+                }
+            if tmp_dict is not None:
+                data_dict[field] = {
+                    key: val
+                    for key, val in tmp_dict.items()
+                    if (
+                        EN16931_PARTY_FIELDS[key].get("min_level")
+                        and (
+                            (
+                                EN16931_PARTY_FIELDS[key].get("min_level") == "extended"
+                                and level == "extended"
+                            )
+                            or (
+                                EN16931_PARTY_FIELDS[key].get("min_level") == "en16931"
+                                and level in ("extended", "en16931")
+                            )
+                        )
+                        or not EN16931_PARTY_FIELDS[key].get("min_level")
+                    )
                 }
         if (
             props.get("format") == "list"
@@ -1533,6 +1571,9 @@ def _check_data_dict(
                     fields_dict=props["fields"],
                     decimal_precision_dict=decimal_precision_dict,
                 )
+    # BT-11-0 doesn't exist in UBL
+    if flavor == "ubl-2.1" and "BT-11-0" in data_dict:
+        data_dict.pop("BT-11-0")
     # check BT-18 in en16931
     if level == "en16931" and data_dict.get("BT-18") and len(data_dict["BT-18"]) > 1:
         logger.warning(
@@ -1686,7 +1727,7 @@ def _cii_generate_party(node_name, partner_dict, namespaces):
                     if contact_dict.get("email")
                 ],
             )
-            for contact_dict in partner_dict.get("contacts", [])
+            for contact_dict in partner_dict.get("contacts") or []
         ],
         *[
             RAM.PostalTradeAddress(
@@ -1927,10 +1968,11 @@ def _cii_generate_single_invoice_line(namespaces, line_dict):
                         },
                     )
                 )
-                for (listID, listVersionID), value in (
+                for (listID, listVersionID_value_dict) in (
                     line_dict.get("BT-158") or {}
                 ).items()
-                if listVersionID
+                if listID
+                for listVersionID, value in listVersionID_value_dict.items()
             ],
             *[
                 RAM.OriginTradeCountry(RAM.ID(line_dict["BT-159"]))
@@ -3281,9 +3323,11 @@ def _ubl_generate_single_invoice_line(namespaces, line_dict, invoice_currency, r
                         },
                     )
                 )
-                for (listID, listVersionID), value in (
+                for (listID, listVersionID_value_dict) in (
                     line_dict.get("BT-158") or {}
                 ).items()
+                if listID
+                for listVersionID, value in listVersionID_value_dict.items()
             ],
             CAC.ClassifiedTaxCategory(
                 CBC.ID(line_dict["BT-151"]),
@@ -3447,6 +3491,7 @@ def generate_ubl_xml(
     )
 
     xml_root = root_builder(
+        # UBLVersionID is optional, but present in sample UBL invoice of AFNOR XPZ12-012
         CBC.UBLVersionID("2.1"),
         CBC.CustomizationID(data_dict["BT-24"]),
         *[CBC.ProfileID(data_dict["BT-23"]) for _ in [1] if data_dict.get("BT-23")],
@@ -3817,10 +3862,6 @@ def generate_ubl_xml(
         xml_root, pretty_print=True, xml_declaration=True, encoding="UTF-8"
     )
     flavor = refund and "ubl-2.1-creditnote" or "ubl-2.1-invoice"
-    #    print(f"UBL XML level={level}")
-    #    from pprint import pprint
-
-    #    pprint(xml_bytes.decode("utf-8"))
     if check_xsd:
         xml_check_xsd(xml_root, flavor=flavor)
     if check_schematron:
