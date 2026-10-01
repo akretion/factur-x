@@ -2236,12 +2236,12 @@ def generate_cii_xml(
             )
     elif level in LEVEL2BT_24:
         bt_24 = LEVEL2BT_24[level]
-        if data_dict.get("BT-24") and data_dict["BT-24"] != bt_24:
+        if data_dict.get("BT-24") and not data_dict["BT-24"].startswith(bt_24):
             logger.warning(
                 f"Overwriting 'BT-24' in data_dict for level '{level}': "
                 f"initial value '{data_dict['BT-24']}' -> new value '{bt_24}'"
             )
-        data_dict["BT-24"] = bt_24
+            data_dict["BT-24"] = bt_24
     else:
         raise ValueError(
             "level arg has 5 possible values for CII/Factur-X: "
@@ -3421,12 +3421,12 @@ def generate_ubl_xml(
             )
     elif level in ("en16931", "extended-ctc-fr"):
         bt_24 = LEVEL2BT_24[level]
-        if data_dict.get("BT-24") and data_dict["BT-24"] != bt_24:
+        if data_dict.get("BT-24") and not data_dict["BT-24"].startswith(bt_24):
             logger.warning(
                 f"Overwriting 'BT-24' in data_dict for level '{level}': "
                 f"initial value '{data_dict['BT-24']}' -> new value '{bt_24}'"
             )
-        data_dict["BT-24"] = bt_24
+            data_dict["BT-24"] = bt_24
     else:
         raise ValueError(
             "level arg has 3 possible values for UBL: "
