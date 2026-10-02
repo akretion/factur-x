@@ -141,6 +141,10 @@ Contributors
 Changelog
 =========
 
+* Version 7.2 dated 2026-10-03:
+
+  * Add two new methods: is_credit_note() and untdid_4451_get_label()
+
 * Version 7.1 dated 2026-09-29:
 
   * Update data structure of BT-158 to make JSON conversion work. BT-158 should now be expressed as {listID: {listVersionID: value}} where listID always has a value and listVersionID can be None. See tests/test_generate_xml.py for an exemple.

@@ -8,6 +8,7 @@ import unittest
 from facturx import (
     data_dict_to_json,
     generate_xml,
+    is_credit_note,
     parse_ubl_cii_xml,
 )
 
@@ -513,6 +514,10 @@ class TestGenerateXML(unittest.TestCase):
                 for bt3 in ("380", "381"):
                     data_dict = self._prepare_data_dict()
                     data_dict["BT-3"] = bt3
+                    if bt3 == "381":
+                        self.assertTrue(is_credit_note(data_dict))
+                    else:
+                        self.assertFalse(is_credit_note(data_dict))
                     json_str = data_dict_to_json(data_dict)
                     data_dict_from_json = json.loads(json_str)
                     xml_bytes = generate_xml(

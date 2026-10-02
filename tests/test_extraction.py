@@ -10,10 +10,8 @@ from facturx import (
     get_level,
     get_xml_from_pdf,
     parse_ubl_cii_xml,
+    untdid_4451_get_label,
 )
-
-#    generate_cii_xml,
-#    generate_ubl_xml,
 from lxml import etree
 
 # from pprint import pprint
@@ -66,3 +64,9 @@ class TestAPI(unittest.TestCase):
             codedb_xml_bytes = facturx_schematron_get_codedb_xml_file(level)
             self.assertEqual(type(codedb_xml_bytes), bytes)
             etree.fromstring(codedb_xml_bytes)
+
+    def test_untdid_4451_get_label(self):
+        label = untdid_4451_get_label(" ZZZ ")
+        self.assertEqual(label, "Mutually defined")
+        label = untdid_4451_get_label("WRONGCODE")
+        self.assertEqual(label, None)

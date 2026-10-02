@@ -3447,7 +3447,7 @@ def generate_ubl_xml(
             else:
                 data_dict["BG-4"]["identifiers"]["SEPA"] = data_dict["BT-90"]
 
-    refund = bool(data_dict["BT-3"] in CREDIT_NOTE_TYPE_CODES)
+    refund = is_credit_note(data_dict)
     UBL_NAMESPACES = get_xml_namespaces(
         "ubl-2.1-creditnote" if refund else "ubl-2.1-invoice"
     )
@@ -3912,3 +3912,12 @@ def generate_xml(
             saxon_server_raise_if_http_error=saxon_server_raise_if_http_error,
             prefixed_namespaces=prefixed_namespaces,
         )
+
+
+def is_credit_note(data_dict):
+    if not isinstance(data_dict, dict):
+        raise ValueError("data_dict arg must be a dict")
+    if not data_dict.get("BT-3"):
+        raise ValueError("BT-3 is a required key in data_dict")
+    credit_note = bool(data_dict["BT-3"] in CREDIT_NOTE_TYPE_CODES)
+    return credit_note
