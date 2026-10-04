@@ -141,6 +141,11 @@ Contributors
 Changelog
 =========
 
+* Version 7.3 dated 2026-10-04:
+
+  * Add method **preprocess_data_dict()** which is a rename of the private method _check_data_dict(), because it can be useful for the ereporting of transactions
+  * Factorize level autodetection code in XML generation between UBL and Factur-X and add tests
+
 * Version 7.2 dated 2026-10-03:
 
   * Add two new methods: is_credit_note() and untdid_4451_get_label()

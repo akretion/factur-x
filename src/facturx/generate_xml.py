@@ -45,6 +45,10 @@ LEVEL2BT_24 = {  # for both UBL and CII/FX
     "extended-ctc-fr": "urn:cen.eu:en16931:2017"
     "#conformant#urn.cpro.gouv.fr:1p0:extended-ctc-fr",
 }
+FLAVOR2LEVELS = {
+    "ubl-2.1": ["en16931", "extended-ctc-fr"],
+    "factur-x": list(LEVEL2BT_24.keys()),
+}
 BT_8toCII = {
     "invoice": "5",
     "delivery": "29",
@@ -1362,9 +1366,11 @@ def _get_currency_precision(currency_field, currency_code):
     return prec
 
 
-def _check_data_dict(
+def preprocess_data_dict(
     data_dict, flavor, level, fields_dict=None, decimal_precision_dict=None
 ):
+    if not isinstance(data_dict, dict):
+        raise ValueError("data_dict arg must be a dict")
     assert flavor in ("ubl-2.1", "factur-x")
     instance_map = {
         "date": datetime.date,
@@ -1382,6 +1388,39 @@ def _check_data_dict(
         "schemeID_ReferenceTypeCode_dict": dict,
     }
     if decimal_precision_dict is None:
+        # decimal_precision_dict is None for the initial call of this method
+        # (not for the "recursive" calls that enter in the sub-dicts
+        if level == "autodetect":
+            if not data_dict.get("BT-24"):
+                raise ValueError(
+                    "level='autodetect' requires a key 'BT-24' in data_dict"
+                )
+            for level_option, bt_24 in LEVEL2BT_24.items():
+                if (
+                    level_option in FLAVOR2LEVELS[flavor]
+                    and bt_24 == data_dict["BT-24"]
+                ):
+                    level = level_option
+            if level == "autodetect":
+                raise ValueError(
+                    "Autodetection of level failed because the value of "
+                    f"data_dict['BT-24'] ({data_dict['BT-24']}) is invalid "
+                    f"for flavor {flavor}"
+                )
+        elif level in FLAVOR2LEVELS[flavor]:
+            bt_24 = LEVEL2BT_24[level]
+            if data_dict.get("BT-24") and data_dict["BT-24"] != bt_24:
+                logger.warning(
+                    f"Overwriting 'BT-24' in data_dict for level '{level}': "
+                    f"initial value '{data_dict['BT-24']}' -> new value '{bt_24}'"
+                )
+            data_dict["BT-24"] = bt_24
+        else:
+            raise ValueError(
+                f"For flavor '{flavor}', allowed level values are: "
+                f"{', '.join(FLAVOR2LEVELS[flavor])} and autodetect"
+            )
+
         if not data_dict.get("BT-5"):
             raise ValueError("Missing key BT-5 in data_dict")
         decimal_precision_dict = {
@@ -1564,7 +1603,7 @@ def _check_data_dict(
             and isinstance(data_dict[field], list)
         ):
             for entry in data_dict[field]:
-                _check_data_dict(
+                preprocess_data_dict(
                     entry,
                     flavor,
                     level,
@@ -1635,6 +1674,7 @@ def _check_data_dict(
                 if note_dict.get("BT-127"):
                     single_note_list.append(note_dict["BT-127"])
             line_dict["BT-127-00"] = [{"BT-127": "\n".join(single_note_list)}]
+    return level
 
 
 def _cii_generate_party(node_name, partner_dict, namespaces):
@@ -2221,34 +2261,7 @@ def generate_cii_xml(
 ):
     # in data_dict, the key names use ID CII and not ID Modèle AFNOR FE
     # because we don't want France-specific stuff
-    if not isinstance(data_dict, dict):
-        raise ValueError("data_dict arg must be a dict")
-    if level == "autodetect":
-        if not data_dict.get("BT-24"):
-            raise ValueError("level='autodetect' requires a 'BT-24' key in data_dict'")
-        for level_option, bt_24 in LEVEL2BT_24.items():
-            if bt_24 == data_dict["BT-24"]:
-                level = level_option
-        if level == "autodetect":
-            raise ValueError(
-                "Autodetection of level failed because the value of "
-                f"data_dict['BT-24'] ({data_dict['BT-24']}) is invalid"
-            )
-    elif level in LEVEL2BT_24:
-        bt_24 = LEVEL2BT_24[level]
-        if data_dict.get("BT-24") and data_dict["BT-24"] != bt_24:
-            logger.warning(
-                f"Overwriting 'BT-24' in data_dict for level '{level}': "
-                f"initial value '{data_dict['BT-24']}' -> new value '{bt_24}'"
-            )
-        data_dict["BT-24"] = bt_24
-    else:
-        raise ValueError(
-            "level arg has 5 possible values for CII/Factur-X: "
-            "'basicwl', 'en16931', 'extended', 'extended-ctc-fr' and 'autodetect'"
-        )
-
-    _check_data_dict(data_dict, "factur-x", level)
+    level = preprocess_data_dict(data_dict, "factur-x", level)
     FX_NAMESPACES = get_xml_namespaces("factur-x")
     if prefixed_namespaces:
         RSM = objectify.ElementMaker(
@@ -3406,34 +3419,7 @@ def generate_ubl_xml(
     saxon_server_raise_if_http_error=False,
     prefixed_namespaces=True,
 ):
-    if not isinstance(data_dict, dict):
-        raise ValueError("data_dict must be a dict")
-    if level == "autodetect":
-        if not data_dict.get("BT-24"):
-            raise ValueError("level='autodetect' requires a 'BT-24' key in data_dict'")
-        for level_option, bt_24 in LEVEL2BT_24.items():
-            if level in ("en16931", "extended-ctc-fr") and bt_24 == data_dict["BT-24"]:
-                level = level_option
-        if level == "autodetect":
-            raise ValueError(
-                f"Autodetection of level failed because the value of "
-                f"data_dict['BT-24'] (f{data_dict['BT-24']}) is invalid"
-            )
-    elif level in ("en16931", "extended-ctc-fr"):
-        bt_24 = LEVEL2BT_24[level]
-        if data_dict.get("BT-24") and data_dict["BT-24"] != bt_24:
-            logger.warning(
-                f"Overwriting 'BT-24' in data_dict for level '{level}': "
-                f"initial value '{data_dict['BT-24']}' -> new value '{bt_24}'"
-            )
-        data_dict["BT-24"] = bt_24
-    else:
-        raise ValueError(
-            "level arg has 3 possible values for UBL: "
-            "'en16931', 'extended-ctc-fr' and 'autodetect'"
-        )
-
-    _check_data_dict(data_dict, "ubl-2.1", level)
+    level = preprocess_data_dict(data_dict, "ubl-2.1", level)
 
     if data_dict.get("BT-90"):
         if data_dict.get("BG-10"):  # if PayeeParty

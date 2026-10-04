@@ -543,3 +543,18 @@ class TestGenerateXML(unittest.TestCase):
                         )
                     parsed_json_str = data_dict_to_json(parsed_data_dict)
                     self.assertTrue(isinstance(parsed_json_str, str))
+
+    def test_generate_xml_level_autodetect(self):
+        # test common formats
+        for bt24 in (
+            "urn:cen.eu:en16931:2017",
+            "urn:cen.eu:en16931:2017#conformant#urn.cpro.gouv.fr:1p0:extended-ctc-fr",
+        ):
+            for flavor in ("factur-x", "ubl-2.1"):
+                data_dict = self._prepare_data_dict()
+                data_dict["BT-24"] = bt24
+                generate_xml(data_dict, flavor=flavor)  # autodetect
+        with self.assertRaises(ValueError):
+            data_dict = self._prepare_data_dict()
+            data_dict["BT-24"] = "urn:factur-x.eu:1p0:basicwl"
+            generate_xml(data_dict, flavor="ubl-2.1")
