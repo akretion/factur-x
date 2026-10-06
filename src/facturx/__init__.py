@@ -1,6 +1,6 @@
 import logging
 
-__version__ = "7.3"
+__version__ = "7.4"
 from .facturx import (
     facturx_schematron_get_codedb_xml_file,
     generate_from_binary,
@@ -24,7 +24,7 @@ from .generate_xml import (
     preprocess_data_dict,
 )
 from .parse_xml import data_dict_to_json, parse_ubl_cii_xml
-from .untdid_4451 import untdid_4451_get_label
+from .untdid import untdid_get_label
 
 __all__ = [
     "generate_from_binary",
@@ -47,7 +47,7 @@ __all__ = [
     "is_credit_note",
     "parse_ubl_cii_xml",
     "data_dict_to_json",
-    "untdid_4451_get_label",
+    "untdid_get_label",
 ]
 
 logging.getLogger("factur-x").addHandler(logging.NullHandler())

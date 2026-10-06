@@ -141,6 +141,10 @@ Contributors
 Changelog
 =========
 
+* Version 7.4 dated 2026-10-06:
+
+  * Add new method **untdid_get_label()** that replaces untdid_4451_get_label() and supports UNTDID 4451, UNTDID 5189 and UNTDID 7161
+
 * Version 7.3 dated 2026-10-04:
 
   * Add method **preprocess_data_dict()** which is a rename of the private method _check_data_dict(), because it can be useful for the ereporting of transactions
