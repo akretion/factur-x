@@ -113,6 +113,7 @@ FACTURX_LEVEL2xmp = {
     "basic": "BASIC",
     "en16931": "EN 16931",
     "extended": "EXTENDED",
+    "extended-ctc-fr": "EXTENDED CTC FR",
 }
 ORDERX_TYPES = ("order", "order_change", "order_response")
 ORDERX_code2type = {
