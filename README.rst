@@ -141,6 +141,13 @@ Contributors
 Changelog
 =========
 
+* Version 7.5 dated 2026-10-09:
+
+  * In allowance and charge blocks (global BG-20/BG-21 and per-line BG-27/BG-28), use generic keys in data_dict: rate, base_amount, amount, reason, reason_code... cf test/test_generate_xml.py to get examples
+  * Remove BT-150 from data_dict because it is always the same value as BT-130
+  * New method **get_data_dict_copy_for_logs()** that generated a copy of data_dict without the bytes fields
+  * Avoid an unuseful info log message during invoice XML parsing when BT-6 is not set
+
 * Version 7.4 dated 2026-10-06:
 
   * Add new method **untdid_get_label()** that replaces untdid_4451_get_label() and supports UNTDID 4451, UNTDID 5189 and UNTDID 7161

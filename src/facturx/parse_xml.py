@@ -221,7 +221,12 @@ def _get_xpaths(field, field_props, flavor):
 def _xpath_get_value(node, field, field_props, setup):
     xpaths = _get_xpaths(field, field_props, setup["flavor"])
     address_fields = list(EN16931_ADDRESS_FIELDS.keys())
-    if len(xpaths) == 1 and xpaths[0] == "NONE":  # used for UBL BG-1
+    # special treatment for UBL BG-1 and BT-127-00 in UBL
+    if len(xpaths) == 1 and xpaths[0] == "UBL_NOTE_SUBJECT":
+        return False
+    if (
+        len(xpaths) == 1 and xpaths[0] == "UBL_NOTE_CONTENT"
+    ):  # used for UBL BG-1 and BT-127-00
         assert not field_props.get("format")
         return node.text
     if field_props.get("format", "string").endswith("_dict"):
@@ -230,15 +235,9 @@ def _xpath_get_value(node, field, field_props, setup):
         values = []
     for xpath in xpaths:
         if "%(" in xpath and ")s" in xpath:
-            try:
-                xpath = xpath % setup["currencies"]
-            except Exception as err:
-                logger.info(
-                    f"Could not generate final xpath for field {field} "
-                    f"from {xpath} with values {setup['currencies']}."
-                    f"Error: {err}"
-                )
+            if "%(BT-6)s" in xpath and not setup["currencies"].get("BT-6"):
                 continue
+            xpath = xpath % setup["currencies"]
         xpath_res = node.xpath(xpath, namespaces=setup["namespaces"])
         for xpath_entry in xpath_res:
             if isinstance(xpath_entry, str):  # for attributes
@@ -348,7 +347,7 @@ def _xpath_get_value(node, field, field_props, setup):
         and not field_props.get("format", "string").endswith("_dict")
     ):
         values = values[0]
-    logger.info(f"Value for {field} is {values}")
+    logger.debug(f"Value for {field} is {values}")
     return values
 
 

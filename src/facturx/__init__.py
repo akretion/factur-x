@@ -1,6 +1,6 @@
 import logging
 
-__version__ = "7.4"
+__version__ = "7.5"
 from .facturx import (
     facturx_schematron_get_codedb_xml_file,
     generate_from_binary,
@@ -20,6 +20,7 @@ from .generate_xml import (
     generate_cii_xml,
     generate_ubl_xml,
     generate_xml,
+    get_data_dict_copy_for_logs,
     is_credit_note,
     preprocess_data_dict,
 )
@@ -44,6 +45,7 @@ __all__ = [
     "generate_cii_xml",
     "generate_ubl_xml",
     "preprocess_data_dict",
+    "get_data_dict_copy_for_logs",
     "is_credit_note",
     "parse_ubl_cii_xml",
     "data_dict_to_json",

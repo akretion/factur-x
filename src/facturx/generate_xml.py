@@ -95,6 +95,82 @@ EN16931_CURRENCY_FIELDS = {
     },
 }
 
+EN16931_CHARGE_GLOBAL_FIELDS = {
+    "amount": {
+        "label": "Allowance/Charge Amount",
+        "format": "monetary_BT-5",
+        "cii_xpath": "ram:ActualAmount",
+        "ubl_xpath": "cbc:Amount",
+    },
+    "base_amount": {
+        "label": "Allowance/Charge Base Amount",
+        "format": "monetary_BT-5",
+        "cii_xpath": "ram:BasisAmount",
+        "ubl_xpath": "cbc:BaseAmount",
+    },
+    "rate": {
+        "label": "Allowance/Charge Rate",
+        "format": "percent",
+        "cii_xpath": "ram:CalculationPercent",
+        "ubl_xpath": "cbc:MultiplierFactorNumeric",
+    },
+    "reason": {
+        "label": "Allowance/Charge Reason",
+        "cii_xpath": "ram:Reason",
+        "ubl_xpath": "cbc:AllowanceChargeReason",
+    },
+    "reason_code": {  # charge: UNTDID 7161 / allowance: UNTDID 5189
+        "label": "Allowance/Charge Reason Code",
+        "cii_xpath": "ram:ReasonCode[not(@listID)]",
+        "ubl_xpath": "cbc:AllowanceChargeReasonCode[not(@listID)]",
+    },
+    "non_vat_tax_code": {  # warning: only difference with reason_code is listID
+        # only for charges
+        "label": "Allowance/Charge non-VAT Tax Code",
+        "min_level": "extended",
+        "cii_xpath": "ram:ReasonCode[@listID='5153']",
+        "ubl_xpath": "cbc:AllowanceChargeReasonCode[@listID='5153']",
+    },
+    "vat_category_code": {
+        "label": "Document Level Allowance/Charge VAT Category Code",
+        "cii_xpath": "ram:CategoryTradeTax/ram:CategoryCode",
+        "ubl_xpath": "cac:TaxCategory/cbc:ID",
+    },
+    "vat_rate": {
+        "label": "Document Level Allowance/Charge VAT Rate",
+        "format": "percent",
+        "cii_xpath": "ram:CategoryTradeTax/ram:RateApplicablePercent",
+        "ubl_xpath": "cac:TaxCategory/cbc:Percent",
+    },
+    "vat_exemption": {  # only for global
+        "label": "Document Level Allowance/Charge VAT Exemption Reason",
+        "min_level": "extended",
+        "cii_xpath": "ram:CategoryTradeTax/ram:ExemptionReason",
+        "ubl_xpath": "cac:TaxCategory/cbc:TaxExemptionReason",
+    },
+    "vat_exemption_code": {
+        "label": "Document Level Allowance/Charge VAT Exemption Reason Code",
+        "min_level": "extended",
+        "cii_xpath": "ram:CategoryTradeTax/ram:ExemptionReasonCode",
+        "ubl_xpath": "cac:TaxCategory/cbc:TaxExemptionReasonCode",
+    },
+}
+EN16931_ALLOWANCE_GLOBAL_FIELDS = {
+    key: value
+    for key, value in EN16931_CHARGE_GLOBAL_FIELDS.items()
+    if key != "non_vat_tax_code"
+}
+EN16931_CHARGE_LINE_FIELDS = {
+    key: value
+    for key, value in EN16931_CHARGE_GLOBAL_FIELDS.items()
+    if not key.startswith("vat_")
+}
+EN16931_ALLOWANCE_LINE_FIELDS = {
+    key: value
+    for key, value in EN16931_ALLOWANCE_GLOBAL_FIELDS.items()
+    if not key.startswith("vat_")
+}
+
 EN16931_FIELDS = {
     "BT-1": {
         "label": "Invoice Number",
@@ -481,11 +557,12 @@ EN16931_FIELDS = {
             "BT-21": {
                 "label": "Invoice Note Subject Code",
                 "cii_xpath": "ram:SubjectCode",
+                "ubl_xpath": "UBL_NOTE_SUBJECT",  # special treatment
             },
             "BT-22": {
                 "label": "Invoice Note",
                 "cii_xpath": "ram:Content",
-                "ubl_xpath": "NONE",  # special treatment in _xpath_get_value()
+                "ubl_xpath": "UBL_NOTE_CONTENT",  # special treatment
             },
         },
     },
@@ -609,59 +686,7 @@ EN16931_FIELDS = {
         "ram:ApplicableHeaderTradeSettlement/"
         "ram:SpecifiedTradeAllowanceCharge[ram:ChargeIndicator/udt:Indicator='false']",
         "ubl_xpath": "/Invoice/cac:AllowanceCharge[cbc:ChargeIndicator='false']",
-        "fields": {
-            "BT-92": {
-                "label": "Document Level Allowance Amount",
-                "format": "monetary_BT-5",
-                "cii_xpath": "ram:ActualAmount",
-                "ubl_xpath": "cbc:Amount",
-            },
-            "BT-93": {
-                "label": "Document Level Allowance Base Amount",
-                "format": "monetary_BT-5",
-                "cii_xpath": "ram:BasisAmount",
-                "ubl_xpath": "cbc:BaseAmount",
-            },
-            "BT-94": {
-                "label": "Document Level Allowance Percentage",
-                "format": "percent",
-                "cii_xpath": "ram:CalculationPercent",
-                "ubl_xpath": "cbc:MultiplierFactorNumeric",
-            },
-            "BT-95": {
-                "label": "Document Level Allowance VAT Category Code",
-                "cii_xpath": "ram:CategoryTradeTax/ram:CategoryCode",
-                "ubl_xpath": "cac:TaxCategory/cbc:ID",
-            },
-            "BT-96": {
-                "label": "Document Level Allowance VAT Rate",
-                "format": "percent",
-                "cii_xpath": "ram:CategoryTradeTax/ram:RateApplicablePercent",
-                "ubl_xpath": "cac:TaxCategory/cbc:Percent",
-            },
-            "BT-173": {  # also known as EXT-FR-FE-187
-                "label": "Document Level Allowance VAT Exemption Reason",
-                "min_level": "extended",
-                "cii_xpath": "ram:CategoryTradeTax/ram:ExemptionReason",
-                "ubl_xpath": "cac:TaxCategory/cbc:TaxExemptionReason",
-            },
-            "BT-174": {  # also known as EXT-FR-FE-188
-                "label": "Document Level Allowance VAT Exemption Reason Code",
-                "min_level": "extended",
-                "cii_xpath": "ram:CategoryTradeTax/ram:ExemptionReasonCode",
-                "ubl_xpath": "cac:TaxCategory/cbc:TaxExemptionReasonCode",
-            },
-            "BT-97": {
-                "label": "Document Level Allowance Reason",
-                "cii_xpath": "ram:Reason",
-                "ubl_xpath": "cbc:AllowanceChargeReason",
-            },
-            "BT-98": {
-                "label": "Document Level Allowance Reason Code",
-                "cii_xpath": "ram:ReasonCode",
-                "ubl_xpath": "cbc:AllowanceChargeReasonCode",
-            },
-        },
+        "fields": EN16931_ALLOWANCE_GLOBAL_FIELDS,
     },
     "BG-21": {
         "label": "Document Level Charges",  # Charges/frais au niveau doc
@@ -670,65 +695,7 @@ EN16931_FIELDS = {
         "ram:ApplicableHeaderTradeSettlement/"
         "ram:SpecifiedTradeAllowanceCharge[ram:ChargeIndicator/udt:Indicator='true']",
         "ubl_xpath": "/Invoice/cac:AllowanceCharge[cbc:ChargeIndicator='true']",
-        "fields": {
-            "BT-99": {
-                "label": "Document Level Charges Amount",
-                "format": "monetary_BT-5",
-                "cii_xpath": "ram:ActualAmount",
-                "ubl_xpath": "cbc:Amount",
-            },
-            "BT-100": {
-                "label": "Document Level Charges Base Amount",
-                "format": "monetary_BT-5",
-                "cii_xpath": "ram:BasisAmount",
-                "ubl_xpath": "cbc:BaseAmount",
-            },
-            "BT-101": {
-                "label": "Document Level Charges Percentage",
-                "format": "percent",
-                "cii_xpath": "ram:CalculationPercent",
-                "ubl_xpath": "cbc:MultiplierFactorNumeric",
-            },
-            "BT-102": {
-                "label": "Document Level Charges VAT Category Code",
-                "cii_xpath": "ram:CategoryTradeTax/ram:CategoryCode",
-                "ubl_xpath": "cac:TaxCategory/cbc:ID",
-            },
-            "BT-103": {
-                "label": "Document Level Charges VAT Rate",
-                "format": "percent",
-                "cii_xpath": "ram:CategoryTradeTax/ram:RateApplicablePercent",
-                "ubl_xpath": "cac:TaxCategory/cbc:Percent",
-            },
-            "BT-175": {  # also known as EXT-FR-FE-189
-                "label": "Document Level Charges VAT Exemption Reason",
-                "min_level": "extended",
-                "cii_xpath": "ram:CategoryTradeTax/ram:ExemptionReason",
-                "ubl_xpath": "cac:TaxCategory/cbc:TaxExemptionReason",
-            },
-            "BT-176": {  # also known as EXT-FR-FE-190
-                "label": "Document Level Charges VAT Exemption Reason Code",
-                "min_level": "extended",
-                "cii_xpath": "ram:CategoryTradeTax/ram:ExemptionReasonCode",
-                "ubl_xpath": "cac:TaxCategory/cbc:TaxExemptionReasonCode",
-            },
-            "BT-104": {
-                "label": "Document Level Charges Reason",
-                "cii_xpath": "ram:Reason",
-                "ubl_xpath": "cbc:AllowanceChargeReason",
-            },
-            "BT-105": {
-                "label": "Document Level Charges Reason Code",
-                "cii_xpath": "ram:ReasonCode[not(@listID)]",
-                "ubl_xpath": "cbc:AllowanceChargeReasonCode[not(@listID)]",
-            },
-            "BT-177": {  # warning: only difference with BT-105 is listID
-                "label": "Document Level Charges non-VAT Tax Code",
-                "min_level": "extended",
-                "cii_xpath": "ram:ReasonCode[@listID='5153']",
-                "ubl_xpath": "cbc:AllowanceChargeReasonCode[@listID='5153']",
-            },
-        },
+        "fields": EN16931_CHARGE_GLOBAL_FIELDS,
     },
     "BG-23": {
         "label": "VAT Breakdown",
@@ -841,11 +808,12 @@ EN16931_FIELDS = {
                     "EXT-FR-FE-183": {
                         "label": "Invoice Line Note Subject Code",
                         "cii_xpath": "ram:SubjectCode",
+                        "ubl_xpath": "UBL_NOTE_SUBJECT",  # special treatment
                     },
                     "BT-127": {
                         "label": "Invoice Line Note",
                         "cii_xpath": "ram:Content",
-                        "ubl_xpath": "NONE",  # special treatment in _xpath_get_value()
+                        "ubl_xpath": "UBL_NOTE_CONTENT",  # special treatment
                     },
                 },
             },
@@ -960,12 +928,7 @@ EN16931_FIELDS = {
                 "ram:NetPriceProductTradePrice/ram:BasisQuantity",
                 "ubl_xpath": "cac:Price/cbc:BaseQuantity",
             },
-            "BT-150": {
-                "label": "Invoice Line Item Price Base Quantity Unit of Measure Code",
-                "cii_xpath": "ram:SpecifiedLineTradeAgreement/"
-                "ram:NetPriceProductTradePrice/ram:BasisQuantity/@unitCode",
-                "ubl_xpath": "cac:Price/cbc:BaseQuantity/@unitCode",
-            },
+            # BT-150 = BT-150-1 = BT-130 (unitCode)
             "BT-151": {
                 "label": "Invoice Line VAT Category Code",
                 "cii_xpath": "ram:SpecifiedLineTradeSettlement/"
@@ -1091,36 +1054,7 @@ EN16931_FIELDS = {
                 "ram:SpecifiedTradeAllowanceCharge[ram:ChargeIndicator/"
                 "udt:Indicator='false']",
                 "ubl_xpath": "cac:AllowanceCharge[cbc:ChargeIndicator='false']",
-                "fields": {
-                    "BT-136": {
-                        "label": "Invoice Line Allowance Amount",
-                        "format": "monetary_BT-5",
-                        "cii_xpath": "ram:ActualAmount",
-                        "ubl_xpath": "cbc:Amount",
-                    },
-                    "BT-137": {
-                        "label": "Invoice Line Allowance Base Amount",
-                        "format": "monetary_BT-5",
-                        "cii_xpath": "ram:BasisAmount",
-                        "ubl_xpath": "cbc:BaseAmount",
-                    },
-                    "BT-138": {
-                        "label": "Invoice Line Allowance Percentage",
-                        "format": "percent",
-                        "cii_xpath": "ram:CalculationPercent",
-                        "ubl_xpath": "cbc:MultiplierFactorNumeric",
-                    },
-                    "BT-139": {
-                        "label": "Invoice Line Allowance Reason",
-                        "cii_xpath": "ram:Reason",
-                        "ubl_xpath": "cbc:AllowanceChargeReason",
-                    },
-                    "BT-140": {
-                        "label": "Invoice Line Allowance Reason Code",
-                        "cii_xpath": "ram:ReasonCode",
-                        "ubl_xpath": "cbc:AllowanceChargeReasonCode",
-                    },
-                },
+                "fields": EN16931_ALLOWANCE_LINE_FIELDS,
             },
             "BG-28": {
                 "label": "Invoice Line Charges",  # Charges/Frais de ligne
@@ -1128,42 +1062,7 @@ EN16931_FIELDS = {
                 "cii_xpath": "ram:SpecifiedLineTradeSettlement/"
                 "ram:SpecifiedTradeAllowanceCharge[ram:ChargeIndicator/udt:Indicator='true']",
                 "ubl_xpath": "cac:AllowanceCharge[cbc:ChargeIndicator='true']",
-                "fields": {
-                    "BT-141": {
-                        "label": "Invoice Line Charge Amount",
-                        "format": "monetary_BT-5",
-                        "cii_xpath": "ram:ActualAmount",
-                        "ubl_xpath": "cbc:Amount",
-                    },
-                    "BT-142": {
-                        "label": "Invoice Line Charge Base Amount",
-                        "format": "monetary_BT-5",
-                        "cii_xpath": "ram:BasisAmount",
-                        "ubl_xpath": "cbc:BaseAmount",
-                    },
-                    "BT-143": {
-                        "label": "Invoice Line Charge Percentage",
-                        "format": "percent",
-                        "cii_xpath": "ram:CalculationPercent",
-                        "ubl_xpath": "cbc:MultiplierFactorNumeric",
-                    },
-                    "BT-144": {
-                        "label": "Invoice Line Charge Reason",
-                        "cii_xpath": "ram:Reason",
-                        "ubl_xpath": "cbc:AllowanceChargeReason",
-                    },
-                    "BT-145": {
-                        "label": "Invoice Line Charge Reason Code",
-                        "cii_xpath": "ram:ReasonCode[not(@listID)]",
-                        "ubl_xpath": "cbc:AllowanceChargeReasonCode[not(@listID)]",
-                    },
-                    "BT-193": {  # Only difference with BT-145 is listID='5153'
-                        "label": "Invoice line-level non-VAT Tax Type Code",
-                        "min_level": "extended",
-                        "cii_xpath": "ram:ReasonCode[@listID='5153']",
-                        "ubl_xpath": "cbc:AllowanceChargeReasonCode[@listID='5153']",
-                    },
-                },
+                "fields": EN16931_CHARGE_LINE_FIELDS,
             },
             "BG-32": {
                 "label": "Invoice Line Item Attributes",
@@ -1536,6 +1435,14 @@ def preprocess_data_dict(
                 f"Field {field} should be in format '{field_format}' "
                 f"but its type is '{type(value).__name__}'"
             )
+        # fields that exists in CII but not in UBL (BT-11-0, ...)
+        # I haven't found so far fields that exist in UBL but not in CII
+        if (
+            flavor == "ubl-2.1"
+            and props.get("cii_xpath")
+            and not props.get("ubl_xpath")
+        ):
+            data_dict.pop(field)
         min_level = props.get("min_level")
         if not min_level and field.startswith("EXT-FR-FE-"):
             min_level = "extended"
@@ -1610,9 +1517,6 @@ def preprocess_data_dict(
                     fields_dict=props["fields"],
                     decimal_precision_dict=decimal_precision_dict,
                 )
-    # BT-11-0 doesn't exist in UBL
-    if flavor == "ubl-2.1" and "BT-11-0" in data_dict:
-        data_dict.pop("BT-11-0")
     # check BT-18 in en16931
     if level == "en16931" and data_dict.get("BT-18") and len(data_dict["BT-18"]) > 1:
         logger.warning(
@@ -1879,65 +1783,63 @@ def _cii_generate_additionnal_referenced_doc(data_dict, namespaces):
     return res
 
 
-def _cii_generate_single_allowance_charge(namespaces, type, indicator, **kwargs):
-    RAM = namespaces["ram"]
-    UDT = namespaces["udt"]
-    if type not in ("global", "line"):
-        raise ValueError("Wrong value for type argument")
-    if type == "global" and not kwargs.get("tax_categ"):
-        raise ValueError("A global allowance charge must have a tax_categ named arg")
-    elif type == "line" and "tax_categ" in kwargs:
-        raise ValueError(
-            "A line-level allowance charge must not have a tax_categ named arg"
-        )
+def _cii_generate_single_allowance_charge(namespaces, indicator, allowance_charge_dict):
     if indicator not in ("false", "true"):
         raise ValueError("Wrong value for indicator argument")
+    RAM = namespaces["ram"]
+    UDT = namespaces["udt"]
     return RAM.SpecifiedTradeAllowanceCharge(
         RAM.ChargeIndicator(UDT.Indicator(indicator)),
         *[
-            RAM.CalculationPercent(kwargs["percent"])
+            RAM.CalculationPercent(allowance_charge_dict["rate"])
             for _ in [1]
-            if kwargs.get("percent")
+            if allowance_charge_dict.get("rate")
         ],
         *[
-            RAM.BasisAmount(kwargs["base_amount"])
+            RAM.BasisAmount(allowance_charge_dict["base_amount"])
             for _ in [1]
-            if kwargs.get("base_amount")
+            if allowance_charge_dict.get("base_amount")
         ],
-        RAM.ActualAmount(kwargs["amount"]),
+        RAM.ActualAmount(allowance_charge_dict["amount"]),
         *[
-            RAM.ReasonCode(kwargs["reason_code"])
+            RAM.ReasonCode(allowance_charge_dict["reason_code"])
             for _ in [1]
-            if kwargs.get("reason_code")
+            if allowance_charge_dict.get("reason_code")
+            and not allowance_charge_dict.get("non_vat_tax_code")
         ],
         *[
-            RAM.ReasonCode(kwargs["reason_code_uncl5153"], listID="5153")
+            RAM.ReasonCode(allowance_charge_dict["non_vat_tax_code"], listID="5153")
             for _ in [1]
-            if kwargs.get("reason_code_uncl5153") and not kwargs.get("reason_code")
+            if allowance_charge_dict.get("non_vat_tax_code")
+            and not allowance_charge_dict.get("reason_code")
         ],
-        *[RAM.Reason(kwargs["reason"]) for _ in [1] if kwargs.get("reason")],
+        *[
+            RAM.Reason(allowance_charge_dict["reason"])
+            for _ in [1]
+            if allowance_charge_dict.get("reason")
+        ],
         *[
             RAM.CategoryTradeTax(
                 RAM.TypeCode("VAT"),
                 *[
-                    RAM.ExemptionReason(kwargs["tax_vatex_label"])
+                    RAM.ExemptionReason(allowance_charge_dict["vat_exemption"])
                     for _ in [1]
-                    if kwargs.get("tax_vatex_label")
+                    if allowance_charge_dict.get("vat_exemption")
                 ],
-                RAM.CategoryCode(kwargs["tax_categ"]),
+                RAM.CategoryCode(allowance_charge_dict["vat_category_code"]),
                 *[
-                    RAM.ExemptionReasonCode(kwargs["tax_vatex_code"])
+                    RAM.ExemptionReasonCode(allowance_charge_dict["vat_exemption_code"])
                     for _ in [1]
-                    if kwargs.get("tax_vatex_code")
+                    if allowance_charge_dict.get("vat_exemption_code")
                 ],
                 *[
-                    RAM.RateApplicablePercent(kwargs["tax_rate"])
+                    RAM.RateApplicablePercent(allowance_charge_dict["vat_rate"])
                     for _ in [1]
-                    if kwargs.get("tax_rate")
+                    if allowance_charge_dict.get("vat_rate")
                 ],
             )
             for _ in [1]
-            if type == "global"
+            if allowance_charge_dict.get("vat_category_code")
         ],
     )
 
@@ -2062,10 +1964,10 @@ def _cii_generate_single_invoice_line(namespaces, line_dict):
                     ],
                     *[
                         RAM.BasisQuantity(
-                            line_dict["BT-149-1"], unitCode=line_dict["BT-150-1"]
+                            line_dict["BT-149"], unitCode=line_dict["BT-130"]
                         )
                         for _ in [1]
-                        if line_dict.get("BT-149-1") and line_dict.get("BT-150-1")
+                        if line_dict.get("BT-149")
                     ],
                     *[
                         RAM.AppliedTradeAllowanceCharge(
@@ -2086,19 +1988,17 @@ def _cii_generate_single_invoice_line(namespaces, line_dict):
                     ],
                 )
                 for _ in [1]
-                if line_dict.get("BT-148")
-                or (line_dict.get("BT-149-1") and line_dict.get("BT-150-1"))
-                or line_dict.get("BT-147-00")
+                if line_dict.get("BT-148") or line_dict.get("BT-147-00")
             ],
             RAM.NetPriceProductTradePrice(
                 RAM.ChargeAmount(line_dict["BT-146"]),
                 *[
                     RAM.BasisQuantity(
                         line_dict["BT-149"],
-                        unitCode=line_dict["BT-150"],
+                        unitCode=line_dict["BT-130"],
                     )
                     for _ in [1]
-                    if line_dict.get("BT-149") and line_dict.get("BT-150")
+                    if line_dict.get("BT-149")
                 ],
             ),
         ),
@@ -2171,29 +2071,18 @@ def _cii_generate_single_invoice_line(namespaces, line_dict):
             *[
                 _cii_generate_single_allowance_charge(
                     namespaces,
-                    "line",
                     "false",
-                    amount=charge["BT-136"],
-                    reason_code=charge.get("BT-140"),
-                    reason=charge.get("BT-139"),
-                    percent=charge.get("BT-138"),
-                    base_amount=charge.get("BT-137"),
+                    allowance_dict,
                 )
-                for charge in (line_dict.get("BG-27") or [])
+                for allowance_dict in (line_dict.get("BG-27") or [])
             ],
             *[
                 _cii_generate_single_allowance_charge(
                     namespaces,
-                    "line",
                     "true",
-                    amount=charge["BT-141"],
-                    reason_code=charge.get("BT-145"),
-                    reason_code_uncl5153=charge.get("BT-193"),
-                    reason=charge.get("BT-144"),
-                    percent=charge.get("BT-143"),
-                    base_amount=charge.get("BT-142"),
+                    charge_dict,
                 )
-                for charge in (line_dict.get("BG-28") or [])
+                for charge_dict in (line_dict.get("BG-28") or [])
             ],
             RAM.SpecifiedTradeSettlementLineMonetarySummation(
                 RAM.LineTotalAmount(line_dict["BT-131"]),
@@ -2616,38 +2505,15 @@ def generate_cii_xml(
                 ],
                 *[
                     _cii_generate_single_allowance_charge(
-                        namespaces,
-                        "global",
-                        "false",
-                        amount=charge["BT-92"],
-                        reason_code=charge.get("BT-98"),
-                        reason=charge.get("BT-97"),
-                        percent=charge.get("BT-94"),
-                        base_amount=charge.get("BT-93"),
-                        tax_categ=charge["BT-95"],
-                        tax_rate=charge.get("BT-96"),
-                        tax_vatex_label=charge.get("BT-173"),
-                        tax_vatex_code=charge.get("BT-174"),
+                        namespaces, "false", allowance_dict
                     )
-                    for charge in (data_dict.get("BG-20") or [])
+                    for allowance_dict in (data_dict.get("BG-20") or [])
                 ],
                 *[
                     _cii_generate_single_allowance_charge(
-                        namespaces,
-                        "global",
-                        "true",
-                        amount=charge["BT-99"],
-                        reason_code=charge.get("BT-105"),
-                        reason_code_uncl5153=charge.get("BT-177"),
-                        reason=charge.get("BT-104"),
-                        percent=charge.get("BT-101"),
-                        base_amount=charge.get("BT-100"),
-                        tax_categ=charge["BT-102"],
-                        tax_rate=charge.get("BT-103"),
-                        tax_vatex_label=charge.get("BT-175"),
-                        tax_vatex_code=charge.get("BT-176"),
+                        namespaces, "true", charge_dict
                     )
-                    for charge in (data_dict.get("BG-21") or [])
+                    for charge_dict in (data_dict.get("BG-21") or [])
                 ],
                 *[
                     RAM.SpecifiedTradePaymentTerms(
@@ -3069,69 +2935,71 @@ def _ubl_generate_additional_doc_ref(data_dict, namespaces):
     return res
 
 
-def _ubl_generate_single_allowance_charge(namespaces, type, indicator, **kwargs):
-    CAC = namespaces["cac"]
-    CBC = namespaces["cbc"]
-    if type not in ("global", "line"):
-        raise ValueError("Wrong value for type argument")
-    if type == "global" and not kwargs.get("tax_categ"):
-        raise ValueError("A global allowance charge must have a tax_categ named arg")
-    elif type == "line" and "tax_categ" in kwargs:
-        raise ValueError(
-            "A line-level allowance charge must not have a tax_categ named arg"
-        )
+def _ubl_generate_single_allowance_charge(
+    namespaces, indicator, allowance_charge_dict, invoice_currency
+):
     if indicator not in ("false", "true"):
         raise ValueError("Wrong value for indicator argument")
+    CAC = namespaces["cac"]
+    CBC = namespaces["cbc"]
     return CAC.AllowanceCharge(
         CBC.ChargeIndicator(indicator),
         *[
-            CBC.AllowanceChargeReasonCode(kwargs["reason_code"])
+            CBC.AllowanceChargeReasonCode(allowance_charge_dict["reason_code"])
             for _ in [1]
-            if kwargs.get("reason_code")
+            if allowance_charge_dict.get("reason_code")
+            and not allowance_charge_dict.get("non_vat_tax_code")
         ],
         *[
-            CBC.AllowanceChargeReasonCode(kwargs["reason_code_uncl5153"], listID="5153")
+            CBC.AllowanceChargeReasonCode(
+                allowance_charge_dict["non_vat_tax_code"], listID="5153"
+            )
             for _ in [1]
-            if kwargs.get("reason_code_uncl5153") and not kwargs.get("reason_code")
+            if allowance_charge_dict.get("non_vat_tax_code")
+            and not allowance_charge_dict.get("reason_code")
         ],
         *[
-            CBC.AllowanceChargeReason(kwargs["reason"])
+            CBC.AllowanceChargeReason(allowance_charge_dict["reason"])
             for _ in [1]
-            if kwargs.get("reason")
+            if allowance_charge_dict.get("reason")
         ],
         *[
-            CBC.MultiplierFactorNumeric(kwargs["percent"])
+            CBC.MultiplierFactorNumeric(allowance_charge_dict["rate"])
             for _ in [1]
-            if kwargs.get("percent")
+            if allowance_charge_dict.get("rate")
         ],
-        CBC.Amount(kwargs["amount"], currencyID=kwargs["currency_code"]),
+        CBC.Amount(allowance_charge_dict["amount"], currencyID=invoice_currency),
         *[
-            CBC.BaseAmount(kwargs["base_amount"], currencyID=kwargs["currency_code"])
+            CBC.BaseAmount(
+                allowance_charge_dict["base_amount"], currencyID=invoice_currency
+            )
             for _ in [1]
-            if kwargs.get("base_amount")
+            if allowance_charge_dict.get("base_amount")
         ],
         *[
             CAC.TaxCategory(
-                CBC.ID(kwargs["tax_categ"]),
+                CBC.ID(allowance_charge_dict["vat_category_code"]),
                 *[
-                    CBC.Percent(kwargs["tax_rate"])
+                    CBC.Percent(allowance_charge_dict["vat_rate"])
                     for _ in [1]
-                    if kwargs.get("tax_rate")
+                    if allowance_charge_dict.get("vat_rate")
                 ],
                 *[
-                    CBC.TaxExemptionReasonCode(kwargs["tax_vatex_code"])
+                    CBC.TaxExemptionReasonCode(
+                        allowance_charge_dict["vat_exemption_code"]
+                    )
                     for _ in [1]
-                    if kwargs.get("tax_vatex_code")
+                    if allowance_charge_dict.get("vat_exemption_code")
                 ],
                 *[
-                    CBC.TaxExemptionReason(kwargs["tax_vatex_label"])
+                    CBC.TaxExemptionReason(allowance_charge_dict["vat_exemption"])
                     for _ in [1]
-                    if kwargs.get("tax_vatex_label")
+                    if allowance_charge_dict.get("vat_exemption")
                 ],
                 CAC.TaxScheme(CBC.ID("VAT")),
             )
             for _ in [1]
-            if type == "global"
+            if allowance_charge_dict.get("vat_category_code")
         ],
     )
 
@@ -3266,32 +3134,15 @@ def _ubl_generate_single_invoice_line(namespaces, line_dict, invoice_currency, r
         ),
         *[
             _ubl_generate_single_allowance_charge(
-                namespaces,
-                "line",
-                "false",
-                currency_code=invoice_currency,
-                amount=charge["BT-136"],
-                reason_code=charge.get("BT-140"),
-                reason=charge.get("BT-139"),
-                percent=charge.get("BT-138"),
-                base_amount=charge.get("BT-137"),
+                namespaces, "false", allowance_dict, invoice_currency
             )
-            for charge in (line_dict.get("BG-27") or [])
+            for allowance_dict in (line_dict.get("BG-27") or [])
         ],
         *[
             _ubl_generate_single_allowance_charge(
-                namespaces,
-                "line",
-                "true",
-                currency_code=invoice_currency,
-                amount=charge["BT-141"],
-                reason_code=charge.get("BT-145"),
-                reason_code_uncl5153=charge.get("BT-193"),
-                reason=charge.get("BT-144"),
-                percent=charge.get("BT-143"),
-                base_amount=charge.get("BT-142"),
+                namespaces, "true", charge_dict, invoice_currency
             )
-            for charge in (line_dict.get("BG-28") or [])
+            for charge_dict in (line_dict.get("BG-28") or [])
         ],
         CAC.Item(
             *[
@@ -3373,9 +3224,9 @@ def _ubl_generate_single_invoice_line(namespaces, line_dict, invoice_currency, r
         CAC.Price(
             CBC.PriceAmount(line_dict["BT-146"], currencyID=invoice_currency),
             *[
-                CBC.BaseQuantity(line_dict["BT-149"], unitCode=line_dict["BT-150"])
+                CBC.BaseQuantity(line_dict["BT-149"], unitCode=line_dict["BT-130"])
                 for _ in [1]
-                if line_dict.get("BT-149") and line_dict.get("BT-150")
+                if line_dict.get("BT-149")
             ],
             *[
                 CAC.AllowanceCharge(
@@ -3736,40 +3587,15 @@ def generate_ubl_xml(
         ],
         *[
             _ubl_generate_single_allowance_charge(
-                namespaces,
-                "global",
-                "false",
-                currency_code=data_dict["BT-5"],
-                amount=charge["BT-92"],
-                reason_code=charge.get("BT-98"),
-                reason=charge.get("BT-97"),
-                percent=charge.get("BT-94"),
-                base_amount=charge.get("BT-93"),
-                tax_categ=charge["BT-95"],
-                tax_rate=charge.get("BT-96"),
-                tax_vatex_label=charge.get("BT-173"),
-                tax_vatex_code=charge.get("BT-174"),
+                namespaces, "false", allowance_dict, data_dict["BT-5"]
             )
-            for charge in (data_dict.get("BG-20") or [])
+            for allowance_dict in (data_dict.get("BG-20") or [])
         ],
         *[
             _ubl_generate_single_allowance_charge(
-                namespaces,
-                "global",
-                "true",
-                currency_code=data_dict["BT-5"],
-                amount=charge["BT-99"],
-                reason_code=charge.get("BT-105"),
-                reason_code_uncl5153=charge.get("BT-177"),
-                reason=charge.get("BT-104"),
-                percent=charge.get("BT-101"),
-                base_amount=charge.get("BT-100"),
-                tax_categ=charge["BT-102"],
-                tax_rate=charge.get("BT-103"),
-                tax_vatex_label=charge.get("BT-175"),
-                tax_vatex_code=charge.get("BT-176"),
+                namespaces, "true", charge_dict, data_dict["BT-5"]
             )
-            for charge in (data_dict.get("BG-21") or [])
+            for charge_dict in (data_dict.get("BG-21") or [])
         ],
         CAC.TaxTotal(
             CBC.TaxAmount(data_dict["BT-110"], currencyID=data_dict["BT-5"]),
@@ -3907,3 +3733,20 @@ def is_credit_note(data_dict):
         raise ValueError("BT-3 is a required key in data_dict")
     credit_note = bool(data_dict["BT-3"] in CREDIT_NOTE_TYPE_CODES)
     return credit_note
+
+
+def get_data_dict_copy_for_logs(data_dict):
+    """This method generates a copy of data_dict where the bytes fields are
+    remplaced by a short informative string,
+    to have only the relevant data in the logs"""
+    # data_dict may not be a dict when it calls itself
+    if isinstance(data_dict, dict):
+        return {
+            key: get_data_dict_copy_for_logs(value) for key, value in data_dict.items()
+        }
+    elif isinstance(data_dict, list):
+        return [get_data_dict_copy_for_logs(item) for item in data_dict]
+    elif isinstance(data_dict, bytes):
+        return f"<bytes len={len(data_dict)}>"
+    else:
+        return data_dict
