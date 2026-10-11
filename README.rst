@@ -141,6 +141,13 @@ Contributors
 Changelog
 =========
 
+* Version 7.6 dated 2026-10-11:
+
+  * Restore filename matching constraint when calling get_facturx_xml_from_pdf() and get_orderx_xml_from_pdf(): it will check the filename is the expected filename (match is performed case insensitive). Method get_xml_from_pdf() now accepts a list of pattern matching for the 'filenames' argument.
+  * Write timestamps in UTC (patch contributed by Diego Spoleto Couto)
+  * Avoid FutureWarning message
+  * Code cleanup in script pdfextractxml
+
 * Version 7.5 dated 2026-10-09:
 
   * In allowance and charge blocks (global BG-20/BG-21 and per-line BG-27/BG-28), use generic keys in data_dict: rate, base_amount, amount, reason, reason_code... cf test/test_generate_xml.py to get examples

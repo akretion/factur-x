@@ -10,8 +10,8 @@ from facturx import __version__ as fxversion
 from facturx import configure_script_logging, get_xml_from_pdf
 
 __author__ = "Alexis de Lattre <alexis.delattre@akretion.com>"
-__date__ = "March 2026"
-__version__ = "0.4"
+__date__ = "October 2026"
+__version__ = "0.5"
 
 logger = logging.getLogger("factur-x")
 
@@ -33,23 +33,22 @@ def pdfextractxml(args):
             out_xml_filename,
         )
         sys.exit(1)
-    pdf_file = open(pdf_filename, "rb")
     check_xsd = not args.disable_xsd_check
     check_schematron = not args.disable_schematron_check
-    # The important line of code is below !
-    try:
-        (xml_filename, xml_string) = get_xml_from_pdf(
-            pdf_file, check_xsd=check_xsd, check_schematron=check_schematron
-        )
-    except Exception as e:
-        logger.error(e)
-        sys.exit(1)
+    xml_filename = xml_string = None
+    with open(pdf_filename, "rb") as pdf_file:
+        try:
+            (xml_filename, xml_string) = get_xml_from_pdf(
+                pdf_file, check_xsd=check_xsd, check_schematron=check_schematron
+            )
+        except Exception as e:
+            logger.error(e)
+            sys.exit(1)
     if xml_filename and xml_string:
         if isfile(out_xml_filename):
             logger.warning("File %s already exists. Overwriting it!", out_xml_filename)
-        xml_file = open(out_xml_filename, "wb")
-        xml_file.write(xml_string)
-        xml_file.close()
+        with open(out_xml_filename, "wb") as xml_file:
+            xml_file.write(xml_string)
         logger.info("File %s generated", out_xml_filename)
     else:
         logger.warning("File %s has not been created", out_xml_filename)
