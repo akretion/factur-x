@@ -28,7 +28,7 @@
 # - keep original metadata by copy of pdf_tailer[/Info] ?
 
 import importlib.resources as importlib_resources
-from datetime import datetime
+from datetime import datetime, timezone
 from io import BytesIO, IOBase
 from tempfile import NamedTemporaryFile
 
@@ -775,15 +775,18 @@ def get_xml_from_pdf(
 
 
 def _get_pdf_timestamp(date=None):
+    """Return a UTC PDF timestamp, treating naive datetimes as UTC."""
     if date is None:
-        date = datetime.now()
+        date = datetime.now(timezone.utc)
+    elif date.utcoffset() is not None:
+        date = date.astimezone(timezone.utc)
     # example date format: "D:20141006161354+02'00'"
     pdf_date = date.strftime("D:%Y%m%d%H%M%S+00'00'")
     return pdf_date
 
 
 def _get_metadata_timestamp():
-    now_dt = datetime.now()
+    now_dt = datetime.now(timezone.utc)
     # example format : 2014-07-25T14:01:22+02:00
     meta_date = now_dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")
     return meta_date
@@ -1487,6 +1490,8 @@ def generate_from_binary(
     'afrelationship' (AFRelationship of the attachment.
                       Possible values: supplement, unspecified.
                       Default value: unspecified).
+    Datetimes with a timezone are converted to UTC; naive datetimes are assumed
+    to be UTC.
     :type attachments: dict
     :param afrelationship: Set the AFRelationship PDF property of the
     Factur-X/Order-X XML file.
@@ -1615,6 +1620,8 @@ def generate_from_file(
     'afrelationship' (AFRelationship of the attachment.
                       Possible values: supplement, unspecified.
                       Default value: unspecified).
+    Datetimes with a timezone are converted to UTC; naive datetimes are assumed
+    to be UTC.
     :type attachments: dict
     :param afrelationship: Set the AFRelationship PDF property of the
     Factur-X/Order-X XML file.
@@ -1757,7 +1764,7 @@ def generate_from_file(
                 if not fadict.get("modification_datetime"):
                     mod_timestamp = os.path.getmtime(fadict["filepath"])
                     fadict["modification_datetime"] = datetime.fromtimestamp(
-                        mod_timestamp
+                        mod_timestamp, timezone.utc
                     )
                 if fadict.get("afrelationship"):
                     fadict["afrelationship"] = fadict["afrelationship"].lower()
