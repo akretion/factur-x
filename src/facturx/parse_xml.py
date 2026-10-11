@@ -57,7 +57,7 @@ def parse_ubl_cii_xml(
     check_schematron=False,
     saxon_server_url=None,
 ):
-    if not xml:
+    if not len(xml):
         raise ValueError("xml argument has no value")
     xml_etree = None
     if isinstance(xml, (bytes, str)):
