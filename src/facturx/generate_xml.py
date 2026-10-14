@@ -1071,6 +1071,11 @@ EN16931_FIELDS = {
                 "ram:ApplicableProductCharacteristic",
                 "ubl_xpath": "cac:Item/cac:AdditionalItemProperty",
                 "fields": {
+                    "EXT-FR-FE-159": {
+                        "label": "Item Attribute Code",
+                        "cii_xpath": "ram:TypeCode",
+                        "ubl_xpath": "cbc:NameCode",
+                    },
                     "BT-160": {
                         "label": "Item Attribute Name",
                         "cii_xpath": "ram:Description",
@@ -1080,6 +1085,16 @@ EN16931_FIELDS = {
                         "label": "Item Attribute Value",
                         "cii_xpath": "ram:Value",
                         "ubl_xpath": "cbc:Value",
+                    },
+                    "EXT-FR-FE-160": {
+                        "label": "Item Attribute Measured Value",
+                        "cii_xpath": "ram:ValueMeasure",
+                        "ubl_xpath": "cbc:ValueQuantity",
+                    },
+                    "EXT-FR-FE-161": {
+                        "label": "Item Attribute Measured Value Unit of Measure",
+                        "cii_xpath": "ram:ValueMeasure/@unitCode",
+                        "ubl_xpath": "cbc:ValueQuantity/@unitCode",
                     },
                 },
             },
@@ -1517,6 +1532,9 @@ def preprocess_data_dict(
                     fields_dict=props["fields"],
                     decimal_precision_dict=decimal_precision_dict,
                 )
+            # filter out entries that got empties because level is not extended
+            data_dict[field] = [entry for entry in data_dict[field] if entry]
+
     # check BT-18 in en16931
     if level == "en16931" and data_dict.get("BT-18") and len(data_dict["BT-18"]) > 1:
         logger.warning(
@@ -1890,11 +1908,40 @@ def _cii_generate_single_invoice_line(namespaces, line_dict):
             ],
             *[
                 RAM.ApplicableProductCharacteristic(
-                    RAM.Description(attrib_dict["BT-160"]),
-                    RAM.Value(attrib_dict["BT-161"]),
+                    *[
+                        RAM.TypeCode(attrib_dict["EXT-FR-FE-159"])
+                        for _ in [1]
+                        if attrib_dict.get("EXT-FR-FE-159")
+                    ],
+                    *[
+                        RAM.Description(attrib_dict["BT-160"])
+                        for _ in [1]
+                        if attrib_dict.get("BT-160")
+                    ],
+                    *[
+                        RAM.ValueMeasure(
+                            attrib_dict["EXT-FR-FE-160"],
+                            unitCode=attrib_dict["EXT-FR-FE-161"],
+                        )
+                        for _ in [1]
+                        if attrib_dict.get("EXT-FR-FE-160")
+                        and attrib_dict.get("EXT-FR-FE-161")
+                    ],
+                    *[
+                        RAM.Value(attrib_dict["BT-161"])
+                        for _ in [1]
+                        if attrib_dict.get("BT-161")
+                    ],
                 )
                 for attrib_dict in (line_dict.get("BG-32") or [])
-                if attrib_dict.get("BT-160") and attrib_dict.get("BT-161")
+                if (attrib_dict.get("BT-160") or attrib_dict.get("EXT-FR-FE-159"))
+                and (
+                    attrib_dict.get("BT-161")
+                    or (
+                        attrib_dict.get("EXT-FR-FE-160")
+                        and attrib_dict.get("EXT-FR-FE-161")
+                    )
+                )
             ],
             *[
                 RAM.DesignatedProductClassification(
@@ -2613,9 +2660,8 @@ def generate_cii_xml(
     xml_bytes = etree.tostring(
         xml_root, pretty_print=True, xml_declaration=True, encoding="UTF-8"
     )
-    #    from pprint import pprint
-
-    #    pprint(xml_bytes.decode("utf8"))
+    # from pprint import pprint
+    # pprint(xml_bytes.decode("utf8"))
     if check_xsd:
         xml_check_xsd(xml_root, flavor="factur-x", level=level)
     if check_schematron:
@@ -3214,11 +3260,38 @@ def _ubl_generate_single_invoice_line(namespaces, line_dict, invoice_currency, r
             ),
             *[
                 CAC.AdditionalItemProperty(
-                    CBC.Name(attrib_dict["BT-160"]),
-                    CBC.Value(attrib_dict["BT-161"]),
+                    CBC.Name(
+                        attrib_dict.get("BT-160") or attrib_dict.get("EXT-FR-FE-159")
+                    ),
+                    *[
+                        CBC.NameCode(attrib_dict["EXT-FR-FE-159"])
+                        for _ in [1]
+                        if attrib_dict.get("EXT-FR-FE-159")
+                    ],
+                    *[
+                        CBC.Value(attrib_dict["BT-161"])
+                        for _ in [1]
+                        if attrib_dict.get("BT-161")
+                    ],
+                    *[
+                        CBC.ValueQuantity(
+                            attrib_dict["EXT-FR-FE-160"],
+                            unitCode=attrib_dict["EXT-FR-FE-161"],
+                        )
+                        for _ in [1]
+                        if attrib_dict.get("EXT-FR-FE-160")
+                        and attrib_dict.get("EXT-FR-FE-161")
+                    ],
                 )
                 for attrib_dict in (line_dict.get("BG-32") or [])
-                if attrib_dict.get("BT-160") and attrib_dict.get("BT-161")
+                if (attrib_dict.get("BT-160") or attrib_dict.get("EXT-FR-FE-159"))
+                and (
+                    attrib_dict.get("BT-161")
+                    or (
+                        attrib_dict.get("EXT-FR-FE-160")
+                        and attrib_dict.get("EXT-FR-FE-161")
+                    )
+                )
             ],
         ),  # close Item
         CAC.Price(

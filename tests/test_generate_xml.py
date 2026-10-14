@@ -368,8 +368,11 @@ class TestGenerateXML(unittest.TestCase):
                             "BT-161": "Vert",
                         },
                         {
-                            "BT-160": "Taille",
-                            "BT-161": "L",
+                            "EXT-FR-FE-159": "SIZE_CODE",
+                            # "BT-160": "Taille",
+                            # "BT-161": "L",
+                            "EXT-FR-FE-160": "80.5",
+                            "EXT-FR-FE-161": "CMT",
                         },
                     ],
                     "BT-158": {  # key = BT-158-1, value = {BT-158-2: BT-158}

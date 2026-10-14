@@ -347,7 +347,11 @@ def _xpath_get_value(node, field, field_props, setup):
         and not field_props.get("format", "string").endswith("_dict")
     ):
         values = values[0]
-    logger.debug(f"Value for {field} is {values}")
+    if field_props.get("format") == "bytes" and values:
+        log_values = f"<bytes size {len(values)}>"
+    else:
+        log_values = values
+    logger.debug(f"Value for {field} is {log_values}")
     return values
 
 
@@ -399,3 +403,19 @@ def _post_processing(data_dict, flavor):
                     ):
                         note_dict["EXT-FR-FE-183"] = note_dict["BT-127"][1:4]
                         note_dict["BT-127"] = note_dict["BT-127"][5:]
+            for attrib_dict in line.get("BG-32") or []:
+                # this is a hack designed to workaround the following pb:
+                # in UBL XSD, CBC.Name(BT-160) is required
+                # even when CBC.NameCode(EXT-FR-FE-159) is present,
+                # but it's not the case in CII extended.
+                # But, if we put BT-160 and EXT-FR-FE-159 in data_dict
+                # with EXT-FR-FE-160 and EXT-FR-FE-161 and we generate with
+                # level=en16931, we endup with only BT-160
+                # -> it won't generate the XML block and parsing won't give back
+                # the same result for data_dict because BT-160 will be absent
+                if (
+                    attrib_dict.get("BT-160")
+                    and attrib_dict.get("EXT-FR-FE-159")
+                    and attrib_dict["BT-160"] == attrib_dict["EXT-FR-FE-159"]
+                ):
+                    attrib_dict.pop("BT-160")
