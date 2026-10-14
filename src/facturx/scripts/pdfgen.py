@@ -10,8 +10,8 @@ from facturx import __version__ as fxversion
 from facturx import configure_script_logging, generate_from_file
 
 __author__ = "Alexis de Lattre <alexis.delattre@akretion.com>"
-__date__ = "October 2025"
-__version__ = "0.9"
+__date__ = "October 2026"
+__version__ = "0.10"
 
 logger = logging.getLogger("factur-x")
 
@@ -77,9 +77,9 @@ def pdfgen(args):
             afrelationship=args.afrelationship,
             xmp_compression=xmp_compression,
         )
-    except Exception:
-        # no need to re-print the error log, it is already present in the logs
-        logger.error("factur-x lib call failed, exiting.")
+    except Exception as err:
+        logger.error(f"factur-x file generation failed: {err}")
+        logger.error("Exiting.")
         sys.exit(1)
 
 
@@ -145,12 +145,21 @@ def main(args=None):
         "--level",
         "--facturx-level",
         dest="level",
+        choices=[
+            "minimum",
+            "basicwl",
+            "basic",
+            "en16931",
+            "extended",
+            "comfort",
+            "autodetect",
+        ],
         default="autodetect",
         help="Specify the Factur-X or Order-X level of the XML file. "
         "Default: autodetect. If you specify a particular level instead of "
         "using autodetection, you will win a very small amount of time "
         "(less than 1 millisecond). "
-        "Possible values for Factur-X: minimum, basicwl, basic, en16931, extended."
+        "Possible values for Factur-X: minimum, basicwl, basic, en16931, extended. "
         "Possible values for Order-X: basic, comfort, extended.",
     )
     parser.add_argument(

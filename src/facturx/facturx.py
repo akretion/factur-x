@@ -1348,7 +1348,8 @@ def get_level(xml_etree, flavor="autodetect"):
     # basic: urn:cen.eu:en16931:2017#compliant#urn:factur-x.eu:1p0:basic
     # en16931: urn:cen.eu:en16931:2017
     # extended: urn:cen.eu:en16931:2017#conformant#urn:factur-x.eu:1p0:extended
-    # We also want to support variants such as:
+    # ID field for level extended-ctc-fr (CII XML only):
+    # extended-ctc-fr:
     # urn:cen.eu:en16931:2017#conformant#urn.cpro.gouv.fr:1p0:extended-ctc-fr
     # Content of the ID field per level for Order-X:
     # basic: urn:order-x.eu:1p0:basic
@@ -1358,8 +1359,6 @@ def get_level(xml_etree, flavor="autodetect"):
     possible_values = dict(FACTURX_LEVEL2xsd)
     possible_values.update(ORDERX_LEVEL2xsd)
     level = doc_id.split(":")[-1]
-    if level == "extended-ctc-fr" and flavor == "factur-x":
-        level = "extended"
     if level not in possible_values:
         # Ignore what is after the first "#"
         doc_id_cut = doc_id.split("#")[0]
@@ -1791,13 +1790,18 @@ def generate_from_file(
                 "XML is ZUGFeRD 1.x. Generating ZUGFeRD 1.x PDF is not supported. "
                 "You should update the XML to ZUGFeRD 2.x."
             )
-    if (flavor == "factur-x" and level not in FACTURX_LEVEL2xsd) or (
+    FACTURX_LEVELS = ("minimum", "basicwl", "basic", "en16931", "extended")
+    if (flavor == "factur-x" and level not in FACTURX_LEVELS) or (
         flavor == "order-x" and level not in ORDERX_LEVEL2xsd
     ):
         if xml_root is None:
             xml_root = etree.fromstring(xml_bytes)
         logger.debug("level will be autodetected")
         level = get_level(xml_root, flavor)
+    if (flavor == "factur-x" and level not in FACTURX_LEVELS) or (
+        flavor == "order-x" and level not in ORDERX_LEVEL2xsd
+    ):
+        raise ValueError(f"Level {level} is not supported for flavor {flavor}")
     if (
         flavor == "factur-x"
         and level in ("minimum", "basicwl")
