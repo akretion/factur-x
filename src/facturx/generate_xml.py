@@ -1089,6 +1089,14 @@ EN16931_FIELDS = {
                 "ram:ApplicableTradeDeliveryTerms/ram:RelevantTradeLocation/ram:Name",
                 "ubl_xpath": "cac:DeliveryTerms/cac:DeliveryLocation/cbc:Name",
             },
+            "EXT-FR-FE-200": {
+                "label": "Referenced Purchase Order Line Date",
+                "format": "date",
+                "cii_xpath": "ram:SpecifiedLineTradeAgreement/"
+                "ram:BuyerOrderReferencedDocument/ram:FormattedIssueDateTime/"
+                "qdt:DateTimeString",
+                "ubl_xpath": "cac:OrderLineReference/cac:OrderReference/cbc:IssueDate",
+            },
             "BG-27": {
                 "label": "Invoice Line Allowances",  # Remise de ligne
                 "format": "list",
@@ -2061,6 +2069,16 @@ def _cii_generate_single_invoice_line(namespaces, line_dict):
                         RAM.LineID(line_dict["BT-132"])
                         for _ in [1]
                         if line_dict.get("BT-132")
+                    ],
+                    *[
+                        RAM.FormattedIssueDateTime(
+                            QDT.DateTimeString(
+                                _cii_date_to_string(line_dict["EXT-FR-FE-200"]),
+                                format="102",
+                            )
+                        )
+                        for _ in [1]
+                        if line_dict.get("EXT-FR-FE-200")
                     ],
                 )
                 for _ in [1]
@@ -3193,6 +3211,13 @@ def _ubl_generate_single_invoice_line(namespaces, line_dict, invoice_currency, r
                             CBC.SalesOrderID(line_dict["EXT-FR-FE-144"])
                             for _ in [1]
                             if line_dict.get("EXT-FR-FE-144")
+                        ],
+                        *[
+                            CBC.IssueDate(
+                                _ubl_date_to_string(line_dict["EXT-FR-FE-200"])
+                            )
+                            for _ in [1]
+                            if line_dict.get("EXT-FR-FE-200")
                         ],
                     )
                     for _ in [1]

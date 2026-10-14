@@ -371,6 +371,7 @@ class TestGenerateXML(unittest.TestCase):
                     "EXT-FR-FE-163": "DETAIL",
                     "EXT-FR-FE-193": "DAP",
                     "EXT-FR-FE-194": "Barcelona",
+                    "EXT-FR-FE-200": datetime.date(2026, 2, 21),
                     "BG-32": [  # key = BT-160: value = BT-161
                         {
                             "BT-160": "Couleur",
