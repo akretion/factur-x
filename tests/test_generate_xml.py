@@ -4,9 +4,9 @@
 import datetime
 import json
 import unittest
-from pprint import pprint
 
-from deepdiff import DeepDiff
+# from pprint import pprint
+# from deepdiff import DeepDiff
 from facturx import (
     data_dict_to_json,
     generate_xml,
@@ -538,8 +538,8 @@ class TestGenerateXML(unittest.TestCase):
                     parsed_data_dict = parse_ubl_cii_xml(xml_bytes, check_xsd=False)
                     # pprint(parsed_data_dict)
                     if parsed_data_dict != data_dict:
-                        diff = DeepDiff(data_dict, parsed_data_dict)
-                        pprint(diff)
+                        # diff = DeepDiff(data_dict, parsed_data_dict)
+                        # pprint(diff)
                         self.assertFalse(
                             "Parsed parsed_data_dict is different than data_dict"
                         )
