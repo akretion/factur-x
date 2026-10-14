@@ -1003,13 +1003,6 @@ EN16931_FIELDS = {
                 "cii_xpath": "ram:SpecifiedTradeProduct/ram:OriginTradeCountry/ram:ID",
                 "ubl_xpath": "cac:Item/cac:OriginCountry/cbc:IdentificationCode",
             },
-            "EXT-FR-FE-BG-12": {
-                "label": "Seller at Invoice Line",
-                "format": "party_dict",
-                "party_dict_blacklist": ["contacts", "role_code", "legal_info"],
-                "cii_xpath": "ram:SpecifiedLineTradeAgreement/ram:ItemSellerTradeParty",
-                "ubl_xpath": "cac:Item/cac:ManufacturerParty",
-            },
             "EXT-FR-FE-135": {
                 "label": "Purchased Order Reference at Invoice Line",
                 "cii_xpath": "ram:SpecifiedLineTradeAgreement/"
@@ -1068,6 +1061,14 @@ EN16931_FIELDS = {
                 "cii_xpath": "ram:SpecifiedLineTradeAgreement/"
                 "ram:SellerOrderReferencedDocument/ram:LineID",
                 "ubl_xpath": "cac:OrderLineReference/cbc:SalesOrderLineID",
+            },
+            "EXT-FR-FE-158": {
+                "label": "Delivery Date of this Invoice Line",
+                "format": "date",
+                "cii_xpath": "ram:SpecifiedLineTradeDelivery/"
+                "ram:ActualDeliverySupplyChainEvent/ram:OccurrenceDateTime/"
+                "udt:DateTimeString",
+                "ubl_xpath": "cac:Delivery/cbc:ActualDeliveryDate",
             },
             # disabled for the moment, because EXT-FR-FE-162 has the same UBL XPATH
             # location as EXT-FR-FR-139
@@ -1161,6 +1162,13 @@ EN16931_FIELDS = {
                 "party_dict_whitelist": ["identifiers", "name", "address"],
                 "cii_xpath": "ram:SpecifiedLineTradeDelivery/ram:ShipToTradeParty",
                 "ubl_xpath": "cac:Delivery",
+            },
+            "EXT-FR-FE-BG-12": {
+                "label": "Seller at Invoice Line",
+                "format": "party_dict",
+                "party_dict_blacklist": ["contacts", "role_code", "legal_info"],
+                "cii_xpath": "ram:SpecifiedLineTradeAgreement/ram:ItemSellerTradeParty",
+                "ubl_xpath": "cac:Item/cac:ManufacturerParty",
             },
         },
     },
@@ -2143,9 +2151,21 @@ def _cii_generate_single_invoice_line(namespaces, line_dict):
         ),
         RAM.SpecifiedLineTradeDelivery(
             RAM.BilledQuantity(line_dict["BT-129"], unitCode=line_dict["BT-130"]),
-            _cii_generate_party(  # EXT-FR-FE-BG-10
+            _cii_generate_party(
                 "ShipToTradeParty", line_dict.get("EXT-FR-FE-BG-10"), namespaces
             ),
+            *[
+                RAM.ActualDeliverySupplyChainEvent(
+                    RAM.OccurrenceDateTime(
+                        UDT.DateTimeString(
+                            _cii_date_to_string(line_dict["EXT-FR-FE-158"]),
+                            format="102",
+                        )
+                    )
+                )
+                for _ in [1]
+                if line_dict.get("EXT-FR-FE-158")
+            ],
             *[
                 RAM.DespatchAdviceReferencedDocument(
                     *[

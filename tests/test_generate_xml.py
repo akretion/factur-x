@@ -487,6 +487,7 @@ class TestGenerateXML(unittest.TestCase):
                     "EXT-FR-FE-139": "12",
                     "EXT-FR-FE-137": "380",
                     "EXT-FR-FE-138": datetime.date(2025, 12, 24),
+                    "EXT-FR-FE-158": datetime.date(2026, 6, 16),
                     "EXT-FR-FE-163": "DETAIL",
                 },
             ],
