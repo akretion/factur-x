@@ -1363,7 +1363,7 @@ def get_level(xml_etree, flavor="autodetect"):
     if level not in possible_values:
         # Ignore what is after the first "#"
         doc_id_cut = doc_id.split("#")[0]
-        if len(doc_id_cut) > 1:
+        if ":" in doc_id_cut:
             level = doc_id_cut.split(":")[-2]
     if level not in possible_values:
         raise ValueError(f"Invalid Factur-X/Order-X URN: '{doc_id}'")

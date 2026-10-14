@@ -53,6 +53,18 @@ class TestAPI(unittest.TestCase):
                     data_dict = parse_ubl_cii_xml(xml_root, flavor=flavor, level=level)
                     data_dict.pop("BT-24")
 
+    def test_get_level_invalid_urn(self):
+        # A CustomizationID without ":" (e-fff 1.0) must give the usual
+        # ValueError, not an IndexError
+        xml_root = etree.fromstring(
+            b'<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" '
+            b'xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:'
+            b'CommonBasicComponents-2">'
+            b"<cbc:CustomizationID>1.0</cbc:CustomizationID></Invoice>"
+        )
+        with self.assertRaisesRegex(ValueError, "Invalid Factur-X/Order-X URN"):
+            get_level(xml_root)
+
     def test_facturx_schematron_get_codedb_xml_file(self):
         for level in ("minimum", "basicwl", "basic", "en16931", "extended"):
             codedb_xml_bytes = facturx_schematron_get_codedb_xml_file(level)
