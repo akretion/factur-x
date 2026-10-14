@@ -556,7 +556,7 @@ EN16931_FIELDS = {
         "ubl_xpath": "/Invoice/cac:DeliveryTerms/cbc:ID",
     },
     "EXT-FR-FE-186": {
-        "label": "Incoterms Location Name",
+        "label": "Incoterms Location",
         "cii_xpath": "/rsm:CrossIndustryInvoice/rsm:SupplyChainTradeTransaction/"
         "ram:ApplicableHeaderTradeAgreement/ram:ApplicableTradeDeliveryTerms/"
         "ram:RelevantTradeLocation/ram:Name",
@@ -1076,6 +1076,18 @@ EN16931_FIELDS = {
                 "ram:LineStatusReasonCode",
                 "ubl_xpath": "cac:BillingReference/cac:InvoiceDocumentReference/"
                 "cbc:DocumentStatusCode",
+            },
+            "EXT-FR-FE-193": {
+                "label": "Incoterms Code at Invoice Line",
+                "cii_xpath": "ram:SpecifiedLineTradeAgreement/"
+                "ram:ApplicableTradeDeliveryTerms/ram:DeliveryTypeCode",
+                "ubl_xpath": "cac:DeliveryTerms/cbc:ID",
+            },
+            "EXT-FR-FE-194": {
+                "label": "Incoterms Location at Invoice Line",
+                "cii_xpath": "ram:SpecifiedLineTradeAgreement/"
+                "ram:ApplicableTradeDeliveryTerms/ram:RelevantTradeLocation/ram:Name",
+                "ubl_xpath": "cac:DeliveryTerms/cac:DeliveryLocation/cbc:Name",
             },
             "BG-27": {
                 "label": "Invoice Line Allowances",  # Remise de ligne
@@ -2010,6 +2022,18 @@ def _cii_generate_single_invoice_line(namespaces, line_dict):
             ],
         ),
         RAM.SpecifiedLineTradeAgreement(
+            *[
+                RAM.ApplicableTradeDeliveryTerms(
+                    RAM.DeliveryTypeCode(line_dict["EXT-FR-FE-193"]),
+                    *[
+                        RAM.RelevantTradeLocation(RAM.Name(line_dict["EXT-FR-FE-194"]))
+                        for _ in [1]
+                        if line_dict.get("EXT-FR-FE-194")
+                    ],
+                )
+                for _ in [1]
+                if line_dict.get("EXT-FR-FE-193")
+            ],
             *[
                 RAM.SellerOrderReferencedDocument(
                     *[
@@ -3396,6 +3420,18 @@ def _ubl_generate_single_invoice_line(namespaces, line_dict, invoice_currency, r
                 if line_dict.get("BT-147-00")
             ],
         ),
+        *[
+            CAC.DeliveryTerms(
+                CBC.ID(line_dict["EXT-FR-FE-193"]),
+                *[
+                    CAC.DeliveryLocation(CBC.Name(line_dict["EXT-FR-FE-194"]))
+                    for _ in [1]
+                    if line_dict.get("EXT-FR-FE-194")
+                ],
+            )
+            for _ in [1]
+            if line_dict.get("EXT-FR-FE-193")
+        ],
     )
 
 
