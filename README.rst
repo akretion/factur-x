@@ -143,7 +143,7 @@ Changelog
 
 * Version 7.7 dated 2026-10-14:
 
-  * Add support for EXT-FR-FE-01, EXT-FR-FE-199, EXT-FR-FE-159, EXT-FR-FE-160, EXT-FR-FE-161, EXT-FR-FE-163, EXT-FR-FE-193, EXT-FR-FE-194, EXT-FR-FE-200 in generation and parsing
+  * Add support for EXT-FR-FE-01, EXT-FR-FE-199, EXT-FR-FE-159, EXT-FR-FE-160, EXT-FR-FE-161, EXT-FR-FE-163, EXT-FR-FE-193, EXT-FR-FE-194, EXT-FR-FE-200 and EXT-FR-FE-BG-12 in generation and parsing
   * explicit error when level is 'extended-ctc-fr' and generate_from_file() is called or the script facturx-pdfgen is called (reminder : this level doesn't exist in Factur-X, it is CII XML only)
   * explicit error in get_level() on a URN without ':' (patch contributed by Andrey Karazhev)
   * Update CII extended-ctc-fr schematron to latest version from https://github.com/fnfempe/France_RFE

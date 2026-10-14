@@ -360,6 +360,29 @@ class TestGenerateXML(unittest.TestCase):
                     "BT-132": "PO1242-L1",
                     "BT-134": datetime.date(2026, 6, 14),
                     "BT-135": datetime.date(2026, 6, 15),
+                    "EXT-FR-FE-BG-12": {  # Seller at line level
+                        "name": "Market Quality Place",
+                        "biz_name": "Market No Place",
+                        "identifiers": {
+                            "0009": "68822825300011",
+                        },
+                        "legal_identifier": "688228253",
+                        "legal_identifier_schemeid": "0002",
+                        "vat_identifier": "FR01688228253",
+                        # tax_identifier is disabled because the
+                        # Factur-X extended schematron has a bug, cf
+                        # https://github.com/fnfempe/France_RFE/issues/85
+                        # "tax_identifier": "DGFIP_ref_87932",
+                        "einvoicing_addr": "688228253_SUFFIX",
+                        "einvoicing_addr_schemeid": "0225",
+                        "addr_l1": "7 rue du Pic d'Assan",
+                        "addr_l2": "L'Ochette",
+                        "addr_l3": "ZAC du Mystère",
+                        "city": "Ceillac",
+                        "postcode": "05600",
+                        "country_subdivision": "Hautes-Alpes",
+                        "country_code": "FR",
+                    },
                     "EXT-FR-FE-144": "Order-678",
                     "EXT-FR-FE-145": "OrderLine-490",
                     "EXT-FR-FE-135": "PX9021",
@@ -527,6 +550,7 @@ class TestGenerateXML(unittest.TestCase):
         for flavor in ("factur-x", "ubl-2.1"):
             for level in FLAVOR2LEVELS[flavor]:
                 for bt3 in ("380", "381"):
+                    print(f"JSON test: flavor={flavor} level={level} BT-3={bt3}")
                     data_dict = self._prepare_data_dict()
                     data_dict["BT-3"] = bt3
                     if bt3 == "381":
@@ -566,6 +590,7 @@ class TestGenerateXML(unittest.TestCase):
             "urn:cen.eu:en16931:2017#conformant#urn.cpro.gouv.fr:1p0:extended-ctc-fr",
         ):
             for flavor in ("factur-x", "ubl-2.1"):
+                print(f"autodetect test: flavor={flavor} BT-24={bt24}")
                 data_dict = self._prepare_data_dict()
                 data_dict["BT-24"] = bt24
                 generate_xml(data_dict, flavor=flavor)  # autodetect

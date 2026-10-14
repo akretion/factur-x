@@ -1003,6 +1003,13 @@ EN16931_FIELDS = {
                 "cii_xpath": "ram:SpecifiedTradeProduct/ram:OriginTradeCountry/ram:ID",
                 "ubl_xpath": "cac:Item/cac:OriginCountry/cbc:IdentificationCode",
             },
+            "EXT-FR-FE-BG-12": {
+                "label": "Seller at Invoice Line",
+                "format": "party_dict",
+                "party_dict_blacklist": ["contacts", "role_code", "legal_info"],
+                "cii_xpath": "ram:SpecifiedLineTradeAgreement/ram:ItemSellerTradeParty",
+                "ubl_xpath": "cac:Item/cac:ManufacturerParty",
+            },
             "EXT-FR-FE-135": {
                 "label": "Purchased Order Reference at Invoice Line",
                 "cii_xpath": "ram:SpecifiedLineTradeAgreement/"
@@ -1225,12 +1232,12 @@ EN16931_PARTY_FIELDS = {
         "cii_xpath": "ram:SpecifiedLegalOrganization/ram:ID/@schemeID",
         "ubl_xpath": "cac:PartyLegalEntity/cbc:CompanyID/@schemeID",
     },
-    "vat_identifier": {  # in extended level, it is written as 0..2, I don't know why
+    "vat_identifier": {
         "label": "VAT Identification Number",
         "cii_xpath": "ram:SpecifiedTaxRegistration/ram:ID[@schemeID='VA']",
         "ubl_xpath": "cac:PartyTaxScheme[cac:TaxScheme/cbc:ID='VAT']/cbc:CompanyID",
     },
-    "tax_identifier": {  # in extended level, it is written as 0..2, I don't know why
+    "tax_identifier": {
         "label": "Tax Identification",
         "min_level": "en16931",
         "cii_xpath": "ram:SpecifiedTaxRegistration/ram:ID[@schemeID='FC']",
@@ -2130,6 +2137,9 @@ def _cii_generate_single_invoice_line(namespaces, line_dict):
                     if line_dict.get("BT-149")
                 ],
             ),
+            _cii_generate_party(
+                "ItemSellerTradeParty", line_dict.get("EXT-FR-FE-BG-12"), namespaces
+            ),
         ),
         RAM.SpecifiedLineTradeDelivery(
             RAM.BilledQuantity(line_dict["BT-129"], unitCode=line_dict["BT-130"]),
@@ -2797,6 +2807,8 @@ def _ubl_generate_party(
         node_name = "TaxRepresentativeParty"
     elif field == "EXT-FR-FE-BG-02":
         node_name = "PayerParty"
+    elif field == "EXT-FR-FE-BG-12":
+        node_name = "ManufacturerParty"
     elif field in ("EXT-FR-FE-BG-01", "EXT-FR-FE-BG-03"):
         node_name = "AgentParty"
     else:
@@ -3407,6 +3419,11 @@ def _ubl_generate_single_invoice_line(namespaces, line_dict, invoice_currency, r
                     )
                 )
             ],
+            _ubl_generate_party(
+                line_dict,
+                "EXT-FR-FE-BG-12",
+                namespaces,
+            ),
         ),  # close Item
         CAC.Price(
             CBC.PriceAmount(line_dict["BT-146"], currencyID=invoice_currency),
