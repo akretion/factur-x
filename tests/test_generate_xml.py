@@ -4,16 +4,15 @@
 import datetime
 import json
 import unittest
+from pprint import pprint
 
+from deepdiff import DeepDiff
 from facturx import (
     data_dict_to_json,
     generate_xml,
     is_credit_note,
     parse_ubl_cii_xml,
 )
-
-# from pprint import pprint
-# from deepdiff import DeepDiff
 
 FLAVOR2LEVELS = {
     "factur-x": ["extended", "en16931", "basicwl", "extended-ctc-fr"],
@@ -37,6 +36,8 @@ class TestGenerateXML(unittest.TestCase):
             "BT-11": "Projet_Zorro",
             "BT-11-0": "Zorro super projet",
             "BT-12": "Contrat_du_siècle",
+            "EXT-FR-FE-01": "GC",
+            "EXT-FR-FE-199": datetime.date(2020, 2, 12),  # contract date
             "BT-13": "PO1242",
             "BT-14": "DEVIS2093",
             "BT-15": "BR-2026/06/42",
@@ -362,6 +363,12 @@ class TestGenerateXML(unittest.TestCase):
                     "EXT-FR-FE-144": "Order-678",
                     "EXT-FR-FE-145": "OrderLine-490",
                     "EXT-FR-FE-135": "PX9021",
+                    # ref to previous invoice
+                    "EXT-FR-FE-136": "F824739",
+                    "EXT-FR-FE-139": "12",
+                    "EXT-FR-FE-137": "380",
+                    "EXT-FR-FE-138": datetime.date(2025, 12, 24),
+                    "EXT-FR-FE-163": "DETAIL",
                     "BG-32": [  # key = BT-160: value = BT-161
                         {
                             "BT-160": "Couleur",
@@ -454,6 +461,7 @@ class TestGenerateXML(unittest.TestCase):
                     "EXT-FR-FE-139": "12",
                     "EXT-FR-FE-137": "380",
                     "EXT-FR-FE-138": datetime.date(2025, 12, 24),
+                    "EXT-FR-FE-163": "DETAIL",
                 },
             ],
         }
@@ -487,6 +495,7 @@ class TestGenerateXML(unittest.TestCase):
         for flavor in ("factur-x", "ubl-2.1"):
             for level in FLAVOR2LEVELS[flavor]:
                 for bt3 in ("380", "381"):
+                    print(f"flavor={flavor} level={level} BT-3={bt3}")
                     data_dict = self._prepare_data_dict()
                     data_dict["BT-3"] = bt3
                     xml_bytes = generate_xml(
@@ -503,8 +512,8 @@ class TestGenerateXML(unittest.TestCase):
                     parsed_data_dict = parse_ubl_cii_xml(xml_bytes, check_xsd=False)
                     # pprint(parsed_data_dict)
                     if parsed_data_dict != data_dict:
-                        # diff = DeepDiff(data_dict, parsed_data_dict)
-                        # pprint(diff)
+                        diff = DeepDiff(data_dict, parsed_data_dict)
+                        pprint(diff)
                         self.assertFalse(
                             "Parsed parsed_data_dict is different than data_dict"
                         )

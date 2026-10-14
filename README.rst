@@ -141,6 +141,13 @@ Contributors
 Changelog
 =========
 
+* Version 7.7 dated 2026-10-14:
+
+  * Add support for EXT-FR-FE-01, EXT-FR-FE-199, EXT-FR-FE-159, EXT-FR-FE-160, EXT-FR-FE-161 and EXT-FR-FE-163 in generation and parsing
+  * explicit error when level is 'extended-ctc-fr' and generate_from_file() is called or the script facturx-pdfgen is called (reminder : this level doesn't exist in Factur-X, it is CII XML only)
+  * explicit error in get_level() on a URN without ':' (patch contributed by Andrey Karazhev)
+  * Update CII extended-ctc-fr schematron to latest version from https://github.com/fnfempe/France_RFE
+
 * Version 7.6 dated 2026-10-11:
 
   * Restore filename matching constraint when calling get_facturx_xml_from_pdf() and get_orderx_xml_from_pdf(): it will check the filename is the expected filename (match is performed case insensitive). Method get_xml_from_pdf() now accepts a list of pattern matching for the 'filenames' argument.

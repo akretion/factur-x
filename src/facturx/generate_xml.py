@@ -533,6 +533,21 @@ EN16931_FIELDS = {
         "ram:SpecifiedTradeSettlementHeaderMonetarySummation/ram:DuePayableAmount",
         "ubl_xpath": "/Invoice/cac:LegalMonetaryTotal/cbc:PayableAmount",
     },
+    "EXT-FR-FE-01": {
+        "label": "Contract Code Type",  # UNTDID 1153
+        "cii_xpath": "/rsm:CrossIndustryInvoice/rsm:SupplyChainTradeTransaction/"
+        "ram:ApplicableHeaderTradeAgreement/ram:ContractReferencedDocument/"
+        "ram:ReferenceTypeCode",
+        "ubl_xpath": "/Invoice/cac:ContractDocumentReference/cbc:DocumentType",
+    },
+    "EXT-FR-FE-199": {
+        "label": "Contract Date",
+        "format": "date",
+        "cii_xpath": "/rsm:CrossIndustryInvoice/rsm:SupplyChainTradeTransaction/"
+        "ram:ApplicableHeaderTradeAgreement/ram:ContractReferencedDocument/"
+        "ram:FormattedIssueDateTime/qdt:DateTimeString",
+        "ubl_xpath": "/Invoice/cac:ContractDocumentReference/cbc:IssueDate",
+    },
     "EXT-FR-FE-185": {
         "label": "Incoterms Code",
         "cii_xpath": "/rsm:CrossIndustryInvoice/rsm:SupplyChainTradeTransaction/"
@@ -1046,6 +1061,21 @@ EN16931_FIELDS = {
                 "cii_xpath": "ram:SpecifiedLineTradeAgreement/"
                 "ram:SellerOrderReferencedDocument/ram:LineID",
                 "ubl_xpath": "cac:OrderLineReference/cbc:SalesOrderLineID",
+            },
+            # disabled for the moment, because EXT-FR-FE-162 has the same UBL XPATH
+            # location as EXT-FR-FR-139
+            # "EXT-FR-FE-162": {
+            #     "label": "Parent Line ID",
+            #     "cii_xpath": "ram:SpecifiedTradeProduct/ram:OriginTradeCountry/"
+            #                   "ram:ParentLineID",
+            #     "ubl_xpath": "cac:BillingReference/cac:BillingReferenceLine/cbc:ID",
+            #     },
+            "EXT-FR-FE-163": {
+                "label": "Subtype of the Invoice Line Item",
+                "cii_xpath": "ram:AssociatedDocumentLineDocument/"
+                "ram:LineStatusReasonCode",
+                "ubl_xpath": "cac:BillingReference/cac:InvoiceDocumentReference/"
+                "cbc:DocumentStatusCode",
             },
             "BG-27": {
                 "label": "Invoice Line Allowances",  # Remise de ligne
@@ -1872,6 +1902,16 @@ def _cii_generate_single_invoice_line(namespaces, line_dict):
         RAM.AssociatedDocumentLineDocument(
             RAM.LineID(line_dict["BT-126"]),
             *[
+                RAM.ParentLineID(line_dict["EXT-FR-FE-162"])
+                for _ in [1]
+                if line_dict.get("EXT-FR-FE-162")
+            ],
+            *[
+                RAM.LineStatusReasonCode(line_dict["EXT-FR-FE-163"])
+                for _ in [1]
+                if line_dict.get("EXT-FR-FE-163")
+            ],
+            *[
                 RAM.IncludedNote(
                     RAM.Content(note["BT-127"]),
                     *[
@@ -2326,7 +2366,22 @@ def generate_cii_xml(
                 ],
                 *[
                     RAM.ContractReferencedDocument(
-                        RAM.IssuerAssignedID(data_dict["BT-12"])
+                        RAM.IssuerAssignedID(data_dict["BT-12"]),
+                        *[
+                            RAM.ReferenceTypeCode(data_dict["EXT-FR-FE-01"])
+                            for _ in [1]
+                            if data_dict.get("EXT-FR-FE-01")
+                        ],
+                        *[
+                            RAM.FormattedIssueDateTime(
+                                QDT.DateTimeString(
+                                    _cii_date_to_string(data_dict["EXT-FR-FE-199"]),
+                                    format="102",
+                                )
+                            )
+                            for _ in [1]
+                            if data_dict.get("EXT-FR-FE-199")
+                        ],
                     )
                     for _ in [1]
                     if data_dict.get("BT-12")
@@ -3153,9 +3208,19 @@ def _ubl_generate_single_invoice_line(namespaces, line_dict, invoice_currency, r
                         for _ in [1]
                         if line_dict.get("EXT-FR-FE-137")
                     ],
+                    # TODO tag won't be generated if EXT-FR-FE-136 has no value
+                    # ... but ID is required and EXT-FR-FE-163 is not related
+                    # to EXT-FR-FE-136
+                    *[
+                        CBC.DocumentStatusCode(line_dict["EXT-FR-FE-163"])
+                        for _ in [1]
+                        if line_dict.get("EXT-FR-FE-163")
+                    ],
                 ),
                 *[
-                    CAC.BillingReferenceLine(CBC.ID(line_dict["EXT-FR-FE-139"]))
+                    CAC.BillingReferenceLine(
+                        CBC.ID(line_dict["EXT-FR-FE-139"]),
+                    )
                     for _ in [1]
                     if line_dict.get("EXT-FR-FE-139")
                 ],
@@ -3507,7 +3572,19 @@ def generate_ubl_xml(
             if data_dict.get("BT-17") and not refund
         ],
         *[
-            CAC.ContractDocumentReference(CBC.ID(data_dict["BT-12"]))
+            CAC.ContractDocumentReference(
+                CBC.ID(data_dict["BT-12"]),
+                *[
+                    CBC.IssueDate(_ubl_date_to_string(data_dict["EXT-FR-FE-199"]))
+                    for _ in [1]
+                    if data_dict.get("EXT-FR-FE-199")
+                ],
+                *[
+                    CBC.DocumentType(data_dict["EXT-FR-FE-01"])
+                    for _ in [1]
+                    if data_dict.get("EXT-FR-FE-01")
+                ],
+            )
             for _ in [1]
             if data_dict.get("BT-12")
         ],
