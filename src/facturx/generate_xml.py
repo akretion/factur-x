@@ -554,6 +554,14 @@ EN16931_FIELDS = {
         "ram:RelevantTradeLocation/ram:Name",
         "ubl_xpath": "/Invoice/cac:DeliveryTerms/cac:DeliveryLocation/cbc:Name",
     },
+    "EXT-FR-FE-197": {
+        "label": "Purchase Order Date",
+        "format": "date",
+        "cii_xpath": "/rsm:CrossIndustryInvoice/rsm:SupplyChainTradeTransaction/"
+        "ram:ApplicableHeaderTradeAgreement/ram:BuyerOrderReferencedDocument/"
+        "ram:FormattedIssueDateTime/qdt:DateTimeString",
+        "ubl_xpath": "/Invoice/cac:OrderReference/cbc:IssueDate",
+    },
     "EXT-FR-FE-198": {
         "label": "Despatch Advice Date",
         "format": "date",
@@ -2439,7 +2447,17 @@ def generate_cii_xml(
                 ],
                 *[
                     RAM.BuyerOrderReferencedDocument(
-                        RAM.IssuerAssignedID(data_dict["BT-13"])
+                        RAM.IssuerAssignedID(data_dict["BT-13"]),
+                        *[
+                            RAM.FormattedIssueDateTime(
+                                QDT.DateTimeString(
+                                    _cii_date_to_string(data_dict["EXT-FR-FE-197"]),
+                                    format="102",
+                                )
+                            )
+                            for _ in [1]
+                            if data_dict.get("EXT-FR-FE-197")
+                        ],
                     )
                     for _ in [1]
                     if data_dict.get("BT-13")
@@ -3644,15 +3662,20 @@ def generate_ubl_xml(
         ],
         *[
             CAC.OrderReference(
-                *[CBC.ID(data_dict["BT-13"]) for _ in [1] if data_dict.get("BT-13")],
+                CBC.ID(data_dict["BT-13"]),
                 *[
                     CBC.SalesOrderID(data_dict["BT-14"])
                     for _ in [1]
                     if data_dict.get("BT-14")
                 ],
+                *[
+                    CBC.IssueDate(_ubl_date_to_string(data_dict["EXT-FR-FE-197"]))
+                    for _ in [1]
+                    if data_dict.get("EXT-FR-FE-197")
+                ],
             )
             for _ in [1]
-            if data_dict.get("BT-13") or data_dict.get("BT-14")
+            if data_dict.get("BT-13")
         ],
         *[
             CAC.BillingReference(
