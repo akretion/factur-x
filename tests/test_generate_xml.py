@@ -42,6 +42,7 @@ class TestGenerateXML(unittest.TestCase):
             "BT-14": "DEVIS2093",
             "BT-15": "BR-2026/06/42",
             "BT-16": "BL-2026/05/12",
+            "EXT-FR-FE-198": datetime.date(2026, 6, 12),  # BL date
             "BT-19": "401HOF",
             "BT-20": "30 jours net",
             "BT-23": "S1",

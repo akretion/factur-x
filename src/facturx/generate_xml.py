@@ -540,14 +540,6 @@ EN16931_FIELDS = {
         "ram:ReferenceTypeCode",
         "ubl_xpath": "/Invoice/cac:ContractDocumentReference/cbc:DocumentType",
     },
-    "EXT-FR-FE-199": {
-        "label": "Contract Date",
-        "format": "date",
-        "cii_xpath": "/rsm:CrossIndustryInvoice/rsm:SupplyChainTradeTransaction/"
-        "ram:ApplicableHeaderTradeAgreement/ram:ContractReferencedDocument/"
-        "ram:FormattedIssueDateTime/qdt:DateTimeString",
-        "ubl_xpath": "/Invoice/cac:ContractDocumentReference/cbc:IssueDate",
-    },
     "EXT-FR-FE-185": {
         "label": "Incoterms Code",
         "cii_xpath": "/rsm:CrossIndustryInvoice/rsm:SupplyChainTradeTransaction/"
@@ -561,6 +553,22 @@ EN16931_FIELDS = {
         "ram:ApplicableHeaderTradeAgreement/ram:ApplicableTradeDeliveryTerms/"
         "ram:RelevantTradeLocation/ram:Name",
         "ubl_xpath": "/Invoice/cac:DeliveryTerms/cac:DeliveryLocation/cbc:Name",
+    },
+    "EXT-FR-FE-198": {
+        "label": "Despatch Advice Date",
+        "format": "date",
+        "cii_xpath": "/rsm:CrossIndustryInvoice/rsm:SupplyChainTradeTransaction/"
+        "ram:ApplicableHeaderTradeDelivery/ram:DespatchAdviceReferencedDocument/"
+        "ram:FormattedIssueDateTime/qdt:DateTimeString",
+        "ubl_xpath": "/Invoice/cac:DespatchDocumentReference/cbc:IssueDate",
+    },
+    "EXT-FR-FE-199": {
+        "label": "Contract Date",
+        "format": "date",
+        "cii_xpath": "/rsm:CrossIndustryInvoice/rsm:SupplyChainTradeTransaction/"
+        "ram:ApplicableHeaderTradeAgreement/ram:ContractReferencedDocument/"
+        "ram:FormattedIssueDateTime/qdt:DateTimeString",
+        "ubl_xpath": "/Invoice/cac:ContractDocumentReference/cbc:IssueDate",
     },
     "BG-1": {
         "label": "Invoice Notes",
@@ -2498,7 +2506,17 @@ def generate_cii_xml(
                 ],
                 *[
                     RAM.DespatchAdviceReferencedDocument(
-                        RAM.IssuerAssignedID(data_dict["BT-16"])
+                        RAM.IssuerAssignedID(data_dict["BT-16"]),
+                        *[
+                            RAM.FormattedIssueDateTime(
+                                QDT.DateTimeString(
+                                    _cii_date_to_string(data_dict["EXT-FR-FE-198"]),
+                                    format="102",
+                                )
+                            )
+                            for _ in [1]
+                            if data_dict.get("EXT-FR-FE-198")
+                        ],
                     )
                     for _ in [1]
                     if data_dict.get("BT-16")
@@ -3655,7 +3673,14 @@ def generate_ubl_xml(
             for previnv in (data_dict.get("BG-3") or [])
         ],
         *[
-            CAC.DespatchDocumentReference(CBC.ID(data_dict["BT-16"]))
+            CAC.DespatchDocumentReference(
+                CBC.ID(data_dict["BT-16"]),
+                *[
+                    CBC.IssueDate(_ubl_date_to_string(data_dict["EXT-FR-FE-198"]))
+                    for _ in [1]
+                    if data_dict.get("EXT-FR-FE-198")
+                ],
+            )
             for _ in [1]
             if data_dict.get("BT-16")
         ],
