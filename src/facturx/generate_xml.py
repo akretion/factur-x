@@ -1101,6 +1101,27 @@ EN16931_FIELDS = {
                 "ubl_xpath": "cac:BillingReference/cac:InvoiceDocumentReference/"
                 "cbc:DocumentStatusCode",
             },
+            "EXT-FR-FE-181": {
+                "label": "Invoice Line VAT Amount in BT-5",
+                "cii_xpath": "ram:SpecifiedLineTradeSettlement/"
+                "ram:SpecifiedTradeSettlementLineMonetarySummation/"
+                "ram:TaxTotalAmount[@currencyID='%(BT-5)s']",
+                "ubl_xpath": "cac:TaxTotal/cbc:TaxAmount[@currencyID='%(BT-5)s']",
+            },
+            "EXT-FR-FE-182": {
+                "label": "Invoice Line VAT Amount in BT-6",
+                "cii_xpath": "ram:SpecifiedLineTradeSettlement/"
+                "ram:SpecifiedTradeSettlementLineMonetarySummation/"
+                "ram:TaxTotalAmount[@currencyID='%(BT-6)s']",
+                "ubl_xpath": "cac:TaxTotal/cbc:TaxAmount[@currencyID='%(BT-6)s']",
+            },
+            "EXT-FR-FE-184": {
+                "label": "Invoice Line Total Amount VAT included",
+                "cii_xpath": "ram:SpecifiedLineTradeSettlement/"
+                "ram:SpecifiedTradeSettlementLineMonetarySummation/"
+                "ram:GrandTotalAmount",
+                # "ubl_xpath": "cac:TaxTotal/cbc:TaxAmount", # not in UBL ?
+            },
             "EXT-FR-FE-193": {
                 "label": "Incoterms Code at Invoice Line",
                 "cii_xpath": "ram:SpecifiedLineTradeAgreement/"
@@ -1943,7 +1964,7 @@ def _cii_generate_single_allowance_charge(namespaces, indicator, allowance_charg
     )
 
 
-def _cii_generate_single_invoice_line(namespaces, line_dict):
+def _cii_generate_single_invoice_line(namespaces, line_dict, data_dict):
     if not isinstance(line_dict, dict):
         raise ValueError("BG-25 must be a list of dicts")
     RAM = namespaces["ram"]
@@ -2261,6 +2282,27 @@ def _cii_generate_single_invoice_line(namespaces, line_dict):
             ],
             RAM.SpecifiedTradeSettlementLineMonetarySummation(
                 RAM.LineTotalAmount(line_dict["BT-131"]),
+                *[
+                    RAM.TaxTotalAmount(
+                        line_dict["EXT-FR-FE-181"], currencyID=data_dict["BT-5"]
+                    )
+                    for _ in [1]
+                    if line_dict.get("EXT-FR-FE-181")
+                ],
+                *[
+                    RAM.TaxTotalAmount(
+                        line_dict["EXT-FR-FE-182"], currencyID=data_dict["BT-6"]
+                    )
+                    for _ in [1]
+                    if line_dict.get("EXT-FR-FE-182")
+                    and data_dict.get("BT-6")
+                    and data_dict.get("BT-6") != data_dict["BT-5"]
+                ],
+                *[
+                    RAM.GrandTotalAmount(line_dict["EXT-FR-FE-184"])
+                    for _ in [1]
+                    if line_dict.get("EXT-FR-FE-184")
+                ],
             ),
             *[
                 RAM.InvoiceReferencedDocument(
@@ -2392,7 +2434,7 @@ def generate_cii_xml(
         ),
         RSM.SupplyChainTradeTransaction(
             *[
-                _cii_generate_single_invoice_line(namespaces, iline)
+                _cii_generate_single_invoice_line(namespaces, iline, data_dict)
                 for iline in (data_dict.get("BG-25") or [])
             ],
             RAM.ApplicableHeaderTradeAgreement(
@@ -3147,7 +3189,7 @@ def _ubl_generate_additional_doc_ref(data_dict, namespaces):
 
 
 def _ubl_generate_single_allowance_charge(
-    namespaces, indicator, allowance_charge_dict, invoice_currency
+    namespaces, indicator, allowance_charge_dict, data_dict
 ):
     if indicator not in ("false", "true"):
         raise ValueError("Wrong value for indicator argument")
@@ -3179,10 +3221,10 @@ def _ubl_generate_single_allowance_charge(
             for _ in [1]
             if allowance_charge_dict.get("rate")
         ],
-        CBC.Amount(allowance_charge_dict["amount"], currencyID=invoice_currency),
+        CBC.Amount(allowance_charge_dict["amount"], currencyID=data_dict["BT-5"]),
         *[
             CBC.BaseAmount(
-                allowance_charge_dict["base_amount"], currencyID=invoice_currency
+                allowance_charge_dict["base_amount"], currencyID=data_dict["BT-5"]
             )
             for _ in [1]
             if allowance_charge_dict.get("base_amount")
@@ -3215,7 +3257,7 @@ def _ubl_generate_single_allowance_charge(
     )
 
 
-def _ubl_generate_single_invoice_line(namespaces, line_dict, invoice_currency, refund):
+def _ubl_generate_single_invoice_line(namespaces, line_dict, data_dict, refund):
     if not isinstance(line_dict, dict):
         raise ValueError("BG-25 must be a list of dicts")
     CAC = namespaces["cac"]
@@ -3234,7 +3276,7 @@ def _ubl_generate_single_invoice_line(namespaces, line_dict, invoice_currency, r
             if note.get("BT-127")
         ],
         qty_builder(line_dict["BT-129"], unitCode=line_dict["BT-130"]),
-        CBC.LineExtensionAmount(line_dict["BT-131"], currencyID=invoice_currency),
+        CBC.LineExtensionAmount(line_dict["BT-131"], currencyID=data_dict["BT-5"]),
         *[
             CBC.AccountingCost(line_dict["BT-133"])
             for _ in [1]
@@ -3361,16 +3403,50 @@ def _ubl_generate_single_invoice_line(namespaces, line_dict, invoice_currency, r
             namespaces,
         ),
         *[
+            CAC.TaxTotal(
+                CBC.TaxAmount(line_dict["EXT-FR-FE-181"], currencyID=data_dict["BT-5"]),
+            )
+            for _ in [1]
+            if refund and line_dict.get("EXT-FR-FE-181")
+        ],
+        *[
+            CAC.TaxTotal(
+                CBC.TaxAmount(line_dict["EXT-FR-FE-182"], currencyID=data_dict["BT-6"]),
+            )
+            for _ in [1]
+            if refund
+            and line_dict.get("EXT-FR-FE-182")
+            and data_dict.get("BT-6")
+            and data_dict.get("BT-6") != data_dict["BT-5"]
+        ],
+        *[
             _ubl_generate_single_allowance_charge(
-                namespaces, "false", allowance_dict, invoice_currency
+                namespaces, "false", allowance_dict, data_dict
             )
             for allowance_dict in (line_dict.get("BG-27") or [])
         ],
         *[
             _ubl_generate_single_allowance_charge(
-                namespaces, "true", charge_dict, invoice_currency
+                namespaces, "true", charge_dict, data_dict
             )
             for charge_dict in (line_dict.get("BG-28") or [])
+        ],
+        *[
+            CAC.TaxTotal(
+                CBC.TaxAmount(line_dict["EXT-FR-FE-181"], currencyID=data_dict["BT-5"]),
+            )
+            for _ in [1]
+            if not refund and line_dict.get("EXT-FR-FE-181")
+        ],
+        *[
+            CAC.TaxTotal(
+                CBC.TaxAmount(line_dict["EXT-FR-FE-182"], currencyID=data_dict["BT-6"]),
+            )
+            for _ in [1]
+            if not refund
+            and line_dict.get("EXT-FR-FE-182")
+            and data_dict.get("BT-6")
+            and data_dict.get("BT-6") != data_dict["BT-5"]
         ],
         CAC.Item(
             *[
@@ -3482,7 +3558,7 @@ def _ubl_generate_single_invoice_line(namespaces, line_dict, invoice_currency, r
             ),
         ),  # close Item
         CAC.Price(
-            CBC.PriceAmount(line_dict["BT-146"], currencyID=invoice_currency),
+            CBC.PriceAmount(line_dict["BT-146"], currencyID=data_dict["BT-5"]),
             *[
                 CBC.BaseQuantity(line_dict["BT-149"], unitCode=line_dict["BT-130"])
                 for _ in [1]
@@ -3506,10 +3582,13 @@ def _ubl_generate_single_invoice_line(namespaces, line_dict, invoice_currency, r
                         if line_dict["BT-147-00"][0].get("EXT-FR-FE-195")
                     ],
                     CBC.Amount(
-                        line_dict["BT-147-00"][0]["BT-147"], currencyID=invoice_currency
+                        line_dict["BT-147-00"][0]["BT-147"],
+                        currencyID=data_dict["BT-5"],
                     ),
                     *[
-                        CBC.BaseAmount(line_dict["BT-148"], currencyID=invoice_currency)
+                        CBC.BaseAmount(
+                            line_dict["BT-148"], currencyID=data_dict["BT-5"]
+                        )
                         for _ in [1]
                         if line_dict.get("BT-148")
                     ],
@@ -3883,13 +3962,13 @@ def generate_ubl_xml(
         ],
         *[
             _ubl_generate_single_allowance_charge(
-                namespaces, "false", allowance_dict, data_dict["BT-5"]
+                namespaces, "false", allowance_dict, data_dict
             )
             for allowance_dict in (data_dict.get("BG-20") or [])
         ],
         *[
             _ubl_generate_single_allowance_charge(
-                namespaces, "true", charge_dict, data_dict["BT-5"]
+                namespaces, "true", charge_dict, data_dict
             )
             for charge_dict in (data_dict.get("BG-21") or [])
         ],
@@ -3960,9 +4039,7 @@ def generate_ubl_xml(
             CBC.PayableAmount(data_dict["BT-115"], currencyID=data_dict["BT-5"]),
         ),
         *[
-            _ubl_generate_single_invoice_line(
-                namespaces, iline, data_dict["BT-5"], refund
-            )
+            _ubl_generate_single_invoice_line(namespaces, iline, data_dict, refund)
             for iline in (data_dict.get("BG-25") or [])
         ],
     )  # Close Invoice

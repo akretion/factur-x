@@ -247,10 +247,8 @@ class TestGenerateXML(unittest.TestCase):
             "BT-107": "5.50",
             "BT-108": "5.50",
             "BT-109": "273.00",
-            "BT-110": "35.03",
-            #            "BT-110-1": "USD",
-            "BT-111": "30.46",
-            #            "BT-111-1": "EUR",
+            "BT-110": "35.03",  # in BT-5
+            "BT-111": "30.47",  # in BT-6  (rate 1.15)
             "BT-112": "308.03",
             "BT-113": "100.00",
             "BT-115": "208.03",
@@ -394,6 +392,9 @@ class TestGenerateXML(unittest.TestCase):
                     "EXT-FR-FE-137": "380",
                     "EXT-FR-FE-138": datetime.date(2025, 12, 24),
                     "EXT-FR-FE-163": "DETAIL",
+                    "EXT-FR-FE-181": "7.43",
+                    "EXT-FR-FE-182": "6.46",
+                    "EXT-FR-FE-184": "142.43",
                     "EXT-FR-FE-193": "DAP",
                     "EXT-FR-FE-194": "Barcelona",
                     "EXT-FR-FE-200": datetime.date(2026, 2, 21),
@@ -491,6 +492,9 @@ class TestGenerateXML(unittest.TestCase):
                     "EXT-FR-FE-138": datetime.date(2025, 12, 24),
                     "EXT-FR-FE-158": datetime.date(2026, 6, 16),
                     "EXT-FR-FE-163": "DETAIL",
+                    "EXT-FR-FE-181": "27.60",
+                    "EXT-FR-FE-182": "24.0",
+                    "EXT-FR-FE-184": "165.6",
                 },
             ],
         }
