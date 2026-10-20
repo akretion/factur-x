@@ -1242,7 +1242,6 @@ EN16931_ADDRESS_FIELDS = {
     },
     "addr_l3": {
         "label": "Address Line 3",
-        "min_level": "extended",
         "cii_xpath": "ram:PostalTradeAddress/ram:LineThree",
         "ubl_xpath": "cac:PostalAddress/cac:AddressLine/cbc:Line",
     },
