@@ -1712,6 +1712,9 @@ def _cii_generate_party(node_name, partner_dict, namespaces):
         tax_schemes["VA"] = partner_dict["vat_identifier"]
     if partner_dict.get("tax_identifier"):
         tax_schemes["FC"] = partner_dict["tax_identifier"]
+    legal_ident_schemeid = {}
+    if partner_dict.get("legal_identifier_schemeid"):
+        legal_ident_schemeid["schemeID"] = partner_dict["legal_identifier_schemeid"]
     RAM = namespaces["ram"]
     generate_node_method = getattr(RAM, node_name)
     return generate_node_method(
@@ -1739,13 +1742,9 @@ def _cii_generate_party(node_name, partner_dict, namespaces):
         *[
             RAM.SpecifiedLegalOrganization(
                 *[
-                    RAM.ID(
-                        partner_dict["legal_identifier"],
-                        schemeID=partner_dict["legal_identifier_schemeid"],
-                    )
+                    RAM.ID(partner_dict["legal_identifier"], **legal_ident_schemeid)
                     for _ in [1]
                     if partner_dict.get("legal_identifier")
-                    and partner_dict.get("legal_identifier_schemeid")
                 ],
                 *[
                     RAM.TradingBusinessName(partner_dict["biz_name"])
@@ -1754,11 +1753,7 @@ def _cii_generate_party(node_name, partner_dict, namespaces):
                 ],
             )
             for _ in [1]
-            if (
-                partner_dict.get("legal_identifier")
-                and partner_dict.get("legal_identifier_schemeid")
-            )
-            or partner_dict.get("biz_name")
+            if partner_dict.get("legal_identifier") or partner_dict.get("biz_name")
         ],
         *[
             RAM.DefinedTradeContact(
@@ -2917,6 +2912,9 @@ def _ubl_generate_party(
         tax_schemes["VAT"] = partner_dict["vat_identifier"]
     if partner_dict.get("tax_identifier"):
         tax_schemes["LOC"] = partner_dict["tax_identifier"]
+    legal_ident_schemeid = {}
+    if partner_dict.get("legal_identifier_schemeid"):
+        legal_ident_schemeid["schemeID"] = partner_dict["legal_identifier_schemeid"]
     # HACK for tax representative name vs biz_name
     if field in ("BG-10", "BG-11"):
         partner_dict["biz_name"] = partner_dict.get("name")
@@ -2967,12 +2965,10 @@ def _ubl_generate_party(
                 ],
                 *[
                     CBC.CompanyID(
-                        partner_dict["legal_identifier"],
-                        schemeID=partner_dict["legal_identifier_schemeid"],
+                        partner_dict["legal_identifier"], **legal_ident_schemeid
                     )
                     for _ in [1]
                     if partner_dict.get("legal_identifier")
-                    and partner_dict.get("legal_identifier_schemeid")
                 ],
                 *[
                     CBC.CompanyLegalForm(partner_dict["legal_info"])
@@ -2982,10 +2978,7 @@ def _ubl_generate_party(
             )
             for _ in [1]
             if partner_dict.get("name")
-            or (
-                partner_dict.get("legal_identifier")
-                and partner_dict.get("legal_identifier_schemeid")
-            )
+            or partner_dict.get("legal_identifier")
             or partner_dict.get("legal_info")
         ],
         *[
