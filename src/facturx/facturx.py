@@ -538,6 +538,8 @@ def xml_check_schematron(
             namespaces=svrl_root.nsmap,
         )
         for xpath_error in xpath_errors:
+            if xpath_error.attrib.get("flag") == "warning":
+                continue
             detail_xpath = xpath_error.xpath(
                 "*[local-name() = 'text']", namespaces=svrl_root.nsmap
             )
