@@ -2,9 +2,11 @@
 # Copyright 2017-2023 Alexis de Lattre <alexis.delattre@akretion.com>
 
 import argparse
+import base64
 import json
 import logging
 import mimetypes
+import os
 import sys
 from os.path import isdir, isfile
 
@@ -45,6 +47,23 @@ def convert(args):
     check_schematron = not args.disable_schematron_check
     in_mtype, _ignore = mimetypes.guess_type(in_filename)
     out_mtype, _ignore = mimetypes.guess_type(out_filename)
+    extract_attachments_dir = args.extract_attachments_dir
+    if extract_attachments_dir:
+        if out_mtype != "application/json":
+            logger.error(
+                "The option --extract-attachments-dir or -adir "
+                "should only be used for JSON output."
+            )
+            sys.exit(1)
+        if isfile(extract_attachments_dir):
+            logger.error(
+                "The value of the option --extract-attachments-dir or -adir "
+                f"({extract_attachments_dir}) is an existing file."
+            )
+            sys.exit(1)
+        if not isdir(extract_attachments_dir):
+            os.mkdir(extract_attachments_dir)
+            logger.info(f"Directory '{extract_attachments_dir}' has been created")
     logger.debug(f"Input file MIME type is {in_mtype}")
     xml_string = None
     if in_mtype == "application/pdf":
@@ -129,6 +148,24 @@ def convert(args):
     elif out_mtype == "application/json":
         json_to_write = data_dict_to_json(data_dict)
         data_to_write_bytes = json_to_write.encode("utf-8")
+        if extract_attachments_dir:
+            for attach_dict in data_dict.get("BG-24") or []:
+                if attach_dict.get("BT-125") and attach_dict.get("BT-125-2"):
+                    attach_path = os.path.join(
+                        extract_attachments_dir, attach_dict["BT-125-2"]
+                    )
+                    if isfile(attach_path):
+                        logger.warning(
+                            f"Attachment file '{attach_path}' already exists: "
+                            "overwriting it!"
+                        )
+                    attach_bytes = base64.b64decode(attach_dict["BT-125"])
+                    with open(attach_path, "wb") as attach_file:
+                        attach_file.write(attach_bytes)
+                        logger.info(
+                            f"Attachment '{attach_dict['BT-125-2']}' extracted to "
+                            f"directory '{extract_attachments_dir}'"
+                        )
     else:
         logger.error(
             f"Output file is identified as an {out_mtype} file. "
@@ -195,7 +232,14 @@ def main(args=None):
         help="If the output file is XML, use absolute namespaces instead of "
         "prefixed namespaces.",
     )
-
+    parser.add_argument(
+        "-adir",
+        "--extract-attachments-dir",
+        dest="extract_attachments_dir",
+        help="Directory to store the binary attachments of BT-125. "
+        "If the directory doesn't exist, it will be automatically "
+        "created. This option is only for JSON output.",
+    )
     parser.add_argument(
         "input_invoice_file",
         help="Input invoice file (Factur-X, UBL XML, CII XML, JSON)",
