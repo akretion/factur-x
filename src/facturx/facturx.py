@@ -538,15 +538,19 @@ def xml_check_schematron(
             namespaces=svrl_root.nsmap,
         )
         for xpath_error in xpath_errors:
-            if xpath_error.attrib.get("flag") == "warning":
-                continue
             detail_xpath = xpath_error.xpath(
                 "*[local-name() = 'text']", namespaces=svrl_root.nsmap
             )
             if detail_xpath:
-                error_msg = detail_xpath[0].text and detail_xpath[0].text.strip()
-                error_msg = f"{error_nr}. [{check_type}] {error_msg}"
+                detail = detail_xpath[0].text and detail_xpath[0].text.strip()
                 location = xpath_error.attrib and xpath_error.attrib.get("location")
+                if xpath_error.attrib.get("flag") == "warning":
+                    warning_msg = f"[{check_type}] {detail}"
+                    if location:
+                        warning_msg = f"{warning_msg}\nWarning location: {location}"
+                    logger.warning("Schematron warning: %s", warning_msg)
+                    continue
+                error_msg = f"{error_nr}. [{check_type}] {detail}"
                 if location:
                     error_msg = f"{error_msg}\nError location: {location}"
                 errors.append(error_msg)

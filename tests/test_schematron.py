@@ -23,14 +23,19 @@ class TestSchematronWarnings(unittest.TestCase):
     @patch("facturx.facturx.requests.post")
     def test_warning_does_not_invalidate_xml(self, post):
         post.return_value = self._response(
-            '<svrl:failed-assert flag="warning">'
+            '<svrl:failed-assert flag="warning" location="/Invoice/Warning">'
             "<svrl:text>synthetic warning</svrl:text>"
             "</svrl:failed-assert>"
         )
 
-        self.assertTrue(
-            xml_check_schematron("<Invoice/>", flavor="order-x", level="basic")
-        )
+        with self.assertLogs("factur-x", level="WARNING") as logs:
+            self.assertTrue(
+                xml_check_schematron("<Invoice/>", flavor="order-x", level="basic")
+            )
+
+        log_output = "\n".join(logs.output)
+        self.assertIn("synthetic warning", log_output)
+        self.assertIn("Warning location: /Invoice/Warning", log_output)
         post.assert_called_once()
 
     @patch("facturx.facturx.requests.post")
