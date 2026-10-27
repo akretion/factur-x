@@ -34,7 +34,7 @@ from io import BytesIO, IOBase
 from tempfile import NamedTemporaryFile
 
 import requests
-from lxml import etree
+from lxml import etree, objectify
 from pypdf import PdfReader, PdfWriter
 from pypdf.generic import (
     ArrayObject,
@@ -812,90 +812,140 @@ def _prepare_pdf_metadata_txt(pdf_metadata):
     return info_dict
 
 
-def _prepare_pdf_metadata_xml(flavor, level, orderx_type, pdf_metadata):
-    head = """<?xpacket begin="\ufeff" id="W5M0MpCehiHzreSzNTczkc9d"?>"""
-    xml_str = """
-<x:xmpmeta xmlns:x="adobe:ns:meta/">
-  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-    <rdf:Description xmlns:pdfaid="http://www.aiim.org/pdfa/ns/id/" rdf:about="">
-      <pdfaid:part>3</pdfaid:part>
-      <pdfaid:conformance>B</pdfaid:conformance>
-    </rdf:Description>
-    <rdf:Description xmlns:dc="http://purl.org/dc/elements/1.1/" rdf:about="">
-      <dc:title>
-        <rdf:Alt>
-          <rdf:li xml:lang="x-default">##title</rdf:li>
-        </rdf:Alt>
-      </dc:title>
-      <dc:creator>
-        <rdf:Seq>
-          <rdf:li>##author</rdf:li>
-        </rdf:Seq>
-      </dc:creator>
-      <dc:description>
-        <rdf:Alt>
-          <rdf:li xml:lang="x-default">##subject</rdf:li>
-        </rdf:Alt>
-      </dc:description>
-    </rdf:Description>
-    <rdf:Description xmlns:pdf="http://ns.adobe.com/pdf/1.3/" rdf:about="">
-      <pdf:Producer>##producer</pdf:Producer>
-    </rdf:Description>
-    <rdf:Description xmlns:xmp="http://ns.adobe.com/xap/1.0/" rdf:about="">
-      <xmp:CreatorTool>##creator_tool</xmp:CreatorTool>
-      <xmp:CreateDate>##timestamp</xmp:CreateDate>
-      <xmp:ModifyDate>##timestamp</xmp:ModifyDate>
-    </rdf:Description>
-    <rdf:Description xmlns:pdfaExtension="http://www.aiim.org/pdfa/ns/extension/" xmlns:pdfaSchema="http://www.aiim.org/pdfa/ns/schema#" xmlns:pdfaProperty="http://www.aiim.org/pdfa/ns/property#" rdf:about="">
-      <pdfaExtension:schemas>
-        <rdf:Bag>
-          <rdf:li rdf:parseType="Resource">
-            <pdfaSchema:schema>Factur-X PDFA Extension Schema</pdfaSchema:schema>
-            <pdfaSchema:namespaceURI>{urn}</pdfaSchema:namespaceURI>
-            <pdfaSchema:prefix>fx</pdfaSchema:prefix>
-            <pdfaSchema:property>
-              <rdf:Seq>
-                <rdf:li rdf:parseType="Resource">
-                  <pdfaProperty:name>DocumentFileName</pdfaProperty:name>
-                  <pdfaProperty:valueType>Text</pdfaProperty:valueType>
-                  <pdfaProperty:category>external</pdfaProperty:category>
-                  <pdfaProperty:description>The name of the embedded XML document</pdfaProperty:description>
-                </rdf:li>
-                <rdf:li rdf:parseType="Resource">
-                  <pdfaProperty:name>DocumentType</pdfaProperty:name>
-                  <pdfaProperty:valueType>Text</pdfaProperty:valueType>
-                  <pdfaProperty:category>external</pdfaProperty:category>
-                  <pdfaProperty:description>The type of the hybrid document in capital letters, e.g. INVOICE or ORDER</pdfaProperty:description>
-                </rdf:li>
-                <rdf:li rdf:parseType="Resource">
-                  <pdfaProperty:name>Version</pdfaProperty:name>
-                  <pdfaProperty:valueType>Text</pdfaProperty:valueType>
-                  <pdfaProperty:category>external</pdfaProperty:category>
-                  <pdfaProperty:description>The actual version of the standard applying to the embedded XML document</pdfaProperty:description>
-                </rdf:li>
-                <rdf:li rdf:parseType="Resource">
-                  <pdfaProperty:name>ConformanceLevel</pdfaProperty:name>
-                  <pdfaProperty:valueType>Text</pdfaProperty:valueType>
-                  <pdfaProperty:category>external</pdfaProperty:category>
-                  <pdfaProperty:description>The conformance level of the embedded XML document</pdfaProperty:description>
-                </rdf:li>
-              </rdf:Seq>
-            </pdfaSchema:property>
-          </rdf:li>
-        </rdf:Bag>
-      </pdfaExtension:schemas>
-    </rdf:Description>
-    <rdf:Description xmlns:fx="{urn}" rdf:about="">
-      <fx:DocumentType>##documenttype</fx:DocumentType>
-      <fx:DocumentFileName>##xml_filename</fx:DocumentFileName>
-      <fx:Version>##version</fx:Version>
-      <fx:ConformanceLevel>##xmp_level</fx:ConformanceLevel>
-    </rdf:Description>
-  </rdf:RDF>
-</x:xmpmeta>
-"""  # noqa: E501
-    tail = """<?xpacket end="w"?>"""
-    key2value = {
+def _xmp_object_add_pdfa_property(name, desc, RDF, PDFAPROP, parsetype_dict):
+    return RDF.li(
+        PDFAPROP.name(name),
+        PDFAPROP.valueType("Text"),
+        PDFAPROP.category("external"),
+        PDFAPROP.description(desc),
+        parsetype_dict,
+    )
+
+
+def generate_xmp_object(metadata_dict):
+    namespaces = {
+        "x": "adobe:ns:meta/",
+        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+        "pdfaid": "http://www.aiim.org/pdfa/ns/id/",
+        "dc": "http://purl.org/dc/elements/1.1/",
+        "pdfaExtension": "http://www.aiim.org/pdfa/ns/extension/",
+        "pdfaSchema": "http://www.aiim.org/pdfa/ns/schema#",
+        "pdfaProperty": "http://www.aiim.org/pdfa/ns/property#",
+        "xml": "http://www.w3.org/XML/1998/namespace",
+        "pdf": "http://ns.adobe.com/pdf/1.3/",
+        "xmp": "http://ns.adobe.com/xap/1.0/",
+    }
+    if metadata_dict.get("urn"):
+        namespaces["fx"] = metadata_dict["urn"]
+        FX = objectify.ElementMaker(
+            namespace=namespaces["fx"], nsmap=namespaces, annotate=False
+        )
+    X = objectify.ElementMaker(
+        namespace=namespaces["x"], nsmap=namespaces, annotate=False
+    )
+    RDF = objectify.ElementMaker(
+        namespace=namespaces["rdf"], nsmap=namespaces, annotate=False
+    )
+    PDFAID = objectify.ElementMaker(
+        namespace=namespaces["pdfaid"], nsmap=namespaces, annotate=False
+    )
+    DC = objectify.ElementMaker(
+        namespace=namespaces["dc"], nsmap=namespaces, annotate=False
+    )
+    PDF = objectify.ElementMaker(
+        namespace=namespaces["pdf"], nsmap=namespaces, annotate=False
+    )
+    XMP = objectify.ElementMaker(
+        namespace=namespaces["xmp"], nsmap=namespaces, annotate=False
+    )
+    PDFAEXT = objectify.ElementMaker(
+        namespace=namespaces["pdfaExtension"], nsmap=namespaces, annotate=False
+    )
+    PDFASCH = objectify.ElementMaker(
+        namespace=namespaces["pdfaSchema"], nsmap=namespaces, annotate=False
+    )
+    PDFAPROP = objectify.ElementMaker(
+        namespace=namespaces["pdfaProperty"], nsmap=namespaces, annotate=False
+    )
+
+    pdfa_props = {  # key = property name, value = property description
+        "DocumentFileName": "The name of the embedded XML document",
+        "DocumentType": "The type of the hybrid document in capital "
+        "letters, e.g. INVOICE or ORDER",
+        "Version": "The actual version of the standard applying to the embedded "
+        "XML document",
+        "ConformanceLevel": "The conformance level of the embedded XML document",
+    }
+    parsetype_dict = {f"{{{namespaces['rdf']}}}parseType": "Resource"}
+    pdfa_prop_gen_args = {
+        "RDF": RDF,
+        "PDFAPROP": PDFAPROP,
+        "parsetype_dict": parsetype_dict,
+    }
+    lang_dict = {f"{{{namespaces['xml']}}}lang": "x-default"}
+
+    metadata_xml_root = X.xmpmeta(
+        RDF.RDF(
+            RDF.Description(
+                PDFAID.part("3"), PDFAID.conformance(metadata_dict["pdfa3_flavor"])
+            ),
+            RDF.Description(
+                DC.title(RDF.Alt(RDF.li(metadata_dict["title"], lang_dict))),
+                DC.creator(RDF.Seq(RDF.li(metadata_dict["author"]))),
+                DC.description(RDF.Alt(RDF.li(metadata_dict["subject"], lang_dict))),
+            ),
+            RDF.Description(PDF.Producer(metadata_dict["producer"])),
+            RDF.Description(
+                XMP.CreatorTool(metadata_dict["creator_tool"]),
+                XMP.CreateDate(metadata_dict["timestamp"]),
+                XMP.ModifyDate(metadata_dict["timestamp"]),
+            ),
+            *[
+                RDF.Description(
+                    PDFAEXT.schemas(
+                        RDF.Bag(
+                            RDF.li(
+                                PDFASCH.schema("Factur-X PDFA Extension Schema"),
+                                PDFASCH.namespaceURI(metadata_dict["urn"]),
+                                PDFASCH.prefix("fx"),
+                                PDFASCH.property(
+                                    RDF.Seq(
+                                        *[
+                                            _xmp_object_add_pdfa_property(
+                                                name,
+                                                desc,
+                                                **pdfa_prop_gen_args,
+                                            )
+                                            for name, desc in pdfa_props.items()
+                                        ]
+                                    )
+                                ),
+                                parsetype_dict,
+                            )
+                        )
+                    )
+                )
+                for _ in [1]
+                if metadata_dict.get("urn")
+            ],
+            *[
+                RDF.Description(
+                    FX.DocumentType(metadata_dict["documenttype"]),
+                    FX.DocumentFileName(metadata_dict["xml_filename"]),
+                    FX.Version(metadata_dict["version"]),
+                    FX.ConformanceLevel(metadata_dict["xmp_level"]),
+                )
+                for _ in [1]
+                if metadata_dict.get("urn")
+            ],
+        )
+    )
+    return metadata_xml_root
+
+
+def generate_xmp_bytes(flavor, level, orderx_type, pdf_metadata):
+    metadata_dict = {
+        "pdfa3_flavor": "B",
         "title": pdf_metadata.get("title", ""),
         "author": pdf_metadata.get("author", ""),
         "subject": pdf_metadata.get("subject", ""),
@@ -905,71 +955,33 @@ def _prepare_pdf_metadata_xml(flavor, level, orderx_type, pdf_metadata):
         "version": "1.0",
     }
 
-    if flavor == "order-x":
-        key2value.update(
+    if flavor in ("order-x", "orderx"):
+        metadata_dict.update(
             {
                 "documenttype": orderx_type.upper(),
                 "xml_filename": ORDERX_FILENAME,
                 "xmp_level": level.upper(),
+                "urn": "urn:factur-x:pdfa:CrossIndustryDocument:1p0#",
             }
         )
-        urn = "urn:factur-x:pdfa:CrossIndustryDocument:1p0#"
-    else:
-        key2value.update(
+    elif flavor in ("factur-x", "facturx"):
+        metadata_dict.update(
             {
                 "documenttype": "INVOICE",
                 "xml_filename": FACTURX_FILENAME,
                 "xmp_level": FACTURX_LEVEL2xmp[level],
+                "urn": "urn:factur-x:pdfa:CrossIndustryDocument:invoice:1p0#",
             }
         )
-        urn = "urn:factur-x:pdfa:CrossIndustryDocument:invoice:1p0#"
-    xml_str = xml_str.format(urn=urn)
-    xml_root = etree.fromstring(xml_str)
-    namespaces = xml_root.nsmap
-    namespaces.update(
-        {
-            "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-            "dc": "http://purl.org/dc/elements/1.1/",
-            "fx": "urn:factur-x:pdfa:CrossIndustryDocument:invoice:1p0#",
-            "pdf": "http://ns.adobe.com/pdf/1.3/",
-            "xmp": "http://ns.adobe.com/xap/1.0/",
-        }
-    )
-    xpath2key = {
-        "/x:xmpmeta/rdf:RDF/rdf:Description/dc:title//rdf:li": "title",
-        "/x:xmpmeta/rdf:RDF/rdf:Description/dc:creator//rdf:li": "author",
-        "/x:xmpmeta/rdf:RDF/rdf:Description/dc:description//rdf:li": "subject",
-        "/x:xmpmeta/rdf:RDF/rdf:Description/pdf:Producer": "producer",
-        "/x:xmpmeta/rdf:RDF/rdf:Description/xmp:CreatorTool": "creator_tool",
-        "/x:xmpmeta/rdf:RDF/rdf:Description/xmp:CreateDate": "timestamp",
-        "/x:xmpmeta/rdf:RDF/rdf:Description/xmp:ModifyDate": "timestamp",
-        "/x:xmpmeta/rdf:RDF/rdf:Description/fx:DocumentType": "documenttype",
-        "/x:xmpmeta/rdf:RDF/rdf:Description/fx:DocumentFileName": "xml_filename",
-        "/x:xmpmeta/rdf:RDF/rdf:Description/fx:Version": "version",
-        "/x:xmpmeta/rdf:RDF/rdf:Description/fx:ConformanceLevel": "xmp_level",
-    }
-    for xpath, key in xpath2key.items():
-        xml_nodes = xml_root.xpath(xpath, namespaces=namespaces)
-        if len(xml_nodes) != 1:
-            raise Exception(
-                f"XMP generation: wrong xpath {xpath} for {key}. "
-                f"Please report it as a bug."
-            )
-        xml_node = xml_nodes[0]
-        expected_node_text = f"##{key}"
-        if xml_node.text != expected_node_text:
-            raise Exception(
-                f"XMP generation: xpath {xpath} contains {xml_node.text} "
-                f"instead of {expected_node_text}. Please report it as a bug."
-            )
-        value = key2value[key]
-        xml_node.text = value
+    xml_root = generate_xmp_object(metadata_dict)
 
-    xml_bytes = etree.tostring(xml_root)
-    xml_str_final = "\n".join([head, xml_bytes.decode("utf-8"), tail])
+    xml_bytes = etree.tostring(xml_root, pretty_print=True)
+    head = """<?xpacket begin="\ufeff" id="W5M0MpCehiHzreSzNTczkc9d"?>"""
+    tail = """<?xpacket end="w"?>"""
+    xml_str_final = "\n".join([head, xml_bytes.decode("utf-8").strip(), tail])
+    logger.debug("XMP file (XML metadata):")
+    logger.debug(xml_str_final)
     xml_bytes_final = xml_str_final.encode("utf-8")
-    logger.debug("metadata XML:")
-    logger.debug(xml_bytes_final)
     return xml_bytes_final
 
 
@@ -1142,9 +1154,7 @@ def _facturx_update_metadata_add_attachment(
         # show attachments when opening PDF
         NameObject("/PageMode"): NameObject("/UseAttachments"),
     }
-    metadata_xml_bytes = _prepare_pdf_metadata_xml(
-        flavor, level, orderx_type, pdf_metadata
-    )
+    metadata_xml_bytes = generate_xmp_bytes(flavor, level, orderx_type, pdf_metadata)
     metadata_file_entry = DecodedStreamObject()
     metadata_file_entry.update(
         {

@@ -141,6 +141,14 @@ Contributors
 Changelog
 =========
 
+* Version 7.8 dated 2026-10-27:
+
+  * Re-write XMP file generation. 2 new public methods: **generate_xmp_object()** and **generate_xmp_bytes()**
+  * script **facturx-convert**: add option **-adir** to extract BT-125 attachments when converting to JSON
+  * Add support for EXT-FR-FE-158, EXT-FR-FE-198, EXT-FR-FE-197, EXT-FR-FE-181, EXT-FR-FE-182 and EXT-FR-FE-184 in generation and parsing
+  * Fix generation of UBL XML block CAC.OrderReference (ID is required in the XSD)
+  * Fix `bug #97 <https://github.com/akretion/factur-x/issues/97>`_ in XML generation: address line 3 is available at all levels (not only extended) and legal_identifier_schemeid is optional
+
 * Version 7.7 dated 2026-10-14:
 
   * Add support for EXT-FR-FE-01, EXT-FR-FE-199, EXT-FR-FE-159, EXT-FR-FE-160, EXT-FR-FE-161, EXT-FR-FE-163, EXT-FR-FE-193, EXT-FR-FE-194, EXT-FR-FE-200 and EXT-FR-FE-BG-12 in generation and parsing

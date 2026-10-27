@@ -1,10 +1,12 @@
 import logging
 
-__version__ = "7.7"
+__version__ = "7.8"
 from .facturx import (
     facturx_schematron_get_codedb_xml_file,
     generate_from_binary,
     generate_from_file,
+    generate_xmp_bytes,
+    generate_xmp_object,
     get_facturx_level,
     get_facturx_xml_from_pdf,
     get_flavor,
@@ -30,6 +32,8 @@ from .untdid import untdid_get_label
 __all__ = [
     "generate_from_binary",
     "generate_from_file",
+    "generate_xmp_object",
+    "generate_xmp_bytes",
     "get_facturx_level",
     "get_facturx_xml_from_pdf",
     "get_flavor",
