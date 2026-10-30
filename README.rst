@@ -141,6 +141,10 @@ Contributors
 Changelog
 =========
 
+* Version 7.9 dated 2026-10-30:
+
+  * New method untdid4461_to_text_code() that translates a UNTDID 4461 code (used in BT-81 to describe the payment means) into a comprehensible text code like "credit_transfer", "direct_debit", "cash", etc.
+
 * Version 7.8 dated 2026-10-27:
 
   * Re-write XMP file generation. 2 new public methods: **generate_xmp_object()** and **generate_xmp_bytes()**

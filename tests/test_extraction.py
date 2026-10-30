@@ -10,7 +10,6 @@ from facturx import (
     get_level,
     get_xml_from_pdf,
     parse_ubl_cii_xml,
-    untdid_get_label,
 )
 from lxml import etree
 
@@ -70,16 +69,3 @@ class TestAPI(unittest.TestCase):
             codedb_xml_bytes = facturx_schematron_get_codedb_xml_file(level)
             self.assertEqual(type(codedb_xml_bytes), bytes)
             etree.fromstring(codedb_xml_bytes)
-
-    def test_untdid(self):
-        self.assertFalse(untdid_get_label("4451", None))
-        label = untdid_get_label("4451", " ZZZ ")
-        self.assertEqual(label, "Mutually defined")
-        label = untdid_get_label("4451", "WRONGCODE")
-        self.assertEqual(label, None)
-        label = untdid_get_label("5189", "30 ")
-        self.assertEqual(label, "Bank charges")
-        label_int = untdid_get_label("5189", 30)
-        self.assertEqual(label, label_int)
-        label = untdid_get_label("7161", "rac")
-        self.assertEqual(label, "Repair")

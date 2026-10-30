@@ -1,6 +1,6 @@
 import logging
 
-__version__ = "7.8"
+__version__ = "7.9"
 from .facturx import (
     facturx_schematron_get_codedb_xml_file,
     generate_from_binary,
@@ -27,7 +27,7 @@ from .generate_xml import (
     preprocess_data_dict,
 )
 from .parse_xml import data_dict_to_json, parse_ubl_cii_xml
-from .untdid import untdid_get_label
+from .untdid import untdid4461_to_text_code, untdid_get_label
 
 __all__ = [
     "generate_from_binary",
@@ -54,6 +54,7 @@ __all__ = [
     "parse_ubl_cii_xml",
     "data_dict_to_json",
     "untdid_get_label",
+    "untdid4461_to_text_code",
 ]
 
 logging.getLogger("factur-x").addHandler(logging.NullHandler())

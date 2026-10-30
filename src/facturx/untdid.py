@@ -717,3 +717,25 @@ def untdid_get_label(untdid_table, code):
     else:
         code = code.strip().upper()
     return untdid_dict.get(code)
+
+
+def untdid4461_to_text_code(untdid4461_code):
+    """Returns a comprehensible payment means text code from UNTDID 4461
+    (used by BT-81)"""
+    if not untdid4461_code:
+        return None
+    if isinstance(untdid4461_code, int):
+        untdid4461_code = str(untdid4461_code)
+    text_code2untdid4461 = {
+        "credit_transfer": ["30", "31", "42", "58"],  # should we add 52 ? others ?
+        "direct_debit": ["49", "59"],
+        "cash": ["10"],
+        "check": ["20"],
+        # for "checks", I don't put 22 and 25 because they correspond to bank checks,
+        # not regular checks
+        "card": ["48", "54", "55"],
+    }
+    for text_code, untdid4461_codes in text_code2untdid4461.items():
+        if untdid4461_code in untdid4461_codes:
+            return text_code
+    return None
