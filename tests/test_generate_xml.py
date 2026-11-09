@@ -610,6 +610,52 @@ class TestGenerateXML(unittest.TestCase):
                     f'unitCode="C62">{qty_str}<', xml_bytes.decode("utf-8")
                 )
 
+    def test_sales_order_reference_without_purchase_order_reference(self):
+        # BT-14 without BT-13: in UBL, cbc:ID is mandatory in cac:OrderReference
+        # so "NA" is used as BT-13 (Peppol BIS 3)
+        for flavor in ("factur-x", "ubl-2.1"):
+            for level in FLAVOR2LEVELS[flavor]:
+                if level == "basicwl":  # BT-14 is not available in basicwl
+                    continue
+                data_dict = self._prepare_data_dict()
+                data_dict.pop("BT-13")
+                data_dict.pop("EXT-FR-FE-197")
+                xml_bytes = generate_xml(
+                    data_dict,
+                    flavor=flavor,
+                    level=level,
+                    check_schematron="fr-ctc",
+                    prefixed_namespaces=True,
+                )
+                xml_str = xml_bytes.decode("utf-8")
+                self.assertIn("DEVIS2093", xml_str)
+                if flavor == "ubl-2.1":
+                    self.assertIn(
+                        "<cac:OrderReference><cbc:ID>NA</cbc:ID>"
+                        "<cbc:SalesOrderID>DEVIS2093</cbc:SalesOrderID>",
+                        "".join(xml_str.split()),
+                    )
+                parsed_data_dict = parse_ubl_cii_xml(xml_bytes, check_xsd=False)
+                self.assertNotIn("BT-13", parsed_data_dict)
+                self.assertEqual(parsed_data_dict["BT-14"], "DEVIS2093")
+                self.assertEqual(parsed_data_dict, data_dict)
+
+    def test_parse_ubl_purchase_order_reference_na(self):
+        data_dict = self._prepare_data_dict()
+        data_dict["BT-13"] = "NA"
+        data_dict.pop("EXT-FR-FE-197")
+        xml_bytes = generate_xml(data_dict, flavor="ubl-2.1", level="en16931")
+        parsed_data_dict = parse_ubl_cii_xml(xml_bytes, check_xsd=False)
+        self.assertNotIn("BT-13", parsed_data_dict)
+        self.assertEqual(parsed_data_dict["BT-14"], "DEVIS2093")
+        # "NA" without BT-14 is not the Peppol convention: keep it as is
+        data_dict = self._prepare_data_dict()
+        data_dict["BT-13"] = "NA"
+        data_dict.pop("BT-14")
+        xml_bytes = generate_xml(data_dict, flavor="ubl-2.1", level="en16931")
+        parsed_data_dict = parse_ubl_cii_xml(xml_bytes, check_xsd=False)
+        self.assertEqual(parsed_data_dict["BT-13"], "NA")
+
     def test_generate_xml_level_autodetect(self):
         # test common formats
         for bt24 in (
