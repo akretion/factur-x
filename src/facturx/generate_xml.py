@@ -1533,7 +1533,13 @@ def preprocess_data_dict(
                         price_prec = value_decimals
                     value = f"{value:.{price_prec}f}"
                 else:
-                    value = f"{round(value, prec):g}"
+                    # Don't use the 'g' format: it switches to scientific
+                    # notation above 6 significant digits (1.008e+07),
+                    # which is not a valid xs:decimal, and it rounds to
+                    # 6 significant digits (123456.7 -> 123457)
+                    value = f"{value:.{prec}f}"
+                    if "." in value:
+                        value = value.rstrip("0").rstrip(".")
             elif isinstance(value, str):
                 try:
                     float(value)

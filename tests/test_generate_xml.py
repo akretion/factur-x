@@ -590,6 +590,26 @@ class TestGenerateXML(unittest.TestCase):
                     parsed_json_str = data_dict_to_json(parsed_data_dict)
                     self.assertTrue(isinstance(parsed_json_str, str))
 
+    def test_generate_xml_qty_float(self):
+        for qty, qty_str in (
+            (10080000.0, "10080000"),
+            (123456.7, "123456.7"),
+            (10.0, "10"),
+            (0.25, "0.25"),
+        ):
+            for flavor in ("factur-x", "ubl-2.1"):
+                data_dict = self._prepare_data_dict()
+                data_dict["BG-25"][0]["BT-129"] = qty
+                xml_bytes = generate_xml(
+                    data_dict,
+                    flavor=flavor,
+                    level="en16931",
+                    check_schematron=False,
+                )
+                self.assertIn(
+                    f'unitCode="C62">{qty_str}<', xml_bytes.decode("utf-8")
+                )
+
     def test_generate_xml_level_autodetect(self):
         # test common formats
         for bt24 in (
