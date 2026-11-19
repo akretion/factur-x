@@ -606,9 +606,7 @@ class TestGenerateXML(unittest.TestCase):
                     level="en16931",
                     check_schematron=False,
                 )
-                self.assertIn(
-                    f'unitCode="C62">{qty_str}<', xml_bytes.decode("utf-8")
-                )
+                self.assertIn(f'unitCode="C62">{qty_str}<', xml_bytes.decode("utf-8"))
 
     def test_generate_xml_level_autodetect(self):
         # test common formats

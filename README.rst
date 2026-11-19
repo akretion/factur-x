@@ -141,6 +141,11 @@ Contributors
 Changelog
 =========
 
+* Version 7.10 dated 2026-11-19:
+
+  * generate_xml(): Fix qty/percent float formatting (patch courtesy of Kevin Roche)
+  * Add UNTDID 5153 in untdid_get_label()
+
 * Version 7.9 dated 2026-10-30:
 
   * New method untdid4461_to_text_code() that translates a UNTDID 4461 code (used in BT-81 to describe the payment means) into a comprehensible text code like "credit_transfer", "direct_debit", "cash", etc.

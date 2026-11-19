@@ -22,6 +22,8 @@ class TestUnitdid(unittest.TestCase):
         self.assertEqual(label, label_int)
         label = untdid_get_label("7161", "rac")
         self.assertEqual(label, "Repair")
+        label = untdid_get_label("5153", "OTH")
+        self.assertEqual(label, "Other taxes")
 
     def test_untdid4461_to_text_code(self):
         self.assertEqual(untdid4461_to_text_code("58"), "credit_transfer")
