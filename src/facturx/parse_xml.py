@@ -384,6 +384,10 @@ def _post_processing(data_dict, flavor):
             )
         data_dict["BT-7"] = data_dict["BT-7"][0]
     if flavor in ("ubl-2.1-invoice", "ubl-2.1-creditnote"):
+        # cbc:ID is mandatory in cac:OrderReference, so when there is only
+        # a sales order reference (BT-14), Peppol BIS 3 says to put "NA" in it
+        if data_dict.get("BT-13") == "NA" and data_dict.get("BT-14"):
+            data_dict.pop("BT-13")
         if data_dict.get("BG-1") and isinstance(data_dict["BG-1"], list):
             for note_dict in data_dict["BG-1"]:
                 if (

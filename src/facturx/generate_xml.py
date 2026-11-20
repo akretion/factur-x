@@ -3739,7 +3739,9 @@ def generate_ubl_xml(
         ],
         *[
             CAC.OrderReference(
-                CBC.ID(data_dict["BT-13"]),
+                # cbc:ID is mandatory in UBL: when there is only a sales order
+                # reference (BT-14), Peppol BIS 3 says to use "NA" as BT-13
+                CBC.ID(data_dict.get("BT-13") or "NA"),
                 *[
                     CBC.SalesOrderID(data_dict["BT-14"])
                     for _ in [1]
@@ -3748,11 +3750,11 @@ def generate_ubl_xml(
                 *[
                     CBC.IssueDate(_ubl_date_to_string(data_dict["EXT-FR-FE-197"]))
                     for _ in [1]
-                    if data_dict.get("EXT-FR-FE-197")
+                    if data_dict.get("BT-13") and data_dict.get("EXT-FR-FE-197")
                 ],
             )
             for _ in [1]
-            if data_dict.get("BT-13")
+            if data_dict.get("BT-13") or data_dict.get("BT-14")
         ],
         *[
             CAC.BillingReference(
